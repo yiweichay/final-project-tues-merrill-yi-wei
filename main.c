@@ -71,90 +71,55 @@ void main(void){
     LATDbits.LATD7 = 0;
     
     while(1){ 
-        read_colours(&test);
+        read_colours(&test); // For general light sensing
         LATDbits.LATD7 = 0;
+        
         if (!PORTFbits.RF2){
-            unsigned int testresults[3] = {0,0,0};
-            unsigned int test1[3] = {0,0,0};
-            unsigned int test2[3] = {0,0,0};
-            unsigned int test3[3] = {0,0,0};
-            
             LATDbits.LATD7 = 1;
-            LATGbits.LATG1=1;   //set initial output state
-            LATAbits.LATA4=1;   //set initial output state
-            LATFbits.LATF7=1;   //set initial output state
-            read_colours(&test);
-            test1[0] = test.R;
-            test1[1] = test.G;
-            test1[2] = test.B;
-            testresults[0] = determine_color1(&test);
+            LATGbits.LATG1=1;   // White Light
+            LATAbits.LATA4=1;   
+            LATFbits.LATF7=1; 
             __delay_ms(100);
-            LATGbits.LATG1=1;   //set initial output state
-            LATAbits.LATA4=0;   //set initial output state
-            LATFbits.LATF7=0;   //set initial output state
             read_colours(&test);
-            test2[0] = test.R;
-            test2[1] = test.G;
-            test2[2] = test.B;
-            testresults[1] = determine_color2(&test);
-            __delay_ms(100);
-            LATGbits.LATG1=0;   //set initial output state
-            LATAbits.LATA4=1;   //set initial output state
-            LATFbits.LATF7=0;   //set initial output state
-            read_colours(&test);
-            test3[0] = test.R;
-            test3[1] = test.G;
-            test3[2] = test.B;
-            testresults[2] = determine_color3(&test);
-            __delay_ms(100);
-            LATGbits.LATG1=0;   //set initial output state
-            LATAbits.LATA4=0;   //set initial output state
-            LATFbits.LATF7=0;   //set initial output state
-            unsigned int out;
-
-            int count = sizeof(testresults) / sizeof(testresults[0]);
-            for (int i = 0; i < count - 1; i++) { // read comment by @nbro
-                for (int j = i + 1; j < count; j++) {
-                    if (testresults[i] == testresults[j]) {
-                        out = testresults[i]; // 2 tests same 
-                    }
-                }
-            }
-            
-            unsigned int x = testresults[0];
-            unsigned int y = testresults[1];
-            unsigned int z = testresults[2];
-            sprintf(string," T1:%d T2:%d T3:%d ",x,y,z);
+            float temp = determine_color_new(&test);
+            unsigned int int_part;
+            unsigned int frac_part;
+            int_part = temp/1;
+            frac_part =(temp*1000)/1 - int_part*1000;
+            sprintf(string," Hue1: %d.%03d",int_part, frac_part);
             TxBufferedString(string);
             sendTxBuf();
             __delay_ms(100);
             
-            unsigned int a = test1[0];
-            unsigned int b = test1[1];
-            unsigned int c = test1[2];
-            sprintf(string1," T1r:%d T1g:%d T1b:%d ",a,b,c);
-            TxBufferedString(string1);
+            LATGbits.LATG1=1;   //Red Light
+            LATAbits.LATA4=0;  
+            LATFbits.LATF7=0;  
+            __delay_ms(100);
+            read_colours(&test);
+            temp = determine_color_new(&test);
+            int_part = temp/1;
+            frac_part =(temp*1000)/1 - int_part*1000;
+            sprintf(string," Hue2: %d.%03d",int_part, frac_part);
+            TxBufferedString(string);
             sendTxBuf();
             __delay_ms(100);
             
-            unsigned int d = test2[0];
-            unsigned int e = test2[1];
-            unsigned int f = test2[2];
-            sprintf(string2," T2r:%d T2g:%d T2b:%d ",d,e,f);
-            TxBufferedString(string2);
+            LATGbits.LATG1=0;   //Green Light
+            LATAbits.LATA4=1;  
+            LATFbits.LATF7=0;  
+            __delay_ms(100);
+            read_colours(&test);
+            temp = determine_color_new(&test);
+            int_part = temp/1;
+            frac_part =(temp*1000)/1 - int_part*1000;
+            sprintf(string," Hue3: %d.%03d",int_part, frac_part);
+            TxBufferedString(string);
             sendTxBuf();
             __delay_ms(100);
             
-            unsigned int g = test3[0];
-            unsigned int h = test3[1];
-            unsigned int i = test3[2];
-            sprintf(string3," T3r:%d T3g:%d T3b:%d ",g,h,i);
-            TxBufferedString(string3);
-            sendTxBuf();
-            __delay_ms(100);
-            
-//            sprintf(string," Colour:%d ",out);
-            
+            LATGbits.LATG1=0;   //set initial output state
+            LATAbits.LATA4=0;   //set initial output state
+            LATFbits.LATF7=0;   //set initial output state
         }
     }
 }

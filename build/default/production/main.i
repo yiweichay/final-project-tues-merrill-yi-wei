@@ -24358,10 +24358,7 @@ void anticlockwisesq(struct DC_motor *mL, struct DC_motor *mR);
 # 11 "main.c" 2
 
 # 1 "./color.h" 1
-
-
-
-
+# 11 "./color.h"
 # 1 "C:\\Program Files\\Microchip\\xc8\\v2.32\\pic\\include\\c99\\math.h" 1 3
 # 10 "C:\\Program Files\\Microchip\\xc8\\v2.32\\pic\\include\\c99\\math.h" 3
 # 1 "C:\\Program Files\\Microchip\\xc8\\v2.32\\pic\\include\\c99\\stdint.h" 1 3
@@ -24825,12 +24822,13 @@ double jn(int, double);
 double y0(double);
 double y1(double);
 double yn(int, double);
-# 5 "./color.h" 2
+# 11 "./color.h" 2
 
 
 
 
 struct RGB_val {
+        unsigned int C;
         unsigned int R;
         unsigned int G;
         unsigned int B;
@@ -24861,6 +24859,7 @@ void color_writetoaddr(char address, char value);
 
 
 
+unsigned int color_read_Clear(void);
 unsigned int color_read_Red(void);
 unsigned int color_read_Green(void);
 unsigned int color_read_Blue(void);
@@ -24870,6 +24869,7 @@ void read_color_sensor(struct RGB_val *m);
 unsigned int determine_color1(struct RGB_val *m);
 unsigned int determine_color2(struct RGB_val *m);
 unsigned int determine_color3(struct RGB_val *m);
+float determine_color_new(struct RGB_val *m);
 # 12 "main.c" 2
 
 # 1 "./i2c.h" 1
@@ -24990,6 +24990,11 @@ void main(void){
     test.G = 0;
     test.B = 0;
 
+    LATDbits.LATD3=1;
+    TRISDbits.TRISD3=0;
+    LATHbits.LATH1=1;
+    TRISHbits.TRISH1=0;
+
 
     LATGbits.LATG1=0;
     TRISGbits.TRISG1=0;
@@ -25009,88 +25014,53 @@ void main(void){
     while(1){
         read_colours(&test);
         LATDbits.LATD7 = 0;
-        if (!PORTFbits.RF2){
-            unsigned int testresults[3] = {0,0,0};
-            unsigned int test1[3] = {0,0,0};
-            unsigned int test2[3] = {0,0,0};
-            unsigned int test3[3] = {0,0,0};
 
+        if (!PORTFbits.RF2){
             LATDbits.LATD7 = 1;
             LATGbits.LATG1=1;
             LATAbits.LATA4=1;
             LATFbits.LATF7=1;
-            read_colours(&test);
-            test1[0] = test.R;
-            test1[1] = test.G;
-            test1[2] = test.B;
-            testresults[0] = determine_color1(&test);
             _delay((unsigned long)((100)*(64000000/4000.0)));
-            LATGbits.LATG1=1;
-            LATAbits.LATA4=0;
-            LATFbits.LATF7=0;
             read_colours(&test);
-            test2[0] = test.R;
-            test2[1] = test.G;
-            test2[2] = test.B;
-            testresults[1] = determine_color2(&test);
-            _delay((unsigned long)((100)*(64000000/4000.0)));
-            LATGbits.LATG1=0;
-            LATAbits.LATA4=1;
-            LATFbits.LATF7=0;
-            read_colours(&test);
-            test3[0] = test.R;
-            test3[1] = test.G;
-            test3[2] = test.B;
-            testresults[2] = determine_color3(&test);
-            _delay((unsigned long)((100)*(64000000/4000.0)));
-            LATGbits.LATG1=0;
-            LATAbits.LATA4=0;
-            LATFbits.LATF7=0;
-            unsigned int out;
-
-            int count = sizeof(testresults) / sizeof(testresults[0]);
-            for (int i = 0; i < count - 1; i++) {
-                for (int j = i + 1; j < count; j++) {
-                    if (testresults[i] == testresults[j]) {
-                        out = testresults[i];
-                    }
-                }
-            }
-
-            unsigned int x = testresults[0];
-            unsigned int y = testresults[1];
-            unsigned int z = testresults[2];
-            sprintf(string," T1:%d T2:%d T3:%d ",x,y,z);
+            float temp = determine_color_new(&test);
+            unsigned int int_part;
+            unsigned int frac_part;
+            int_part = temp/1;
+            frac_part =(temp*1000)/1 - int_part*1000;
+            sprintf(string," Hue1: %d.%03d",int_part, frac_part);
             TxBufferedString(string);
             sendTxBuf();
             _delay((unsigned long)((100)*(64000000/4000.0)));
 
-            unsigned int a = test1[0];
-            unsigned int b = test1[1];
-            unsigned int c = test1[2];
-            sprintf(string1," T1r:%d T1g:%d T1b:%d ",a,b,c);
-            TxBufferedString(string1);
+            LATGbits.LATG1=1;
+            LATAbits.LATA4=0;
+            LATFbits.LATF7=0;
+            _delay((unsigned long)((100)*(64000000/4000.0)));
+            read_colours(&test);
+            temp = determine_color_new(&test);
+            int_part = temp/1;
+            frac_part =(temp*1000)/1 - int_part*1000;
+            sprintf(string," Hue2: %d.%03d",int_part, frac_part);
+            TxBufferedString(string);
             sendTxBuf();
             _delay((unsigned long)((100)*(64000000/4000.0)));
 
-            unsigned int d = test2[0];
-            unsigned int e = test2[1];
-            unsigned int f = test2[2];
-            sprintf(string2," T2r:%d T2g:%d T2b:%d ",d,e,f);
-            TxBufferedString(string2);
+            LATGbits.LATG1=0;
+            LATAbits.LATA4=1;
+            LATFbits.LATF7=0;
+            _delay((unsigned long)((100)*(64000000/4000.0)));
+            read_colours(&test);
+            temp = determine_color_new(&test);
+            int_part = temp/1;
+            frac_part =(temp*1000)/1 - int_part*1000;
+            sprintf(string," Hue3: %d.%03d",int_part, frac_part);
+            TxBufferedString(string);
             sendTxBuf();
             _delay((unsigned long)((100)*(64000000/4000.0)));
 
-            unsigned int g = test3[0];
-            unsigned int h = test3[1];
-            unsigned int i = test3[2];
-            sprintf(string3," T3r:%d T3g:%d T3b:%d ",g,h,i);
-            TxBufferedString(string3);
-            sendTxBuf();
-            _delay((unsigned long)((100)*(64000000/4000.0)));
-
-
-
+            LATGbits.LATG1=0;
+            LATAbits.LATA4=0;
+            LATFbits.LATF7=0;
         }
     }
 }

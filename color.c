@@ -27,6 +27,19 @@ void color_writetoaddr(char address, char value){
     I2C_2_Master_Stop();          //Stop condition
 }
 
+unsigned int color_read_Clear(void){
+    unsigned int tmp;
+    I2C_2_Master_Start();
+    I2C_2_Master_Write(0x52 | 0x00);     //7 bit address + Write mode
+	I2C_2_Master_Write(0xA0 | 0x14);    //command (auto-increment protocol transaction) + start at Clear low register
+	I2C_2_Master_RepStart();			// start a repeated transmission
+	I2C_2_Master_Write(0x52 | 0x01);     //7 bit address + Read (1) mode
+	tmp=I2C_2_Master_Read(1);			//read the Red LSB
+	tmp=tmp | (I2C_2_Master_Read(0)<<8); //read the Red MSB (don't acknowledge as this is the last read)
+    I2C_2_Master_Stop();          //Stop condition
+    return tmp;
+}
+
 unsigned int color_read_Red(void)
 {
 	unsigned int tmp;
@@ -68,6 +81,8 @@ unsigned int color_read_Blue(void){
 }
 
 void read_colours(struct RGB_val *m){
+    (m->C) = color_read_Clear();
+    __delay_ms(1);
     (m->R) = color_read_Red();
     __delay_ms(1);
     (m->G) = color_read_Green();
@@ -77,7 +92,7 @@ void read_colours(struct RGB_val *m){
     return;
 }
 
-void read_color_sensor(struct RGB_val *m)
+void read_color_sensor(struct RGB_val *m) // Redundant 
 {
 	unsigned int tmp;
     // Red
@@ -275,4 +290,42 @@ unsigned int determine_color3(struct RGB_val *m){
         }
     }
     return out;
+}
+
+float determine_color_new(struct RGB_val *m){         
+    unsigned int temp = 1000;
+    unsigned int out;
+    float RedRatio, GreenRatio, BlueRatio, Hue;
+    float volatile RatioMax, RatioMin, Saturation;
+    
+    RedRatio = ((float)(m->R) / (float)(m->C));
+    GreenRatio = ((float)(m->G) / (float)(m->C));
+    BlueRatio = ((float)(m->B) / (float)(m->C));
+    
+    RatioMax = MAX_FLOAT(MAX_FLOAT(RedRatio, GreenRatio), BlueRatio);
+    RatioMin = MIN_FLOAT(MIN_FLOAT(RedRatio, GreenRatio), BlueRatio);
+    
+    if (RatioMax > 0)
+        Saturation = (RatioMax - RatioMin) / RatioMax;
+    else
+        Saturation = 0;
+
+    if (Saturation == 0)
+        Hue = 0;
+    else 
+    {
+        if (RatioMax == RedRatio)
+            Hue = (GreenRatio - BlueRatio) / (RatioMax - RatioMin);
+        else if (RatioMax == GreenRatio)
+            Hue = 2 + (BlueRatio - RedRatio) / (RatioMax - RatioMin);
+        else
+            Hue = 4 + (RedRatio - GreenRatio) / (RatioMax - RatioMin);
+
+        Hue = Hue / 6;
+
+        if (Hue < 0)
+            Hue += 1;
+    }
+    
+    return Hue; 
 }

@@ -24643,15 +24643,9 @@ double yn(int, double);
 # 2 "color.c" 2
 
 # 1 "./color.h" 1
-
-
-
-
-
-
-
-
+# 15 "./color.h"
 struct RGB_val {
+        unsigned int C;
         unsigned int R;
         unsigned int G;
         unsigned int B;
@@ -24682,6 +24676,7 @@ void color_writetoaddr(char address, char value);
 
 
 
+unsigned int color_read_Clear(void);
 unsigned int color_read_Red(void);
 unsigned int color_read_Green(void);
 unsigned int color_read_Blue(void);
@@ -24691,6 +24686,7 @@ void read_color_sensor(struct RGB_val *m);
 unsigned int determine_color1(struct RGB_val *m);
 unsigned int determine_color2(struct RGB_val *m);
 unsigned int determine_color3(struct RGB_val *m);
+float determine_color_new(struct RGB_val *m);
 # 3 "color.c" 2
 
 # 1 "./i2c.h" 1
@@ -24753,6 +24749,19 @@ void color_writetoaddr(char address, char value){
     I2C_2_Master_Stop();
 }
 
+unsigned int color_read_Clear(void){
+    unsigned int tmp;
+    I2C_2_Master_Start();
+    I2C_2_Master_Write(0x52 | 0x00);
+ I2C_2_Master_Write(0xA0 | 0x14);
+ I2C_2_Master_RepStart();
+ I2C_2_Master_Write(0x52 | 0x01);
+ tmp=I2C_2_Master_Read(1);
+ tmp=tmp | (I2C_2_Master_Read(0)<<8);
+    I2C_2_Master_Stop();
+    return tmp;
+}
+
 unsigned int color_read_Red(void)
 {
  unsigned int tmp;
@@ -24794,6 +24803,8 @@ unsigned int color_read_Blue(void){
 }
 
 void read_colours(struct RGB_val *m){
+    (m->C) = color_read_Clear();
+    _delay((unsigned long)((1)*(64000000/4000.0)));
     (m->R) = color_read_Red();
     _delay((unsigned long)((1)*(64000000/4000.0)));
     (m->G) = color_read_Green();
@@ -24841,7 +24852,7 @@ void read_color_sensor(struct RGB_val *m)
 
     return;
 }
-# 190 "color.c"
+# 205 "color.c"
 unsigned int determine_color1(struct RGB_val *m){
     unsigned int data[9][3] = {
         {47,1390,775},
@@ -24930,4 +24941,42 @@ unsigned int determine_color3(struct RGB_val *m){
         }
     }
     return out;
+}
+
+float determine_color_new(struct RGB_val *m){
+    unsigned int temp = 1000;
+    unsigned int out;
+    float RedRatio, GreenRatio, BlueRatio, Hue;
+    float volatile RatioMax, RatioMin, Saturation;
+
+    RedRatio = ((float)(m->R) / (float)(m->C));
+    GreenRatio = ((float)(m->G) / (float)(m->C));
+    BlueRatio = ((float)(m->B) / (float)(m->C));
+
+    RatioMax = ((((((RedRatio) > (GreenRatio)) ? (RedRatio) : (GreenRatio))) > (BlueRatio)) ? ((((RedRatio) > (GreenRatio)) ? (RedRatio) : (GreenRatio))) : (BlueRatio));
+    RatioMin = ((((((RedRatio) < (GreenRatio)) ? (RedRatio) : (GreenRatio))) < (BlueRatio)) ? ((((RedRatio) < (GreenRatio)) ? (RedRatio) : (GreenRatio))) : (BlueRatio));
+
+    if (RatioMax > 0)
+        Saturation = (RatioMax - RatioMin) / RatioMax;
+    else
+        Saturation = 0;
+
+    if (Saturation == 0)
+        Hue = 0;
+    else
+    {
+        if (RatioMax == RedRatio)
+            Hue = (GreenRatio - BlueRatio) / (RatioMax - RatioMin);
+        else if (RatioMax == GreenRatio)
+            Hue = 2 + (BlueRatio - RedRatio) / (RatioMax - RatioMin);
+        else
+            Hue = 4 + (RedRatio - GreenRatio) / (RatioMax - RatioMin);
+
+        Hue = Hue / 6;
+
+        if (Hue < 0)
+            Hue += 1;
+    }
+
+    return Hue;
 }
