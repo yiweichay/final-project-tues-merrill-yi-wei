@@ -24643,52 +24643,7 @@ double yn(int, double);
 # 2 "color.c" 2
 
 # 1 "./color.h" 1
-# 15 "./color.h"
-struct RGB_val {
-        unsigned int C;
-        unsigned int R;
-        unsigned int G;
-        unsigned int B;
-        unsigned int t1r;
-        unsigned int t1g;
-        unsigned int t1b;
-        unsigned int t2r;
-        unsigned int t2g;
-        unsigned int t2b;
-        unsigned int t3r;
-        unsigned int t3g;
-        unsigned int t3b;
-    };
-
-
-
-
-void color_click_init(void);
-
-
-
-
-
-
-void color_writetoaddr(char address, char value);
-
-
-
-
-
-unsigned int color_read_Clear(void);
-unsigned int color_read_Red(void);
-unsigned int color_read_Green(void);
-unsigned int color_read_Blue(void);
-void read_colours(struct RGB_val *m);
-void read_color_sensor(struct RGB_val *m);
-
-unsigned int determine_color1(struct RGB_val *m);
-unsigned int determine_color2(struct RGB_val *m);
-unsigned int determine_color3(struct RGB_val *m);
-float determine_color_new(struct RGB_val *m);
-# 3 "color.c" 2
-
+# 12 "./color.h"
 # 1 "./i2c.h" 1
 # 13 "./i2c.h"
 void I2C_2_Master_Init(void);
@@ -24722,7 +24677,76 @@ void I2C_2_Master_Write(unsigned char data_byte);
 
 
 unsigned char I2C_2_Master_Read(unsigned char ack);
-# 4 "color.c" 2
+# 12 "./color.h" 2
+
+# 1 "./serial.h" 1
+# 13 "./serial.h"
+volatile char EUSART4RXbuf[20];
+volatile char RxBufWriteCnt=0;
+volatile char RxBufReadCnt=0;
+
+volatile char EUSART4TXbuf[60];
+volatile char TxBufWriteCnt=0;
+volatile char TxBufReadCnt=0;
+
+
+
+void initUSART4(void);
+char getCharSerial4(void);
+void sendCharSerial4(char charToSend);
+void sendStringSerial4(char *string);
+
+
+char getCharFromRxBuf(void);
+void putCharToRxBuf(char byte);
+char isDataInRxBuf (void);
+
+
+char getCharFromTxBuf(void);
+void putCharToTxBuf(char byte);
+char isDataInTxBuf (void);
+void TxBufferedString(char *string);
+void sendTxBuf(void);
+# 13 "./color.h" 2
+
+
+
+
+struct RGB_val {
+        unsigned int C;
+        unsigned int R;
+        unsigned int G;
+        unsigned int B;
+    };
+
+
+
+
+void color_click_init(void);
+
+
+
+
+
+
+void color_writetoaddr(char address, char value);
+
+
+
+
+
+unsigned int color_read_Clear(void);
+unsigned int color_read_Red(void);
+unsigned int color_read_Green(void);
+unsigned int color_read_Blue(void);
+void read_colours(struct RGB_val *m);
+unsigned int determine_color1(struct RGB_val *m);
+unsigned int determine_color2(struct RGB_val *m);
+unsigned int determine_color3(struct RGB_val *m);
+unsigned int determine_color_new(struct RGB_val *m);
+# 3 "color.c" 2
+
+
 
 
 void color_click_init(void)
@@ -24804,55 +24828,11 @@ unsigned int color_read_Blue(void){
 
 void read_colours(struct RGB_val *m){
     (m->C) = color_read_Clear();
-    _delay((unsigned long)((1)*(64000000/4000.0)));
     (m->R) = color_read_Red();
-    _delay((unsigned long)((1)*(64000000/4000.0)));
     (m->G) = color_read_Green();
-    _delay((unsigned long)((1)*(64000000/4000.0)));
     (m->B) = color_read_Blue();
-    _delay((unsigned long)((1)*(64000000/4000.0)));
-    return;
 }
 
-void read_color_sensor(struct RGB_val *m)
-{
- unsigned int tmp;
-
-    I2C_2_Master_Start();
- I2C_2_Master_Write(0x52 | 0x00);
- I2C_2_Master_Write(0xA0 | 0x16);
- I2C_2_Master_RepStart();
- I2C_2_Master_Write(0x52 | 0x01);
- tmp=I2C_2_Master_Read(1);
- tmp=tmp | (I2C_2_Master_Read(0)<<8);
- I2C_2_Master_Stop();
-    (m->R) = tmp;
-
-
-    I2C_2_Master_Start();
-    I2C_2_Master_Write(0x52 | 0x00);
- I2C_2_Master_Write(0xA0 | 0x18);
- I2C_2_Master_RepStart();
- I2C_2_Master_Write(0x52 | 0x01);
- tmp=I2C_2_Master_Read(1);
- tmp=tmp | (I2C_2_Master_Read(0)<<8);
-    I2C_2_Master_Stop();
-    (m->G) = tmp;
-
-
-    I2C_2_Master_Start();
-    I2C_2_Master_Write(0x52 | 0x00);
- I2C_2_Master_Write(0xA0 | 0x1A);
- I2C_2_Master_RepStart();
- I2C_2_Master_Write(0x52 | 0x01);
- tmp=I2C_2_Master_Read(1);
- tmp=tmp | (I2C_2_Master_Read(0)<<8);
-    I2C_2_Master_Stop();
-    (m->B) = tmp;
-
-    return;
-}
-# 205 "color.c"
 unsigned int determine_color1(struct RGB_val *m){
     unsigned int data[9][3] = {
         {47,1390,775},
@@ -24943,40 +24923,54 @@ unsigned int determine_color3(struct RGB_val *m){
     return out;
 }
 
-float determine_color_new(struct RGB_val *m){
-    unsigned int temp = 1000;
-    unsigned int out;
-    float RedRatio, GreenRatio, BlueRatio, Hue;
-    float volatile RatioMax, RatioMin, Saturation;
+unsigned int isbtw(float num, float low, float high){
+    if (num>=low && num<=high){return 1;}
+    else {return 0;}
+}
 
-    RedRatio = ((float)(m->R) / (float)(m->C));
-    GreenRatio = ((float)(m->G) / (float)(m->C));
-    BlueRatio = ((float)(m->B) / (float)(m->C));
+unsigned int determine_color_new(struct RGB_val *m){
+    float RedRatio, GreenRatio, BlueRatio;
+    unsigned int out = 9;
+    RedRatio = (float)m->R / (float)m->C;
+    GreenRatio = (float)m->G / (float)m->C;
+    BlueRatio = (float)m->B / (float)m->C;
 
-    RatioMax = ((((((RedRatio) > (GreenRatio)) ? (RedRatio) : (GreenRatio))) > (BlueRatio)) ? ((((RedRatio) > (GreenRatio)) ? (RedRatio) : (GreenRatio))) : (BlueRatio));
-    RatioMin = ((((((RedRatio) < (GreenRatio)) ? (RedRatio) : (GreenRatio))) < (BlueRatio)) ? ((((RedRatio) < (GreenRatio)) ? (RedRatio) : (GreenRatio))) : (BlueRatio));
 
-    if (RatioMax > 0)
-        Saturation = (RatioMax - RatioMin) / RatioMax;
-    else
-        Saturation = 0;
+    if (isbtw(RedRatio,0.700,0.800)==1 && isbtw(GreenRatio,0.180,0.210)==1 && isbtw(BlueRatio,0.180,0.199)==1)
+    {out = 0;}
 
-    if (Saturation == 0)
-        Hue = 0;
-    else
-    {
-        if (RatioMax == RedRatio)
-            Hue = (GreenRatio - BlueRatio) / (RatioMax - RatioMin);
-        else if (RatioMax == GreenRatio)
-            Hue = 2 + (BlueRatio - RedRatio) / (RatioMax - RatioMin);
-        else
-            Hue = 4 + (RedRatio - GreenRatio) / (RatioMax - RatioMin);
 
-        Hue = Hue / 6;
+    if (isbtw(RedRatio,0.450,0.490)==1 && isbtw(GreenRatio,0.330,0.365)==1 && isbtw(BlueRatio,0.220,0.240)==1)
+    {out = 1;}
 
-        if (Hue < 0)
-            Hue += 1;
-    }
 
-    return Hue;
+    if (isbtw(RedRatio,0.410,0.460)==1 && isbtw(GreenRatio,0.313,0.335)==1 && isbtw(BlueRatio,0.270,0.295)==1)
+    {out = 2;}
+
+
+    if (isbtw(RedRatio,0.610,0.625)==1 && isbtw(GreenRatio,0.265,0.279)==1 && isbtw(BlueRatio,0.160,0.176)==1)
+    {out = 3;}
+
+
+    if (isbtw(RedRatio,0.625,0.646)==1 && isbtw(GreenRatio,0.230,0.240)==1 && isbtw(BlueRatio,0.200,0.209)==1)
+    {out = 4;}
+
+
+    if (isbtw(RedRatio,0.715,0.755)==1 && isbtw(GreenRatio,0.185,0.215)==1 && isbtw(BlueRatio,0.172,0.181)==1)
+    {out = 5;}
+
+
+    if (isbtw(RedRatio,0.485,0.502)==1 && isbtw(GreenRatio,0.305,0.315)==1 && isbtw(BlueRatio,0.245,0.257)==1)
+    {out = 6;}
+
+
+    if (isbtw(RedRatio,0.545,0.555)==1 && isbtw(GreenRatio,0.280,0.286)==1 && isbtw(BlueRatio,0.225,0.230)==1)
+    {out = 7;}
+
+
+    if (isbtw(RedRatio,0.548,0.560)==1 && isbtw(GreenRatio,0.265,0.279)==1 && isbtw(BlueRatio,0.202,0.212)==1)
+    {out = 8;}
+
+    return out;
+# 248 "color.c"
 }

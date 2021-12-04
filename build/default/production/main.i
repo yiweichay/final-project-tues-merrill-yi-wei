@@ -24824,54 +24824,6 @@ double y1(double);
 double yn(int, double);
 # 11 "./color.h" 2
 
-
-
-
-struct RGB_val {
-        unsigned int C;
-        unsigned int R;
-        unsigned int G;
-        unsigned int B;
-        unsigned int t1r;
-        unsigned int t1g;
-        unsigned int t1b;
-        unsigned int t2r;
-        unsigned int t2g;
-        unsigned int t2b;
-        unsigned int t3r;
-        unsigned int t3g;
-        unsigned int t3b;
-    };
-
-
-
-
-void color_click_init(void);
-
-
-
-
-
-
-void color_writetoaddr(char address, char value);
-
-
-
-
-
-unsigned int color_read_Clear(void);
-unsigned int color_read_Red(void);
-unsigned int color_read_Green(void);
-unsigned int color_read_Blue(void);
-void read_colours(struct RGB_val *m);
-void read_color_sensor(struct RGB_val *m);
-
-unsigned int determine_color1(struct RGB_val *m);
-unsigned int determine_color2(struct RGB_val *m);
-unsigned int determine_color3(struct RGB_val *m);
-float determine_color_new(struct RGB_val *m);
-# 12 "main.c" 2
-
 # 1 "./i2c.h" 1
 # 13 "./i2c.h"
 void I2C_2_Master_Init(void);
@@ -24905,7 +24857,7 @@ void I2C_2_Master_Write(unsigned char data_byte);
 
 
 unsigned char I2C_2_Master_Read(unsigned char ack);
-# 13 "main.c" 2
+# 12 "./color.h" 2
 
 # 1 "./serial.h" 1
 # 13 "./serial.h"
@@ -24935,7 +24887,46 @@ void putCharToTxBuf(char byte);
 char isDataInTxBuf (void);
 void TxBufferedString(char *string);
 void sendTxBuf(void);
-# 14 "main.c" 2
+# 13 "./color.h" 2
+
+
+
+
+struct RGB_val {
+        unsigned int C;
+        unsigned int R;
+        unsigned int G;
+        unsigned int B;
+    };
+
+
+
+
+void color_click_init(void);
+
+
+
+
+
+
+void color_writetoaddr(char address, char value);
+
+
+
+
+
+unsigned int color_read_Clear(void);
+unsigned int color_read_Red(void);
+unsigned int color_read_Green(void);
+unsigned int color_read_Blue(void);
+void read_colours(struct RGB_val *m);
+unsigned int determine_color1(struct RGB_val *m);
+unsigned int determine_color2(struct RGB_val *m);
+unsigned int determine_color3(struct RGB_val *m);
+unsigned int determine_color_new(struct RGB_val *m);
+# 12 "main.c" 2
+
+
 
 # 1 "./interrupts.h" 1
 
@@ -24959,11 +24950,6 @@ void main(void){
     initUSART4();
     Interrupts_init();
 
-    char string[20];
-    char string1[20];
-    char string2[20];
-    char string3[20];
-
 
     TRISFbits.TRISF2=1;
     ANSELFbits.ANSELF2=0;
@@ -24986,81 +24972,72 @@ void main(void){
 
 
     struct RGB_val test;
+    test.C = 0;
     test.R = 0;
     test.G = 0;
     test.B = 0;
-
-    LATDbits.LATD3=1;
-    TRISDbits.TRISD3=0;
-    LATHbits.LATH1=1;
-    TRISHbits.TRISH1=0;
 
 
     LATGbits.LATG1=0;
     TRISGbits.TRISG1=0;
     LATAbits.LATA4=0;
     TRISAbits.TRISA4=0;
-    LATFbits.LATF7=1;
+    LATFbits.LATF7=0;
     TRISFbits.TRISF7=0;
-
-
-
-
 
 
     TRISDbits.TRISD7 = 0;
     LATDbits.LATD7 = 0;
 
+    char string[20];
+    char string1[20];
+    char string2[20];
+    char string3[20];
+    float RedRatio, GreenRatio, BlueRatio;
+
     while(1){
+        unsigned int output;
+
+        LATGbits.LATG1=1;
+        LATAbits.LATA4=1;
+        LATFbits.LATF7=1;
         read_colours(&test);
-        LATDbits.LATD7 = 0;
+        output = determine_color_new(&test);
+        RedRatio = ((float)test.R) / ((float)test.C);
+        GreenRatio = ((float)test.G) / ((float)test.C);
+        BlueRatio = ((float)test.B) / ((float)test.C);
+        _delay((unsigned long)((50)*(64000000/4000.0)));
 
-        if (!PORTFbits.RF2){
-            LATDbits.LATD7 = 1;
-            LATGbits.LATG1=1;
-            LATAbits.LATA4=1;
-            LATFbits.LATF7=1;
-            _delay((unsigned long)((100)*(64000000/4000.0)));
-            read_colours(&test);
-            float temp = determine_color_new(&test);
-            unsigned int int_part;
-            unsigned int frac_part;
-            int_part = temp/1;
-            frac_part =(temp*1000)/1 - int_part*1000;
-            sprintf(string," Hue1: %d.%03d",int_part, frac_part);
-            TxBufferedString(string);
-            sendTxBuf();
-            _delay((unsigned long)((100)*(64000000/4000.0)));
+        unsigned int int_part1 = RedRatio/1;
+        unsigned int frac_part1 =(RedRatio*1000)/1 - int_part1*1000;
+        sprintf(string1," R: %d.%03d ",int_part1, frac_part1);
+        TxBufferedString(string1);
+        sendTxBuf();
+        _delay((unsigned long)((50)*(64000000/4000.0)));
 
-            LATGbits.LATG1=1;
-            LATAbits.LATA4=0;
-            LATFbits.LATF7=0;
-            _delay((unsigned long)((100)*(64000000/4000.0)));
-            read_colours(&test);
-            temp = determine_color_new(&test);
-            int_part = temp/1;
-            frac_part =(temp*1000)/1 - int_part*1000;
-            sprintf(string," Hue2: %d.%03d",int_part, frac_part);
-            TxBufferedString(string);
-            sendTxBuf();
-            _delay((unsigned long)((100)*(64000000/4000.0)));
+        unsigned int int_part2 = GreenRatio/1;
+        unsigned int frac_part2 =(GreenRatio*1000)/1 - int_part2*1000;
+        sprintf(string2," G: %d.%03d ",int_part2, frac_part2);
+        TxBufferedString(string2);
+        sendTxBuf();
+        _delay((unsigned long)((50)*(64000000/4000.0)));
 
-            LATGbits.LATG1=0;
-            LATAbits.LATA4=1;
-            LATFbits.LATF7=0;
-            _delay((unsigned long)((100)*(64000000/4000.0)));
-            read_colours(&test);
-            temp = determine_color_new(&test);
-            int_part = temp/1;
-            frac_part =(temp*1000)/1 - int_part*1000;
-            sprintf(string," Hue3: %d.%03d",int_part, frac_part);
-            TxBufferedString(string);
-            sendTxBuf();
-            _delay((unsigned long)((100)*(64000000/4000.0)));
+        unsigned int int_part3 = BlueRatio/1;
+        unsigned int frac_part3 =(BlueRatio*1000)/1 - int_part3*1000;
+        sprintf(string3," B: %d.%03d ",int_part3, frac_part3);
+        TxBufferedString(string3);
+        sendTxBuf();
+        _delay((unsigned long)((50)*(64000000/4000.0)));
 
-            LATGbits.LATG1=0;
-            LATAbits.LATA4=0;
-            LATFbits.LATF7=0;
-        }
+        sprintf(string," Colour: %d ",output);
+        TxBufferedString(string);
+        sendTxBuf();
+        _delay((unsigned long)((50)*(64000000/4000.0)));
+
+        LATGbits.LATG1=0;
+        LATAbits.LATA4=0;
+        LATFbits.LATF7=0;
+        _delay((unsigned long)((500)*(64000000/4000.0)));
+        _delay((unsigned long)((500)*(64000000/4000.0)));
     }
 }

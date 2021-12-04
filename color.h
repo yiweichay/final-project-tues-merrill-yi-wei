@@ -9,6 +9,8 @@
 
 #include <xc.h>
 #include <math.h>
+#include "i2c.h"
+#include "serial.h"
 
 #define _XTAL_FREQ 64000000 //note intrinsic _delay function is 62.5ns at 64,000,000Hz  
 
@@ -17,15 +19,6 @@ struct RGB_val {
         unsigned int R;
         unsigned int G;
         unsigned int B;
-        unsigned int t1r;
-        unsigned int t1g;
-        unsigned int t1b;
-        unsigned int t2r;
-        unsigned int t2g;
-        unsigned int t2b;
-        unsigned int t3r;
-        unsigned int t3g;
-        unsigned int t3b;
     };
 
 /********************************************//**
@@ -49,11 +42,9 @@ unsigned int color_read_Red(void);
 unsigned int color_read_Green(void);
 unsigned int color_read_Blue(void);
 void read_colours(struct RGB_val *m);
-void read_color_sensor(struct RGB_val *m);
-//unsigned int determine_color(struct RGB_val *m);
 unsigned int determine_color1(struct RGB_val *m);
 unsigned int determine_color2(struct RGB_val *m);
 unsigned int determine_color3(struct RGB_val *m);
-float determine_color_new(struct RGB_val *m);
+unsigned int determine_color_new(struct RGB_val *m);
 
 #endif
