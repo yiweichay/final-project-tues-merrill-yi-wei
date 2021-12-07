@@ -24713,6 +24713,10 @@ void sendTxBuf(void);
 
 
 struct RGB_val {
+        unsigned int ambientC;
+        unsigned int ambientR;
+        unsigned int ambientG;
+        unsigned int ambientB;
         unsigned int C;
         unsigned int R;
         unsigned int G;
@@ -24743,10 +24747,42 @@ void read_colours(struct RGB_val *m);
 unsigned int determine_color1(struct RGB_val *m);
 unsigned int determine_color2(struct RGB_val *m);
 unsigned int determine_color3(struct RGB_val *m);
+void calibrate(struct RGB_val *m);
 unsigned int determine_color_new(struct RGB_val *m);
 # 3 "color.c" 2
 
 
+
+# 1 "./dc_motor.h" 1
+
+
+
+
+
+
+
+struct DC_motor {
+    char power;
+    char direction;
+    unsigned char *dutyHighByte;
+    unsigned char *dir_LAT;
+    char dir_pin;
+    int PWMperiod;
+};
+
+
+void initDCmotorsPWM(int PWMperiod);
+void setMotorPWM(struct DC_motor *m);
+void stop(struct DC_motor *mL, struct DC_motor *mR);
+void turnLeft(struct DC_motor *mL, struct DC_motor *mR);
+void turnRight(struct DC_motor *mL, struct DC_motor *mR);
+void fullSpeedAhead(struct DC_motor *mL, struct DC_motor *mR);
+void turn90Left(struct DC_motor *mL, struct DC_motor *mR);
+void turn90Right(struct DC_motor *mL, struct DC_motor *mR);
+void turn180Right(struct DC_motor *mL, struct DC_motor *mR);
+void clockwisesq(struct DC_motor *mL, struct DC_motor *mR);
+void anticlockwisesq(struct DC_motor *mL, struct DC_motor *mR);
+# 6 "color.c" 2
 
 
 void color_click_init(void)
@@ -24928,49 +24964,63 @@ unsigned int isbtw(float num, float low, float high){
     else {return 0;}
 }
 
+void calibrate(struct RGB_val *m){
+    (m->ambientC) = color_read_Clear();
+    (m->ambientR) = color_read_Red();
+    (m->ambientG) = color_read_Green();
+    (m->ambientB) = color_read_Blue();
+}
+
 unsigned int determine_color_new(struct RGB_val *m){
     float RedRatio, GreenRatio, BlueRatio;
     unsigned int out = 9;
+
+
     RedRatio = (float)m->R / (float)m->C;
     GreenRatio = (float)m->G / (float)m->C;
     BlueRatio = (float)m->B / (float)m->C;
 
 
-    if (isbtw(RedRatio,0.700,0.800)==1 && isbtw(GreenRatio,0.180,0.210)==1 && isbtw(BlueRatio,0.180,0.199)==1)
+
+    if (isbtw(RedRatio,0.795,0.870)==1 && isbtw(GreenRatio,0.140,0.169)==1 && isbtw(BlueRatio,0.185,0.210)==1)
     {out = 0;}
 
 
-    if (isbtw(RedRatio,0.450,0.490)==1 && isbtw(GreenRatio,0.330,0.365)==1 && isbtw(BlueRatio,0.220,0.240)==1)
+    if (isbtw(RedRatio,0.450,0.525)==1 && isbtw(GreenRatio,0.325,0.380)==1 && isbtw(BlueRatio,0.240,0.270)==1)
     {out = 1;}
 
 
-    if (isbtw(RedRatio,0.410,0.460)==1 && isbtw(GreenRatio,0.313,0.335)==1 && isbtw(BlueRatio,0.270,0.295)==1)
+    if (isbtw(RedRatio,0.400,0.479)==1 && isbtw(GreenRatio,0.305,0.340)==1 && isbtw(BlueRatio,0.305,0.345)==1)
     {out = 2;}
 
 
-    if (isbtw(RedRatio,0.610,0.625)==1 && isbtw(GreenRatio,0.265,0.279)==1 && isbtw(BlueRatio,0.160,0.176)==1)
+    if (isbtw(RedRatio,0.645,0.680)==1 && isbtw(GreenRatio,0.250,0.275)==1 && isbtw(BlueRatio,0.175,0.190)==1)
     {out = 3;}
 
 
-    if (isbtw(RedRatio,0.625,0.646)==1 && isbtw(GreenRatio,0.230,0.240)==1 && isbtw(BlueRatio,0.200,0.209)==1)
+    if (isbtw(RedRatio,0.650,0.679)==1 && isbtw(GreenRatio,0.220,0.235)==1 && isbtw(BlueRatio,0.215,0.235)==1)
     {out = 4;}
 
 
-    if (isbtw(RedRatio,0.715,0.755)==1 && isbtw(GreenRatio,0.185,0.215)==1 && isbtw(BlueRatio,0.172,0.181)==1)
+    if (isbtw(RedRatio,0.795,0.820)==1 && isbtw(GreenRatio,0.165,0.183)==1 && isbtw(BlueRatio,0.175,0.191)==1)
     {out = 5;}
 
 
-    if (isbtw(RedRatio,0.485,0.502)==1 && isbtw(GreenRatio,0.305,0.315)==1 && isbtw(BlueRatio,0.245,0.257)==1)
+    if (isbtw(RedRatio,0.500,0.550)==1 && isbtw(GreenRatio,0.285,0.310)==1 && isbtw(BlueRatio,0.259,0.280)==1)
     {out = 6;}
 
 
-    if (isbtw(RedRatio,0.545,0.555)==1 && isbtw(GreenRatio,0.280,0.286)==1 && isbtw(BlueRatio,0.225,0.230)==1)
+    if (isbtw(RedRatio,0.565,0.605)==1 && isbtw(GreenRatio,0.259,0.285)==1 && isbtw(BlueRatio,0.238,0.255)==1)
     {out = 7;}
 
 
-    if (isbtw(RedRatio,0.548,0.560)==1 && isbtw(GreenRatio,0.265,0.279)==1 && isbtw(BlueRatio,0.202,0.212)==1)
+    if (isbtw(RedRatio,0.581,0.606)==1 && isbtw(GreenRatio,0.240,0.276)==1 && isbtw(BlueRatio,0.200,0.245)==1)
     {out = 8;}
 
+
+
+
+
+
     return out;
-# 248 "color.c"
 }

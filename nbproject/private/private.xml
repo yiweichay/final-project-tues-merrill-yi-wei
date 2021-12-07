@@ -3,13 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/merri/MPLABXProjects/final-project-tues-merrill-yi-wei.X/i2c.c</file>
-            <file>file:/C:/Users/merri/MPLABXProjects/final-project-tues-merrill-yi-wei.X/serial.c</file>
+            <file>file:/C:/Users/merri/MPLABXProjects/final-project-tues-merrill-yi-wei.X/dc_motor.c</file>
             <file>file:/C:/Users/merri/MPLABXProjects/final-project-tues-merrill-yi-wei.X/color.c</file>
             <file>file:/C:/Users/merri/MPLABXProjects/final-project-tues-merrill-yi-wei.X/color.h</file>
-            <file>file:/C:/Users/merri/MPLABXProjects/final-project-tues-merrill-yi-wei.X/interrupts.c</file>
             <file>file:/C:/Users/merri/MPLABXProjects/final-project-tues-merrill-yi-wei.X/main.c</file>
-            <file>file:/C:/Users/merri/MPLABXProjects/final-project-tues-merrill-yi-wei.X/i2c.h</file>
+            <file>file:/C:/Users/merri/MPLABXProjects/final-project-tues-merrill-yi-wei.X/interrupts.c</file>
+            <file>file:/C:/Users/merri/MPLABXProjects/final-project-tues-merrill-yi-wei.X/dc_motor.h</file>
         </group>
     </open-files>
 </project-private>

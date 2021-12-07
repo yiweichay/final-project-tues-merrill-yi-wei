@@ -26,6 +26,8 @@ void main(void){
     // setup pin for input (connected to left button)
     TRISFbits.TRISF2=1; //set TRIS value for pin (input)
     ANSELFbits.ANSELF2=0; //turn off analogue input on pin
+    TRISFbits.TRISF3=1; //set TRIS value for pin (input)
+    ANSELFbits.ANSELF3=0; //turn off analogue input on pin
     
     struct DC_motor motorL, motorR; 		//declare two DC_motor structures 
     unsigned int PWMcycle = 99;
@@ -62,55 +64,89 @@ void main(void){
     TRISDbits.TRISD7 = 0;
     LATDbits.LATD7 = 0;
     
+    // LED on board
+    TRISHbits.TRISH3 = 0;
+    LATHbits.LATH3 = 0;
+    
     char string[20];
+    char string0[20];
     char string1[20];
     char string2[20];
     char string3[20];
     float RedRatio, GreenRatio, BlueRatio;
+   
+    unsigned int cal = 0;
     
-    while(1){ 
+    // Calibration done against White Card
+    while(cal==0){
+        LATDbits.LATD7 = 1;
+        while (PORTFbits.RF2); //empty while loop (wait for button press)
+        if (!PORTFbits.RF2){
+            LATDbits.LATD7 = 0;
+            LATGbits.LATG1=1;   // White Light
+            LATAbits.LATA4=1;   
+            LATFbits.LATF7=0; 
+            calibrate(&test);
+            __delay_ms(300);
+            LATGbits.LATG1=0;   // White Light
+            LATAbits.LATA4=0;   
+            LATFbits.LATF7=0; 
+             __delay_ms(300);
+            }   
+        
+        sprintf(string0," AmbR:%d G:%d B:%d \r\n",test.ambientR,test.ambientG,test.ambientB);
+        TxBufferedString(string0);
+        sendTxBuf();
+        __delay_ms(50);
+        
+        LATHbits.LATH3 = 1;
+        while (PORTFbits.RF3);
+        if (!PORTFbits.RF3){
+            LATHbits.LATH3 = 0;
+            cal = 1;
+        }
+    }
+    
+    while(1){          
         unsigned int output;
-        //read_colours(&test); // For general light sensing
-        LATGbits.LATG1=1;   // White Light
+        LATGbits.LATG1=1;   // Using White Light
         LATAbits.LATA4=1;   
-        LATFbits.LATF7=1; 
+        LATFbits.LATF7=0; 
         read_colours(&test);
         output = determine_color_new(&test); 
         RedRatio = ((float)test.R) / ((float)test.C);
         GreenRatio = ((float)test.G) / ((float)test.C);
         BlueRatio = ((float)test.B) / ((float)test.C);
         __delay_ms(50);
+        LATGbits.LATG1=0;   //set initial output state
+        LATAbits.LATA4=0;   //set initial output state
+        LATFbits.LATF7=0;   //set initial output state
+        __delay_ms(50);
 
         unsigned int int_part1 = RedRatio/1;
         unsigned int frac_part1 =(RedRatio*1000)/1 - int_part1*1000;
-        sprintf(string1," R: %d.%03d ",int_part1, frac_part1);
+        sprintf(string1," R:%d.%03d ",int_part1, frac_part1);
         TxBufferedString(string1);
         sendTxBuf();
         __delay_ms(50);
         
         unsigned int int_part2 = GreenRatio/1;
         unsigned int frac_part2 =(GreenRatio*1000)/1 - int_part2*1000;
-        sprintf(string2," G: %d.%03d ",int_part2, frac_part2);
+        sprintf(string2," G:%d.%03d ",int_part2, frac_part2);
         TxBufferedString(string2);
         sendTxBuf();
         __delay_ms(50);
         
         unsigned int int_part3 = BlueRatio/1;
         unsigned int frac_part3 =(BlueRatio*1000)/1 - int_part3*1000;
-        sprintf(string3," B: %d.%03d ",int_part3, frac_part3);
+        sprintf(string3," B:%d.%03d ",int_part3, frac_part3);
         TxBufferedString(string3);
         sendTxBuf();
         __delay_ms(50);
         
-        sprintf(string," Colour: %d ",output);
+        sprintf(string," Color:%d \r\n",output);
         TxBufferedString(string);
         sendTxBuf();
         __delay_ms(50);
-    
-        LATGbits.LATG1=0;   //set initial output state
-        LATAbits.LATA4=0;   //set initial output state
-        LATFbits.LATF7=0;   //set initial output state
-        __delay_ms(500);
-        __delay_ms(500);
     }
 }

@@ -15,6 +15,10 @@
 #define _XTAL_FREQ 64000000 //note intrinsic _delay function is 62.5ns at 64,000,000Hz  
 
 struct RGB_val { 
+        unsigned int ambientC;    
+        unsigned int ambientR;  
+        unsigned int ambientG;
+        unsigned int ambientB;
         unsigned int C;
         unsigned int R;
         unsigned int G;
@@ -45,6 +49,7 @@ void read_colours(struct RGB_val *m);
 unsigned int determine_color1(struct RGB_val *m);
 unsigned int determine_color2(struct RGB_val *m);
 unsigned int determine_color3(struct RGB_val *m);
+void calibrate(struct RGB_val *m);
 unsigned int determine_color_new(struct RGB_val *m);
 
 #endif

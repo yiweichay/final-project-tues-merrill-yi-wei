@@ -24893,6 +24893,10 @@ void sendTxBuf(void);
 
 
 struct RGB_val {
+        unsigned int ambientC;
+        unsigned int ambientR;
+        unsigned int ambientG;
+        unsigned int ambientB;
         unsigned int C;
         unsigned int R;
         unsigned int G;
@@ -24923,6 +24927,7 @@ void read_colours(struct RGB_val *m);
 unsigned int determine_color1(struct RGB_val *m);
 unsigned int determine_color2(struct RGB_val *m);
 unsigned int determine_color3(struct RGB_val *m);
+void calibrate(struct RGB_val *m);
 unsigned int determine_color_new(struct RGB_val *m);
 # 12 "main.c" 2
 
@@ -24953,6 +24958,8 @@ void main(void){
 
     TRISFbits.TRISF2=1;
     ANSELFbits.ANSELF2=0;
+    TRISFbits.TRISF3=1;
+    ANSELFbits.ANSELF3=0;
 
     struct DC_motor motorL, motorR;
     unsigned int PWMcycle = 99;
@@ -24989,55 +24996,89 @@ void main(void){
     TRISDbits.TRISD7 = 0;
     LATDbits.LATD7 = 0;
 
+
+    TRISHbits.TRISH3 = 0;
+    LATHbits.LATH3 = 0;
+
     char string[20];
+    char string0[20];
     char string1[20];
     char string2[20];
     char string3[20];
     float RedRatio, GreenRatio, BlueRatio;
 
+    unsigned int cal = 0;
+
+
+    while(cal==0){
+        LATDbits.LATD7 = 1;
+        while (PORTFbits.RF2);
+        if (!PORTFbits.RF2){
+            LATDbits.LATD7 = 0;
+            LATGbits.LATG1=1;
+            LATAbits.LATA4=1;
+            LATFbits.LATF7=0;
+            calibrate(&test);
+            _delay((unsigned long)((300)*(64000000/4000.0)));
+            LATGbits.LATG1=0;
+            LATAbits.LATA4=0;
+            LATFbits.LATF7=0;
+             _delay((unsigned long)((300)*(64000000/4000.0)));
+            }
+
+        sprintf(string0," AmbR:%d G:%d B:%d \r\n",test.ambientR,test.ambientG,test.ambientB);
+        TxBufferedString(string0);
+        sendTxBuf();
+        _delay((unsigned long)((50)*(64000000/4000.0)));
+
+        LATHbits.LATH3 = 1;
+        while (PORTFbits.RF3);
+        if (!PORTFbits.RF3){
+            LATHbits.LATH3 = 0;
+            cal = 1;
+        }
+    }
+
     while(1){
         unsigned int output;
-
         LATGbits.LATG1=1;
         LATAbits.LATA4=1;
-        LATFbits.LATF7=1;
+        LATFbits.LATF7=0;
         read_colours(&test);
         output = determine_color_new(&test);
         RedRatio = ((float)test.R) / ((float)test.C);
         GreenRatio = ((float)test.G) / ((float)test.C);
         BlueRatio = ((float)test.B) / ((float)test.C);
         _delay((unsigned long)((50)*(64000000/4000.0)));
+        LATGbits.LATG1=0;
+        LATAbits.LATA4=0;
+        LATFbits.LATF7=0;
+        _delay((unsigned long)((50)*(64000000/4000.0)));
 
         unsigned int int_part1 = RedRatio/1;
         unsigned int frac_part1 =(RedRatio*1000)/1 - int_part1*1000;
-        sprintf(string1," R: %d.%03d ",int_part1, frac_part1);
+        sprintf(string1," R:%d.%03d ",int_part1, frac_part1);
         TxBufferedString(string1);
         sendTxBuf();
         _delay((unsigned long)((50)*(64000000/4000.0)));
 
         unsigned int int_part2 = GreenRatio/1;
         unsigned int frac_part2 =(GreenRatio*1000)/1 - int_part2*1000;
-        sprintf(string2," G: %d.%03d ",int_part2, frac_part2);
+        sprintf(string2," G:%d.%03d ",int_part2, frac_part2);
         TxBufferedString(string2);
         sendTxBuf();
         _delay((unsigned long)((50)*(64000000/4000.0)));
 
         unsigned int int_part3 = BlueRatio/1;
         unsigned int frac_part3 =(BlueRatio*1000)/1 - int_part3*1000;
-        sprintf(string3," B: %d.%03d ",int_part3, frac_part3);
+        sprintf(string3," B:%d.%03d ",int_part3, frac_part3);
         TxBufferedString(string3);
         sendTxBuf();
         _delay((unsigned long)((50)*(64000000/4000.0)));
 
-        sprintf(string," Colour: %d ",output);
+        sprintf(string," Color:%d \r\n",output);
         TxBufferedString(string);
         sendTxBuf();
         _delay((unsigned long)((50)*(64000000/4000.0)));
-
-        LATGbits.LATG1=0;
-        LATAbits.LATA4=0;
-        LATFbits.LATF7=0;
-        _delay((unsigned long)((500)*(64000000/4000.0)));
-        _delay((unsigned long)((500)*(64000000/4000.0)));
     }
 }

@@ -676,6 +676,8 @@
         <property key="periphComp5.gte" value="gt"/>
         <property key="periphComp6.gte" value="gt"/>
         <property key="poweroptions.powerenable" value="false"/>
+        <property key="programmerToGoFilePath"
+                  value="C:/Users/merri/MPLABXProjects/final-project-tues-merrill-yi-wei.X/debug/default/final-project-tues-merrill-yi-wei_ptg"/>
         <property key="programmerToGoImageName"
                   value="final-project-tues-merrill-yi-wei_ptg"/>
         <property key="programoptions.donoteraseauxmem" value="false"/>

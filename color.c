@@ -3,6 +3,7 @@
 #include "color.h"
 #include "i2c.h"
 #include "serial.h"
+#include "dc_motor.h"
 
 void color_click_init(void)
 {   
@@ -183,66 +184,73 @@ unsigned int isbtw(float num, float low, float high){
     else {return 0;}
 }
 
+void calibrate(struct RGB_val *m){
+    (m->ambientC) = color_read_Clear();
+    (m->ambientR) = color_read_Red();
+    (m->ambientG) = color_read_Green();
+    (m->ambientB) = color_read_Blue();
+}
+
 unsigned int determine_color_new(struct RGB_val *m){         
     float RedRatio, GreenRatio, BlueRatio;
     unsigned int out = 9;
-    RedRatio = (float)m->R / (float)m->C;
+    
+    // White ratio would be 1 for everything 
+    RedRatio = (float)m->R / (float)m->C; 
     GreenRatio = (float)m->G / (float)m->C;
     BlueRatio = (float)m->B / (float)m->C;
+    // Normalise against white? but what for 
     
-    // Red - will output 0 (good)
-    if (isbtw(RedRatio,0.700,0.800)==1 && isbtw(GreenRatio,0.180,0.210)==1 && isbtw(BlueRatio,0.180,0.199)==1)
+    // Red - will output 0 
+    if (isbtw(RedRatio,0.795,0.870)==1 && isbtw(GreenRatio,0.140,0.169)==1 && isbtw(BlueRatio,0.185,0.210)==1)
     {out = 0;} 
     
-    // Green - will output 1 (good)
-    if (isbtw(RedRatio,0.450,0.490)==1 && isbtw(GreenRatio,0.330,0.365)==1 && isbtw(BlueRatio,0.220,0.240)==1)
+    // Green - will output 1 
+    if (isbtw(RedRatio,0.450,0.525)==1 && isbtw(GreenRatio,0.325,0.380)==1 && isbtw(BlueRatio,0.240,0.270)==1)
     {out = 1;} 
     
-    // Blue - will output 2 (good)
-    if (isbtw(RedRatio,0.410,0.460)==1 && isbtw(GreenRatio,0.313,0.335)==1 && isbtw(BlueRatio,0.270,0.295)==1)
+    // Blue - will output 2 
+    if (isbtw(RedRatio,0.400,0.479)==1 && isbtw(GreenRatio,0.305,0.340)==1 && isbtw(BlueRatio,0.305,0.345)==1)
     {out = 2;}
     
     // Yellow - will output 3 
-    if (isbtw(RedRatio,0.610,0.625)==1 && isbtw(GreenRatio,0.265,0.279)==1 && isbtw(BlueRatio,0.160,0.176)==1)
+    if (isbtw(RedRatio,0.645,0.680)==1 && isbtw(GreenRatio,0.250,0.275)==1 && isbtw(BlueRatio,0.175,0.190)==1)
     {out = 3;}
    
      // Pink - will output 4
-    if (isbtw(RedRatio,0.625,0.646)==1 && isbtw(GreenRatio,0.230,0.240)==1 && isbtw(BlueRatio,0.200,0.209)==1)
+    if (isbtw(RedRatio,0.650,0.679)==1 && isbtw(GreenRatio,0.220,0.235)==1 && isbtw(BlueRatio,0.215,0.235)==1)
     {out = 4;}
     
      // Orange - will output 5
-    if (isbtw(RedRatio,0.715,0.755)==1 && isbtw(GreenRatio,0.185,0.215)==1 && isbtw(BlueRatio,0.172,0.181)==1)
+    if (isbtw(RedRatio,0.795,0.820)==1 && isbtw(GreenRatio,0.165,0.183)==1 && isbtw(BlueRatio,0.175,0.191)==1)
     {out = 5;}
     
-     // Light Blue - will output 6 (Good)
-    if (isbtw(RedRatio,0.485,0.502)==1 && isbtw(GreenRatio,0.305,0.315)==1 && isbtw(BlueRatio,0.245,0.257)==1)
+     // Light Blue - will output 6 
+    if (isbtw(RedRatio,0.500,0.550)==1 && isbtw(GreenRatio,0.285,0.310)==1 && isbtw(BlueRatio,0.259,0.280)==1)
     {out = 6;}
     
      // White - will output 7
-    if (isbtw(RedRatio,0.545,0.555)==1 && isbtw(GreenRatio,0.280,0.286)==1 && isbtw(BlueRatio,0.225,0.230)==1)
+    if (isbtw(RedRatio,0.565,0.605)==1 && isbtw(GreenRatio,0.259,0.285)==1 && isbtw(BlueRatio,0.238,0.255)==1)
     {out = 7;}
     
-     // Black - will output 8
-    if (isbtw(RedRatio,0.548,0.560)==1 && isbtw(GreenRatio,0.265,0.279)==1 && isbtw(BlueRatio,0.202,0.212)==1)
+     // Black - will output 8 (FOR RIGHT IS WEAK)
+    if (isbtw(RedRatio,0.581,0.606)==1 && isbtw(GreenRatio,0.240,0.276)==1 && isbtw(BlueRatio,0.200,0.245)==1)
     {out = 8;}
     
+    // Bottom R: 570-590 G: 0.250-0.270 B: 0.210-230
+    // Right R: G: B:
+    // Top R: G: B:
+    // Left R: G: B: 
+    
     return out;    
-//    unsigned int int_part1 = RedRatio;
-//    unsigned int frac_part1 =(RedRatio*1000) - int_part1*1000;
-//    sprintf(string1," R: %d.%03d",int_part1, frac_part1);
-//    TxBufferedString(string1);
-//    sendTxBuf();
-//    
-//    unsigned int int_part2 = GreenRatio;
-//    unsigned int frac_part2 =(GreenRatio*1000) - int_part2*1000;
-//    sprintf(string2," G: %d.%03d",int_part2, frac_part2);
-//    TxBufferedString(string2);
-//    sendTxBuf();
-//    
-//    unsigned int int_part3 = BlueRatio;
-//    unsigned int frac_part3 =(BlueRatio*1000) - int_part3*1000;
-//    sprintf(string3," B: %d.%03d",int_part3, frac_part3);
-//    TxBufferedString(string3);
-//    sendTxBuf();
-//    __delay_ms(500);
 }
+
+// Red: R: 0.700,0.800      G: 0.180,0.210      B:0.180,0.199
+// Green: R: 0.700,0.800      G: 0.313,0.335      B:0.220,0.240
+// Blue: R: 0.410,0.460      G: 0.180,0.210      B:0.180,0.199
+// Yellow: R: 0.610,0.625      G: 0.265,0.279     B:0.160,0.176
+// Pink: R: 0.625,0.646      G: 0.230,0.240      B:0.200,0.209
+// Orange: R: 0.715,0.755      G: 0.185,0.215      B:0.172,0.181
+// Light Blue: R: 0.485,0.502      G: 0.305,0.315      B:0.245,0.257
+// White: R: 0.545,0.555      G: 0.280,0.286      B:0.225,0.230
+// Black: R: 0.548,0.560      G: 0.265,0.279      B:0.202,0.212

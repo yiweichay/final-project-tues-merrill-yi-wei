@@ -79,7 +79,7 @@ void turnLeft(struct DC_motor *mL, struct DC_motor *mR)
     (mR->direction) = 1;
     setMotorPWM(mL);
     setMotorPWM(mR);
-    for (unsigned int i = 0; i < 80; ++i){ // Dont want too much power
+    for (unsigned int i = 0; i < 50; ++i){ // Dont want too much power
         (mL->power) += 1;
         (mR->power) += 1;
         setMotorPWM(mL);
@@ -95,7 +95,7 @@ void turnRight(struct DC_motor *mL, struct DC_motor *mR)
     (mR->direction) = 0;
     setMotorPWM(mL);
     setMotorPWM(mR);
-    for (unsigned int i = 0; i < 80; ++i){
+    for (unsigned int i = 0; i < 50; ++i){
         (mL->power) += 1;
         (mR->power) += 1;
         setMotorPWM(mL);
