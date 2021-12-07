@@ -17,9 +17,12 @@
 
 #define _XTAL_FREQ 64000000 //note intrinsic _delay function is 62.5ns at 64,000,000Hz 
 
-int movements = 0;
-int timerArray[30] = {};
-int movementArray[30] = {}; //define overall empty array
+//initialise variables
+//static volatile int movements = 0;
+//int timerArray[30] = {};
+//int movementArray[30] = {}; //define overall empty array
+int PWMcycle = 99;
+
 
 //void __interrupt(high_priority) HighISR()
 //{
@@ -36,7 +39,7 @@ int movementArray[30] = {}; //define overall empty array
 //}
 
 void main(void){    
-    
+    //initialise functions
     initDCmotorsPWM(PWMcycle);
     initUSART4();
     Interrupts_init();
@@ -45,11 +48,6 @@ void main(void){
     __delay_ms(500);
     color_click_init();
     
-    int PWMcycle = 99;
-    int movementArray[60] = {} //defining an array for the movement count
-    //movementArray[count] = color number i.e 0-9]
-    unsigned int count = 0;
-    char colorRead;
     char string[20];
     
     struct RGB_val colorInput;
@@ -70,15 +68,6 @@ void main(void){
     motorR.dir_pin=6; 						//pin RG6 controls direction
     motorR.PWMperiod=PWMcycle;
     
-    
-    //initialise empty array/list (search about vectors)
-    //timer to determine how long the car goes for
-    // count ++
-    //everytime it reaches a new card, store the instruction and timer value in an array and check timer value to see how long its been since previous instruction
-    //reset timer
-    //when reads black card/ wonders away -> turn 180 degrees and read perform the array
-    //count --
-    
     // setup pin for input (connected to left button)
     TRISFbits.TRISF2=1; //set TRIS value for pin (input)
     ANSELFbits.ANSELF2=0; //turn off analogue input on pin 
@@ -86,6 +75,12 @@ void main(void){
     LATDbits.LATD7 = 0;
     TRISDbits.TRISD7 =0;
     
+    //code to test
+//    int movements = 4;
+//    int timerArray[] = {2, 4, 2, 1};
+//    int movementArray[] = {1, 9, 0, 2};
+//    Black(movements, timerArray, movementArray);
+         
     while(1){
         // send values to the serial to read the color of the cards
         // Receiving data
@@ -106,12 +101,12 @@ void main(void){
             colorInput.C = color_read_Clear();
             float temp = determine_color_new(&colorInput);
             
-            unsigned int int_part;
-            unsigned int frac_part;
-            int_part = temp/1;
-            frac_part =(temp*1000)/1 - int_part*1000;
-            
-            sprintf(string,"%d.%03d",int_part, frac_part);
+//            unsigned int int_part;
+//            unsigned int frac_part;
+//            int_part = temp/1;
+//            frac_part =(temp*1000)/1 - int_part*1000;
+
+            sprintf(string,"%d.%02d",timerArray);
             TxBufferedString(string);
             sendTxBuf();
             //LATDbits.LATD7 = !LATDbits.LATD7 ;

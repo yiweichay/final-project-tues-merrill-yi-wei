@@ -45,5 +45,7 @@ struct RGB_val {
 
 void RGB_init (void);
 float determine_color_new(struct RGB_val *m);
+void Black(int movements, int timerArray[], int movementArray[]);
+unsigned int updateMovementCount(int movementCode);
 
 #endif

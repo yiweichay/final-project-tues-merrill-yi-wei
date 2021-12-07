@@ -6,6 +6,9 @@
 
 
 extern struct DC_motor motorL, motorR;
+//extern int movements = 0;
+//extern int timerArray[30] = {};
+//extern int movementArray[30] = {};
 
 void color_click_init(void)
 {   
@@ -150,7 +153,8 @@ float determine_color_new(struct RGB_val *m){
 //for example, when it reaches black, movementArray[10]
 //what value is in the array if there are more array sizes than movements?
 //need to store the time taken for forward movement 
-void White()
+
+void Black(int movements, int timerArray[], int movementArray[])
 {
     stop(&motorL, &motorR);
     turnRight180(&motorL, &motorR);
@@ -173,6 +177,7 @@ void White()
     }
 }
 
+/*
 //function to keep track of time taken for each movement 
 unsigned int updateMovementCount(int movementCode)
 {
@@ -183,8 +188,10 @@ unsigned int updateMovementCount(int movementCode)
     movements++;
     TMR0H = 0;
     TMR0L = 0;
+    return timerArray[movements];
+    //return movementArray;
 }
-
+*/
 
 
 

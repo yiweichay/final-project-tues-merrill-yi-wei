@@ -167,17 +167,21 @@ void reverseTurnRight90(struct DC_motor *mL, struct DC_motor *mR)
     (*mR).direction = 0;
     (*mL).power = 50;
     (*mR).power = 50;
+    setMotorPWM(mL);
+    setMotorPWM(mR);
     __delay_ms(300);
-    turnRight90(&motorL, &motorR);
+    turnRight90(mL, mR);
 }
 
 //function to make robot reverse 1 square and turn left 90 degrees
-void reverseTurnRight90(struct DC_motor *mL, struct DC_motor *mR)
+void reverseTurnLeft90(struct DC_motor *mL, struct DC_motor *mR)
 {
     (*mL).direction = 0;
     (*mR).direction = 0;
     (*mL).power = 50;
     (*mR).power = 50;
+    setMotorPWM(mL);
+    setMotorPWM(mR);
     __delay_ms(300);
-    turnLeft90(&motorL, &motorR);
+    turnLeft90(mL, mR);
 }
