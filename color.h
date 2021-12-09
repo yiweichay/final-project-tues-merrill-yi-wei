@@ -3,6 +3,7 @@
 
 #include <xc.h>
 #include <math.h>
+#include "dc_motor.h"
 
 #define _XTAL_FREQ 64000000 //note intrinsic _delay function is 62.5ns at 64,000,000Hz 
 
@@ -45,7 +46,7 @@ struct RGB_val {
 
 void RGB_init (void);
 float determine_color_new(struct RGB_val *m);
-void Black(int movements, int timerArray[], int movementArray[]);
+void Black(struct DC_motor *mL, struct DC_motor *mR);
 unsigned int updateMovementCount(int movementCode);
 
 #endif

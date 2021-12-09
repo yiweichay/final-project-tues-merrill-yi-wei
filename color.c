@@ -6,9 +6,13 @@
 
 
 extern struct DC_motor motorL, motorR;
-//extern int movements = 0;
-//extern int timerArray[30] = {};
-//extern int movementArray[30] = {};
+//to test the code
+//int movements = 4;
+//int timerArray[] = {400, 1024, 512, 256};
+//int movementArray[] = {1, 9, 0, 2};
+static volatile int movements = 0;
+int timerArray[] = {};
+int movementArray[] = {};
 
 void color_click_init(void)
 {   
@@ -154,30 +158,32 @@ float determine_color_new(struct RGB_val *m){
 //what value is in the array if there are more array sizes than movements?
 //need to store the time taken for forward movement 
 
-void Black(int movements, int timerArray[], int movementArray[])
+void Black(struct DC_motor *mL, struct DC_motor *mR)
 {
-    stop(&motorL, &motorR);
-    turnRight180(&motorL, &motorR);
+    stop(mL, mR);
+    turnRight180(mL, mR);
+    __delay_ms(1000);
     for (int i=0; i<movements; i++){
-        if (movementArray[movements-i] == 0){turnLeft90(&motorL, &motorR);}
-        else if (movementArray[movements-i] == 1){turnRight90(&motorL, &motorR);}
-        else if (movementArray[movements-i] == 2){turnRight180(&motorL, &motorR);}
-        else if (movementArray[movements-i] == 3){reverseTurnLeft90(&motorL, &motorR);}
-        else if (movementArray[movements-i] == 4){reverseTurnRight90(&motorL, &motorR);}
-        else if (movementArray[movements-i] == 5){turnLeft135(&motorL, &motorR);}
-        else if (movementArray[movements-i] == 6){turnRight135(&motorL, &motorR);}
-        else if (movementArray[movements-i] == 9){forward(&motorL, &motorR);}
+        if (movementArray[movements-i-1] == 0){turnLeft90(mL, mR);}
+        else if (movementArray[movements-i-1] == 1){turnRight90(mL, mR);}
+        else if (movementArray[movements-i-1] == 2){turnRight180(mL, mR);}
+        else if (movementArray[movements-i-1] == 3){reverseTurnLeft90(mL, mR);}
+        else if (movementArray[movements-i-1] == 4){reverseTurnRight90(mL, mR);}
+        else if (movementArray[movements-i-1] == 5){turnLeft135(mL, mR);}
+        else if (movementArray[movements-i-1] == 6){turnRight135(mL, mR);}
+        else if (movementArray[movements-i-1] == 9){forward(mL, mR);}
         int tempTimerVal = 0;
         TMR0H = 0;
         TMR0L = 0;
-        while(tempTimerVal < timerArray[movements-i]){
+        while(tempTimerVal < timerArray[movements-i-1]){
             tempTimerVal = TMR0L;
             tempTimerVal += (TMR0H << 8);
         }
     }
+    stop(mL, mR);
 }
 
-/*
+
 //function to keep track of time taken for each movement 
 unsigned int updateMovementCount(int movementCode)
 {
@@ -188,10 +194,10 @@ unsigned int updateMovementCount(int movementCode)
     movements++;
     TMR0H = 0;
     TMR0L = 0;
-    return timerArray[movements];
+    //return timerArray[movements];
     //return movementArray;
 }
-*/
+
 
 
 

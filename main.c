@@ -21,25 +21,11 @@
 //static volatile int movements = 0;
 //int timerArray[30] = {};
 //int movementArray[30] = {}; //define overall empty array
-int PWMcycle = 99;
 
-
-//void __interrupt(high_priority) HighISR()
-//{
-//    //add your ISR code here i.e. check the flag, do something (i.e. toggle an LED), clear the flag...
-//    if(PIR0bits.TMR0IF){
-//        sec++;
-//        if (LATHbits.LATH3 = 1){//if reaches next card, turn on the LED RH3
-//            timerCount++;
-//            timerArray[timerCount] == sec; //timer element = current second
-//            sec = 0;
-//        }
-//        PIR0bits.TMR0IF = 0; // clearing the flag
-//    }
-//}
 
 void main(void){    
     //initialise functions
+    int PWMcycle = 99;
     initDCmotorsPWM(PWMcycle);
     initUSART4();
     Interrupts_init();
@@ -76,10 +62,7 @@ void main(void){
     TRISDbits.TRISD7 =0;
     
     //code to test
-//    int movements = 4;
-//    int timerArray[] = {2, 4, 2, 1};
-//    int movementArray[] = {1, 9, 0, 2};
-//    Black(movements, timerArray, movementArray);
+    Black(&motorL, &motorR);
          
     while(1){
         // send values to the serial to read the color of the cards
@@ -106,7 +89,7 @@ void main(void){
 //            int_part = temp/1;
 //            frac_part =(temp*1000)/1 - int_part*1000;
 
-            sprintf(string,"%d.%02d",timerArray);
+            //sprintf(string,"%d.%02d",timerArray);
             TxBufferedString(string);
             sendTxBuf();
             //LATDbits.LATD7 = !LATDbits.LATD7 ;
