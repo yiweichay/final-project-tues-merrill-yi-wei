@@ -47,7 +47,6 @@ void main(void){
     
     //definition of RGB structure
     struct RGB_val test;
-    test.C = 0;
     test.R = 0;
     test.G = 0;
     test.B = 0;
@@ -68,13 +67,17 @@ void main(void){
     TRISHbits.TRISH3 = 0;
     LATHbits.LATH3 = 0;
     
-    char string[20];
-    char string0[20];
-    char string1[20];
-    char string2[20];
-    char string3[20];
-    float RedRatio, GreenRatio, BlueRatio;
+    char string[30];
+    char string0[30];
+    char string1[30];
+    char string2[30];
+    char string3[30];
+    unsigned int RedRatio, GreenRatio, BlueRatio;
    
+    LATGbits.LATG1=1;   // White Light
+    LATAbits.LATA4=1;   
+    LATFbits.LATF7=1; 
+    
     unsigned int cal = 0;
     
     // Calibration done against White Card
@@ -83,19 +86,25 @@ void main(void){
         while (PORTFbits.RF2); //empty while loop (wait for button press)
         if (!PORTFbits.RF2){
             LATDbits.LATD7 = 0;
-            LATGbits.LATG1=1;   // White Light
-            LATAbits.LATA4=1;   
-            LATFbits.LATF7=0; 
-            calibrate(&test);
+            calibrateW(&test);
             __delay_ms(300);
-            LATGbits.LATG1=0;   // White Light
-            LATAbits.LATA4=0;   
-            LATFbits.LATF7=0; 
-             __delay_ms(300);
             }   
         
-        sprintf(string0," AmbR:%d G:%d B:%d \r\n",test.ambientR,test.ambientG,test.ambientB);
+        LATDbits.LATD7 = 1;
+        while (PORTFbits.RF2); //empty while loop (wait for button press)
+        if (!PORTFbits.RF2){
+            LATDbits.LATD7 = 0;
+            calibrateB(&test);
+            __delay_ms(300);
+            }   
+        
+        sprintf(string0," W R:%d G:%d B:%d \r\n",test.whiteR,test.whiteG,test.whiteB);
         TxBufferedString(string0);
+        sendTxBuf();
+        __delay_ms(50);
+        
+        sprintf(string," B R:%d G:%d B:%d \r\n",test.blackR,test.blackG,test.blackB);
+        TxBufferedString(string);
         sendTxBuf();
         __delay_ms(50);
         
@@ -109,40 +118,26 @@ void main(void){
     
     while(1){          
         unsigned int output;
-        LATGbits.LATG1=1;   // Using White Light
-        LATAbits.LATA4=1;   
-        LATFbits.LATF7=0; 
         read_colours(&test);
         output = determine_color_new(&test); 
-        RedRatio = ((float)test.R) / ((float)test.C);
-        GreenRatio = ((float)test.G) / ((float)test.C);
-        BlueRatio = ((float)test.B) / ((float)test.C);
-        __delay_ms(50);
-        LATGbits.LATG1=0;   //set initial output state
-        LATAbits.LATA4=0;   //set initial output state
-        LATFbits.LATF7=0;   //set initial output state
-        __delay_ms(50);
-
-        unsigned int int_part1 = RedRatio/1;
-        unsigned int frac_part1 =(RedRatio*1000)/1 - int_part1*1000;
-        sprintf(string1," R:%d.%03d ",int_part1, frac_part1);
+        RedRatio = ((float)(test.R - test.blackR) / (float)(test.whiteR - test.blackR)) * 10000;
+        GreenRatio = ((float)(test.G - test.blackG) / (float)(test.whiteG - test.blackG)) * 10000;
+        BlueRatio = ((float)(test.B - test.blackB) / (float)(test.whiteB - test.blackB)) * 10000;
+        
+        sprintf(string1," R:%d ",RedRatio);
         TxBufferedString(string1);
         sendTxBuf();
-        __delay_ms(50);
+        __delay_ms(150);
         
-        unsigned int int_part2 = GreenRatio/1;
-        unsigned int frac_part2 =(GreenRatio*1000)/1 - int_part2*1000;
-        sprintf(string2," G:%d.%03d ",int_part2, frac_part2);
+        sprintf(string2," G:%d ",GreenRatio);
         TxBufferedString(string2);
         sendTxBuf();
-        __delay_ms(50);
-        
-        unsigned int int_part3 = BlueRatio/1;
-        unsigned int frac_part3 =(BlueRatio*1000)/1 - int_part3*1000;
-        sprintf(string3," B:%d.%03d ",int_part3, frac_part3);
+        __delay_ms(150);
+
+        sprintf(string3," B:%d ",BlueRatio);
         TxBufferedString(string3);
         sendTxBuf();
-        __delay_ms(50);
+        __delay_ms(150);
         
         sprintf(string," Color:%d \r\n",output);
         TxBufferedString(string);

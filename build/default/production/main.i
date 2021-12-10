@@ -24358,7 +24358,10 @@ void anticlockwisesq(struct DC_motor *mL, struct DC_motor *mR);
 # 11 "main.c" 2
 
 # 1 "./color.h" 1
-# 11 "./color.h"
+
+
+
+
 # 1 "C:\\Program Files\\Microchip\\xc8\\v2.32\\pic\\include\\c99\\math.h" 1 3
 # 10 "C:\\Program Files\\Microchip\\xc8\\v2.32\\pic\\include\\c99\\math.h" 3
 # 1 "C:\\Program Files\\Microchip\\xc8\\v2.32\\pic\\include\\c99\\stdint.h" 1 3
@@ -24822,7 +24825,7 @@ double jn(int, double);
 double y0(double);
 double y1(double);
 double yn(int, double);
-# 11 "./color.h" 2
+# 5 "./color.h" 2
 
 # 1 "./i2c.h" 1
 # 13 "./i2c.h"
@@ -24857,7 +24860,7 @@ void I2C_2_Master_Write(unsigned char data_byte);
 
 
 unsigned char I2C_2_Master_Read(unsigned char ack);
-# 12 "./color.h" 2
+# 6 "./color.h" 2
 
 # 1 "./serial.h" 1
 # 13 "./serial.h"
@@ -24887,17 +24890,18 @@ void putCharToTxBuf(char byte);
 char isDataInTxBuf (void);
 void TxBufferedString(char *string);
 void sendTxBuf(void);
-# 13 "./color.h" 2
+# 7 "./color.h" 2
 
 
 
 
 struct RGB_val {
-        unsigned int ambientC;
-        unsigned int ambientR;
-        unsigned int ambientG;
-        unsigned int ambientB;
-        unsigned int C;
+        unsigned int blackR;
+        unsigned int blackG;
+        unsigned int blackB;
+        unsigned int whiteR;
+        unsigned int whiteG;
+        unsigned int whiteB;
         unsigned int R;
         unsigned int G;
         unsigned int B;
@@ -24919,15 +24923,13 @@ void color_writetoaddr(char address, char value);
 
 
 
-unsigned int color_read_Clear(void);
 unsigned int color_read_Red(void);
 unsigned int color_read_Green(void);
 unsigned int color_read_Blue(void);
 void read_colours(struct RGB_val *m);
-unsigned int determine_color1(struct RGB_val *m);
-unsigned int determine_color2(struct RGB_val *m);
-unsigned int determine_color3(struct RGB_val *m);
-void calibrate(struct RGB_val *m);
+unsigned int isbtw(float num, float low, float high);
+void calibrateW(struct RGB_val *m);
+void calibrateB(struct RGB_val *m);
 unsigned int determine_color_new(struct RGB_val *m);
 # 12 "main.c" 2
 
@@ -24979,7 +24981,6 @@ void main(void){
 
 
     struct RGB_val test;
-    test.C = 0;
     test.R = 0;
     test.G = 0;
     test.B = 0;
@@ -25000,12 +25001,16 @@ void main(void){
     TRISHbits.TRISH3 = 0;
     LATHbits.LATH3 = 0;
 
-    char string[20];
-    char string0[20];
-    char string1[20];
-    char string2[20];
-    char string3[20];
-    float RedRatio, GreenRatio, BlueRatio;
+    char string[30];
+    char string0[30];
+    char string1[30];
+    char string2[30];
+    char string3[30];
+    unsigned int RedRatio, GreenRatio, BlueRatio;
+
+    LATGbits.LATG1=1;
+    LATAbits.LATA4=1;
+    LATFbits.LATF7=1;
 
     unsigned int cal = 0;
 
@@ -25015,19 +25020,25 @@ void main(void){
         while (PORTFbits.RF2);
         if (!PORTFbits.RF2){
             LATDbits.LATD7 = 0;
-            LATGbits.LATG1=1;
-            LATAbits.LATA4=1;
-            LATFbits.LATF7=0;
-            calibrate(&test);
+            calibrateW(&test);
             _delay((unsigned long)((300)*(64000000/4000.0)));
-            LATGbits.LATG1=0;
-            LATAbits.LATA4=0;
-            LATFbits.LATF7=0;
-             _delay((unsigned long)((300)*(64000000/4000.0)));
             }
 
-        sprintf(string0," AmbR:%d G:%d B:%d \r\n",test.ambientR,test.ambientG,test.ambientB);
+        LATDbits.LATD7 = 1;
+        while (PORTFbits.RF2);
+        if (!PORTFbits.RF2){
+            LATDbits.LATD7 = 0;
+            calibrateB(&test);
+            _delay((unsigned long)((300)*(64000000/4000.0)));
+            }
+
+        sprintf(string0," W R:%d G:%d B:%d \r\n",test.whiteR,test.whiteG,test.whiteB);
         TxBufferedString(string0);
+        sendTxBuf();
+        _delay((unsigned long)((50)*(64000000/4000.0)));
+
+        sprintf(string," B R:%d G:%d B:%d \r\n",test.blackR,test.blackG,test.blackB);
+        TxBufferedString(string);
         sendTxBuf();
         _delay((unsigned long)((50)*(64000000/4000.0)));
 
@@ -25041,40 +25052,26 @@ void main(void){
 
     while(1){
         unsigned int output;
-        LATGbits.LATG1=1;
-        LATAbits.LATA4=1;
-        LATFbits.LATF7=0;
         read_colours(&test);
         output = determine_color_new(&test);
-        RedRatio = ((float)test.R) / ((float)test.C);
-        GreenRatio = ((float)test.G) / ((float)test.C);
-        BlueRatio = ((float)test.B) / ((float)test.C);
-        _delay((unsigned long)((50)*(64000000/4000.0)));
-        LATGbits.LATG1=0;
-        LATAbits.LATA4=0;
-        LATFbits.LATF7=0;
-        _delay((unsigned long)((50)*(64000000/4000.0)));
+        RedRatio = ((float)(test.R - test.blackR) / (float)(test.whiteR - test.blackR)) * 10000;
+        GreenRatio = ((float)(test.G - test.blackG) / (float)(test.whiteG - test.blackG)) * 10000;
+        BlueRatio = ((float)(test.B - test.blackB) / (float)(test.whiteB - test.blackB)) * 10000;
 
-        unsigned int int_part1 = RedRatio/1;
-        unsigned int frac_part1 =(RedRatio*1000)/1 - int_part1*1000;
-        sprintf(string1," R:%d.%03d ",int_part1, frac_part1);
+        sprintf(string1," R:%d ",RedRatio);
         TxBufferedString(string1);
         sendTxBuf();
-        _delay((unsigned long)((50)*(64000000/4000.0)));
+        _delay((unsigned long)((150)*(64000000/4000.0)));
 
-        unsigned int int_part2 = GreenRatio/1;
-        unsigned int frac_part2 =(GreenRatio*1000)/1 - int_part2*1000;
-        sprintf(string2," G:%d.%03d ",int_part2, frac_part2);
+        sprintf(string2," G:%d ",GreenRatio);
         TxBufferedString(string2);
         sendTxBuf();
-        _delay((unsigned long)((50)*(64000000/4000.0)));
+        _delay((unsigned long)((150)*(64000000/4000.0)));
 
-        unsigned int int_part3 = BlueRatio/1;
-        unsigned int frac_part3 =(BlueRatio*1000)/1 - int_part3*1000;
-        sprintf(string3," B:%d.%03d ",int_part3, frac_part3);
+        sprintf(string3," B:%d ",BlueRatio);
         TxBufferedString(string3);
         sendTxBuf();
-        _delay((unsigned long)((50)*(64000000/4000.0)));
+        _delay((unsigned long)((150)*(64000000/4000.0)));
 
         sprintf(string," Color:%d \r\n",output);
         TxBufferedString(string);

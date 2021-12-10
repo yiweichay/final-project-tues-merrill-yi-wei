@@ -24643,56 +24643,7 @@ double yn(int, double);
 # 2 "color.c" 2
 
 # 1 "./color.h" 1
-
-
-
-
-
-
-
-
-struct RGB_val {
-        unsigned int R;
-        unsigned int G;
-        unsigned int B;
-        unsigned int t1r;
-        unsigned int t1g;
-        unsigned int t1b;
-        unsigned int t2r;
-        unsigned int t2g;
-        unsigned int t2b;
-        unsigned int t3r;
-        unsigned int t3g;
-        unsigned int t3b;
-    };
-
-
-
-
-void color_click_init(void);
-
-
-
-
-
-
-void color_writetoaddr(char address, char value);
-
-
-
-
-
-unsigned int color_read_Red(void);
-unsigned int color_read_Green(void);
-unsigned int color_read_Blue(void);
-void read_colours(struct RGB_val *m);
-void read_color_sensor(struct RGB_val *m);
-
-unsigned int determine_color1(struct RGB_val *m);
-unsigned int determine_color2(struct RGB_val *m);
-unsigned int determine_color3(struct RGB_val *m);
-# 3 "color.c" 2
-
+# 12 "./color.h"
 # 1 "./i2c.h" 1
 # 13 "./i2c.h"
 void I2C_2_Master_Init(void);
@@ -24726,7 +24677,118 @@ void I2C_2_Master_Write(unsigned char data_byte);
 
 
 unsigned char I2C_2_Master_Read(unsigned char ack);
-# 4 "color.c" 2
+# 12 "./color.h" 2
+
+# 1 "./serial.h" 1
+# 13 "./serial.h"
+volatile char EUSART4RXbuf[20];
+volatile char RxBufWriteCnt=0;
+volatile char RxBufReadCnt=0;
+
+volatile char EUSART4TXbuf[60];
+volatile char TxBufWriteCnt=0;
+volatile char TxBufReadCnt=0;
+
+
+
+void initUSART4(void);
+char getCharSerial4(void);
+void sendCharSerial4(char charToSend);
+void sendStringSerial4(char *string);
+
+
+char getCharFromRxBuf(void);
+void putCharToRxBuf(char byte);
+char isDataInRxBuf (void);
+
+
+char getCharFromTxBuf(void);
+void putCharToTxBuf(char byte);
+char isDataInTxBuf (void);
+void TxBufferedString(char *string);
+void sendTxBuf(void);
+# 13 "./color.h" 2
+
+
+
+
+struct RGB_val {
+        unsigned int blackC;
+        unsigned int blackR;
+        unsigned int blackG;
+        unsigned int blackB;
+        unsigned int whiteC;
+        unsigned int whiteR;
+        unsigned int whiteG;
+        unsigned int whiteB;
+        unsigned int C;
+        unsigned int R;
+        unsigned int G;
+        unsigned int B;
+    };
+
+
+
+
+void color_click_init(void);
+
+
+
+
+
+
+void color_writetoaddr(char address, char value);
+
+
+
+
+
+unsigned int color_read_Clear(void);
+unsigned int color_read_Red(void);
+unsigned int color_read_Green(void);
+unsigned int color_read_Blue(void);
+void read_colours(struct RGB_val *m);
+unsigned int determine_color1(struct RGB_val *m);
+unsigned int determine_color2(struct RGB_val *m);
+unsigned int determine_color3(struct RGB_val *m);
+unsigned int isbtw(float num, float low, float high);
+void calibrateW(struct RGB_val *m);
+void calibrateB(struct RGB_val *m);
+unsigned int determine_color_new(struct RGB_val *m);
+# 3 "color.c" 2
+
+
+
+# 1 "./dc_motor.h" 1
+
+
+
+
+
+
+
+struct DC_motor {
+    char power;
+    char direction;
+    unsigned char *dutyHighByte;
+    unsigned char *dir_LAT;
+    char dir_pin;
+    int PWMperiod;
+};
+
+
+void initDCmotorsPWM(int PWMperiod);
+void setMotorPWM(struct DC_motor *m);
+void stop(struct DC_motor *mL, struct DC_motor *mR);
+void turnLeft(struct DC_motor *mL, struct DC_motor *mR);
+void turnRight(struct DC_motor *mL, struct DC_motor *mR);
+void fullSpeedAhead(struct DC_motor *mL, struct DC_motor *mR);
+void turn90Left(struct DC_motor *mL, struct DC_motor *mR);
+void turn90Right(struct DC_motor *mL, struct DC_motor *mR);
+void turn180Right(struct DC_motor *mL, struct DC_motor *mR);
+void clockwisesq(struct DC_motor *mL, struct DC_motor *mR);
+void anticlockwisesq(struct DC_motor *mL, struct DC_motor *mR);
+# 6 "color.c" 2
 
 
 void color_click_init(void)
@@ -24751,6 +24813,19 @@ void color_writetoaddr(char address, char value){
     I2C_2_Master_Write(0x80 | address);
     I2C_2_Master_Write(value);
     I2C_2_Master_Stop();
+}
+
+unsigned int color_read_Clear(void){
+    unsigned int tmp;
+    I2C_2_Master_Start();
+    I2C_2_Master_Write(0x52 | 0x00);
+ I2C_2_Master_Write(0xA0 | 0x14);
+ I2C_2_Master_RepStart();
+ I2C_2_Master_Write(0x52 | 0x01);
+ tmp=I2C_2_Master_Read(1);
+ tmp=tmp | (I2C_2_Master_Read(0)<<8);
+    I2C_2_Master_Stop();
+    return tmp;
 }
 
 unsigned int color_read_Red(void)
@@ -24794,54 +24869,12 @@ unsigned int color_read_Blue(void){
 }
 
 void read_colours(struct RGB_val *m){
+    (m->C) = color_read_Clear();
     (m->R) = color_read_Red();
-    _delay((unsigned long)((1)*(64000000/4000.0)));
     (m->G) = color_read_Green();
-    _delay((unsigned long)((1)*(64000000/4000.0)));
     (m->B) = color_read_Blue();
-    _delay((unsigned long)((1)*(64000000/4000.0)));
-    return;
 }
 
-void read_color_sensor(struct RGB_val *m)
-{
- unsigned int tmp;
-
-    I2C_2_Master_Start();
- I2C_2_Master_Write(0x52 | 0x00);
- I2C_2_Master_Write(0xA0 | 0x16);
- I2C_2_Master_RepStart();
- I2C_2_Master_Write(0x52 | 0x01);
- tmp=I2C_2_Master_Read(1);
- tmp=tmp | (I2C_2_Master_Read(0)<<8);
- I2C_2_Master_Stop();
-    (m->R) = tmp;
-
-
-    I2C_2_Master_Start();
-    I2C_2_Master_Write(0x52 | 0x00);
- I2C_2_Master_Write(0xA0 | 0x18);
- I2C_2_Master_RepStart();
- I2C_2_Master_Write(0x52 | 0x01);
- tmp=I2C_2_Master_Read(1);
- tmp=tmp | (I2C_2_Master_Read(0)<<8);
-    I2C_2_Master_Stop();
-    (m->G) = tmp;
-
-
-    I2C_2_Master_Start();
-    I2C_2_Master_Write(0x52 | 0x00);
- I2C_2_Master_Write(0xA0 | 0x1A);
- I2C_2_Master_RepStart();
- I2C_2_Master_Write(0x52 | 0x01);
- tmp=I2C_2_Master_Read(1);
- tmp=tmp | (I2C_2_Master_Read(0)<<8);
-    I2C_2_Master_Stop();
-    (m->B) = tmp;
-
-    return;
-}
-# 190 "color.c"
 unsigned int determine_color1(struct RGB_val *m){
     unsigned int data[9][3] = {
         {47,1390,775},
@@ -24929,5 +24962,78 @@ unsigned int determine_color3(struct RGB_val *m){
             else {out = 9;}
         }
     }
+    return out;
+}
+
+unsigned int isbtw(float num, float low, float high){
+    if (num>=low && num<=high){return 1;}
+    else {return 0;}
+}
+
+void calibrateW(struct RGB_val *m){
+    (m->whiteC) = color_read_Clear();
+    (m->whiteR) = color_read_Red();
+    (m->whiteG) = color_read_Green();
+    (m->whiteB) = color_read_Blue();
+}
+
+void calibrateB(struct RGB_val *m){
+    (m->blackC) = color_read_Clear();
+    (m->blackR) = color_read_Red();
+    (m->blackG) = color_read_Green();
+    (m->blackB) = color_read_Blue();
+}
+
+unsigned int determine_color_new(struct RGB_val *m){
+    unsigned int RedRatio, GreenRatio, BlueRatio;
+    unsigned int out = 9;
+
+
+    RedRatio = ((float)m->R / (float)m->whiteC)*10000;
+    GreenRatio = ((float)m->G / (float)m->whiteC)*10000;
+    BlueRatio = ((float)m->B / (float)m->whiteC)*10000;
+
+
+
+    if (isbtw(RedRatio,0.795,0.870)==1 && isbtw(GreenRatio,0.140,0.169)==1 && isbtw(BlueRatio,0.185,0.210)==1)
+    {out = 0;}
+
+
+    if (isbtw(RedRatio,0.450,0.525)==1 && isbtw(GreenRatio,0.325,0.380)==1 && isbtw(BlueRatio,0.240,0.270)==1)
+    {out = 1;}
+
+
+    if (isbtw(RedRatio,0.400,0.479)==1 && isbtw(GreenRatio,0.305,0.340)==1 && isbtw(BlueRatio,0.305,0.345)==1)
+    {out = 2;}
+
+
+    if (isbtw(RedRatio,0.645,0.680)==1 && isbtw(GreenRatio,0.250,0.275)==1 && isbtw(BlueRatio,0.175,0.190)==1)
+    {out = 3;}
+
+
+    if (isbtw(RedRatio,0.650,0.679)==1 && isbtw(GreenRatio,0.220,0.235)==1 && isbtw(BlueRatio,0.215,0.235)==1)
+    {out = 4;}
+
+
+    if (isbtw(RedRatio,0.795,0.820)==1 && isbtw(GreenRatio,0.165,0.183)==1 && isbtw(BlueRatio,0.175,0.191)==1)
+    {out = 5;}
+
+
+    if (isbtw(RedRatio,0.500,0.550)==1 && isbtw(GreenRatio,0.285,0.310)==1 && isbtw(BlueRatio,0.259,0.280)==1)
+    {out = 6;}
+
+
+    if (isbtw(RedRatio,0.565,0.605)==1 && isbtw(GreenRatio,0.259,0.285)==1 && isbtw(BlueRatio,0.238,0.255)==1)
+    {out = 7;}
+
+
+    if (isbtw(RedRatio,0.581,0.606)==1 && isbtw(GreenRatio,0.240,0.276)==1 && isbtw(BlueRatio,0.200,0.245)==1)
+    {out = 8;}
+
+
+
+
+
+
     return out;
 }

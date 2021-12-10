@@ -3,8 +3,8 @@ Version 4.0 HI-TECH Software Intermediate Code
 "18 ./dc_motor.h
 [; ;./dc_motor.h: 18: void initDCmotorsPWM(int PWMperiod);
 [v _initDCmotorsPWM `(v ~T0 @X0 0 ef1`i ]
-"27 ./color.h
-[; ;./color.h: 27: void color_click_init(void);
+"35 ./color.h
+[; ;./color.h: 35: void color_click_init(void);
 [v _color_click_init `(v ~T0 @X0 0 ef ]
 "23 ./serial.h
 [; ;./serial.h: 23: void initUSART4(void);
@@ -50,10 +50,10 @@ Version 4.0 HI-TECH Software Intermediate Code
 "29185
 [; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f67k40.h: 29185: extern volatile unsigned char LATG __attribute__((address(0xF7F)));
 [v _LATG `Vuc ~T0 @X0 0 e@3967 ]
-"9 ./color.h
-[; ;./color.h: 9: struct RGB_val {
+"17 ./color.h
+[; ;./color.h: 17: struct RGB_val {
 [s S2022 `ui 1 `ui 1 `ui 1 `ui 1 `ui 1 `ui 1 `ui 1 `ui 1 `ui 1 `ui 1 `ui 1 `ui 1 ]
-[n S2022 RGB_val R G B t1r t1g t1b t2r t2g t2b t3r t3g t3b ]
+[n S2022 RGB_val blackC blackR blackG blackB whiteC whiteR whiteG whiteB C R G B ]
 "29191 C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f67k40.h
 [; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f67k40.h: 29191:     struct {
 [s S1361 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
@@ -147,10 +147,49 @@ Version 4.0 HI-TECH Software Intermediate Code
 "28876
 [; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f67k40.h: 28876: extern volatile LATDbits_t LATDbits __attribute__((address(0xF7C)));
 [v _LATDbits `VS1351 ~T0 @X0 0 e@3964 ]
-"43 ./color.h
-[; ;./color.h: 43: void read_colours(struct RGB_val *m);
-[v _read_colours `(v ~T0 @X0 0 ef1`*S2022 ]
-"30630 C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f67k40.h
+"30109
+[; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f67k40.h: 30109:     struct {
+[s S1395 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S1395 . TRISH0 TRISH1 TRISH2 TRISH3 ]
+"30108
+[; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f67k40.h: 30108: typedef union {
+[u S1394 `S1395 1 ]
+[n S1394 . . ]
+"30116
+[; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f67k40.h: 30116: extern volatile TRISHbits_t TRISHbits __attribute__((address(0xF88)));
+[v _TRISHbits `VS1394 ~T0 @X0 0 e@3976 ]
+"29280
+[; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f67k40.h: 29280:     struct {
+[s S1364 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S1364 . LATH0 LATH1 LATH2 LATH3 ]
+"29286
+[; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f67k40.h: 29286:     struct {
+[s S1365 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S1365 . LH0 LH1 LH2 LH3 ]
+"29292
+[; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f67k40.h: 29292:     struct {
+[s S1366 :4 `uc 1 :1 `uc 1 ]
+[n S1366 . . LH4 ]
+"29296
+[; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f67k40.h: 29296:     struct {
+[s S1367 :5 `uc 1 :1 `uc 1 ]
+[n S1367 . . LH5 ]
+"29300
+[; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f67k40.h: 29300:     struct {
+[s S1368 :6 `uc 1 :1 `uc 1 ]
+[n S1368 . . LH6 ]
+"29304
+[; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f67k40.h: 29304:     struct {
+[s S1369 :7 `uc 1 :1 `uc 1 ]
+[n S1369 . . LH7 ]
+"29279
+[; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f67k40.h: 29279: typedef union {
+[u S1363 `S1364 1 `S1365 1 `S1366 1 `S1367 1 `S1368 1 `S1369 1 ]
+[n S1363 . . . . . . . ]
+"29309
+[; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f67k40.h: 29309: extern volatile LATHbits_t LATHbits __attribute__((address(0xF80)));
+[v _LATHbits `VS1363 ~T0 @X0 0 e@3968 ]
+"30630
 [; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f67k40.h: 30630:     struct {
 [s S1415 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
 [n S1415 . RF0 RF1 RF2 RF3 RF4 RF5 RF6 RF7 ]
@@ -165,19 +204,16 @@ Version 4.0 HI-TECH Software Intermediate Code
 "30646
 [; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f67k40.h: 30646: extern volatile PORTFbits_t PORTFbits __attribute__((address(0xF8E)));
 [v _PORTFbits `VS1414 ~T0 @X0 0 e@3982 ]
-"46 ./color.h
-[; ;./color.h: 46: unsigned int determine_color1(struct RGB_val *m);
-[v _determine_color1 `(ui ~T0 @X0 0 ef1`*S2022 ]
+"57 ./color.h
+[; ;./color.h: 57: void calibrateW(struct RGB_val *m);
+[v _calibrateW `(v ~T0 @X0 0 ef1`*S2022 ]
 [v F14184 `(v ~T0 @X0 1 tf1`ul ]
 "203 C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\pic18.h
 [v __delay `JF14184 ~T0 @X0 0 e ]
 [p i __delay ]
-"47 ./color.h
-[; ;./color.h: 47: unsigned int determine_color2(struct RGB_val *m);
-[v _determine_color2 `(ui ~T0 @X0 0 ef1`*S2022 ]
-"48
-[; ;./color.h: 48: unsigned int determine_color3(struct RGB_val *m);
-[v _determine_color3 `(ui ~T0 @X0 0 ef1`*S2022 ]
+"98 main.c
+[; ;main.c: 98:             calibrateA(&test);
+[v _calibrateA `(i ~T0 @X0 0 e? ]
 "113 C:\Program Files\Microchip\xc8\v2.32\pic\include\c99\stdio.h
 [v _sprintf `(i ~T0 @X0 0 e1v`*uc`*Cuc ]
 "37 ./serial.h
@@ -186,6 +222,12 @@ Version 4.0 HI-TECH Software Intermediate Code
 "38
 [; ;./serial.h: 38: void sendTxBuf(void);
 [v _sendTxBuf `(v ~T0 @X0 0 ef ]
+"52 ./color.h
+[; ;./color.h: 52: void read_colours(struct RGB_val *m);
+[v _read_colours `(v ~T0 @X0 0 ef1`*S2022 ]
+"59
+[; ;./color.h: 59: unsigned int determine_color_new(struct RGB_val *m);
+[v _determine_color_new `(ui ~T0 @X0 0 ef1`*S2022 ]
 "2 main.c
 [p x FEXTOSC  =  HS      ]
 "3
@@ -2217,421 +2259,350 @@ Version 4.0 HI-TECH Software Intermediate Code
 "24
 [; ;main.c: 24:     Interrupts_init();
 [e ( _Interrupts_init ..  ]
-"26
-[; ;main.c: 26:     char string[20];
-[v _string `uc ~T0 @X0 -> 20 `i a ]
 "27
-[; ;main.c: 27:     char string1[20];
-[v _string1 `uc ~T0 @X0 -> 20 `i a ]
-"28
-[; ;main.c: 28:     char string2[20];
-[v _string2 `uc ~T0 @X0 -> 20 `i a ]
-"29
-[; ;main.c: 29:     char string3[20];
-[v _string3 `uc ~T0 @X0 -> 20 `i a ]
-"32
-[; ;main.c: 32:     TRISFbits.TRISF2=1;
+[; ;main.c: 27:     TRISFbits.TRISF2=1;
 [e = . . _TRISFbits 0 2 -> -> 1 `i `uc ]
-"33
-[; ;main.c: 33:     ANSELFbits.ANSELF2=0;
+"28
+[; ;main.c: 28:     ANSELFbits.ANSELF2=0;
 [e = . . _ANSELFbits 0 2 -> -> 0 `i `uc ]
-"35
-[; ;main.c: 35:     struct DC_motor motorL, motorR;
+"29
+[; ;main.c: 29:     TRISFbits.TRISF3=1;
+[e = . . _TRISFbits 0 3 -> -> 1 `i `uc ]
+"30
+[; ;main.c: 30:     ANSELFbits.ANSELF3=0;
+[e = . . _ANSELFbits 0 3 -> -> 0 `i `uc ]
+"32
+[; ;main.c: 32:     struct DC_motor motorL, motorR;
 [v _motorL `S2021 ~T0 @X0 1 a ]
 [v _motorR `S2021 ~T0 @X0 1 a ]
-"36
-[; ;main.c: 36:     unsigned int PWMcycle = 99;
+"33
+[; ;main.c: 33:     unsigned int PWMcycle = 99;
 [v _PWMcycle `ui ~T0 @X0 1 a ]
 [e = _PWMcycle -> -> 99 `i `ui ]
-"37
-[; ;main.c: 37:     motorL.power=0;
+"34
+[; ;main.c: 34:     motorL.power=0;
 [e = . _motorL 0 -> -> 0 `i `uc ]
-"38
-[; ;main.c: 38:     motorL.direction=1;
+"35
+[; ;main.c: 35:     motorL.direction=1;
 [e = . _motorL 1 -> -> 1 `i `uc ]
-"39
-[; ;main.c: 39:     motorL.dutyHighByte=(unsigned char *)(&PWM6DCH);
+"36
+[; ;main.c: 36:     motorL.dutyHighByte=(unsigned char *)(&PWM6DCH);
 [e = . _motorL 2 -> &U _PWM6DCH `*uc ]
-"40
-[; ;main.c: 40:     motorL.dir_LAT=(unsigned char *)(&LATE);
+"37
+[; ;main.c: 37:     motorL.dir_LAT=(unsigned char *)(&LATE);
 [e = . _motorL 3 -> &U _LATE `*uc ]
-"41
-[; ;main.c: 41:     motorL.dir_pin=4;
+"38
+[; ;main.c: 38:     motorL.dir_pin=4;
 [e = . _motorL 4 -> -> 4 `i `uc ]
-"42
-[; ;main.c: 42:     motorL.PWMperiod=PWMcycle;
+"39
+[; ;main.c: 39:     motorL.PWMperiod=PWMcycle;
 [e = . _motorL 5 -> _PWMcycle `i ]
-"44
-[; ;main.c: 44:     motorR.power=0;
+"41
+[; ;main.c: 41:     motorR.power=0;
 [e = . _motorR 0 -> -> 0 `i `uc ]
-"45
-[; ;main.c: 45:     motorR.direction=1;
+"42
+[; ;main.c: 42:     motorR.direction=1;
 [e = . _motorR 1 -> -> 1 `i `uc ]
-"46
-[; ;main.c: 46:     motorR.dutyHighByte=(unsigned char *)(&PWM7DCH);
+"43
+[; ;main.c: 43:     motorR.dutyHighByte=(unsigned char *)(&PWM7DCH);
 [e = . _motorR 2 -> &U _PWM7DCH `*uc ]
-"47
-[; ;main.c: 47:     motorR.dir_LAT=(unsigned char *)(&LATG);
+"44
+[; ;main.c: 44:     motorR.dir_LAT=(unsigned char *)(&LATG);
 [e = . _motorR 3 -> &U _LATG `*uc ]
-"48
-[; ;main.c: 48:     motorR.dir_pin=6;
+"45
+[; ;main.c: 45:     motorR.dir_pin=6;
 [e = . _motorR 4 -> -> 6 `i `uc ]
-"49
-[; ;main.c: 49:     motorR.PWMperiod=PWMcycle;
+"46
+[; ;main.c: 46:     motorR.PWMperiod=PWMcycle;
 [e = . _motorR 5 -> _PWMcycle `i ]
-"52
-[; ;main.c: 52:     struct RGB_val test;
+"49
+[; ;main.c: 49:     struct RGB_val test;
 [v _test `S2022 ~T0 @X0 1 a ]
+"50
+[; ;main.c: 50:     test.C = 0;
+[e = . _test 8 -> -> 0 `i `ui ]
+"51
+[; ;main.c: 51:     test.R = 0;
+[e = . _test 9 -> -> 0 `i `ui ]
+"52
+[; ;main.c: 52:     test.G = 0;
+[e = . _test 10 -> -> 0 `i `ui ]
 "53
-[; ;main.c: 53:     test.R = 0;
-[e = . _test 0 -> -> 0 `i `ui ]
-"54
-[; ;main.c: 54:     test.G = 0;
-[e = . _test 1 -> -> 0 `i `ui ]
-"55
-[; ;main.c: 55:     test.B = 0;
-[e = . _test 2 -> -> 0 `i `ui ]
-"58
-[; ;main.c: 58:     LATGbits.LATG1=0;
+[; ;main.c: 53:     test.B = 0;
+[e = . _test 11 -> -> 0 `i `ui ]
+"56
+[; ;main.c: 56:     LATGbits.LATG1=0;
 [e = . . _LATGbits 0 1 -> -> 0 `i `uc ]
-"59
-[; ;main.c: 59:     TRISGbits.TRISG1=0;
+"57
+[; ;main.c: 57:     TRISGbits.TRISG1=0;
 [e = . . _TRISGbits 0 1 -> -> 0 `i `uc ]
-"60
-[; ;main.c: 60:     LATAbits.LATA4=0;
+"58
+[; ;main.c: 58:     LATAbits.LATA4=0;
 [e = . . _LATAbits 0 4 -> -> 0 `i `uc ]
-"61
-[; ;main.c: 61:     TRISAbits.TRISA4=0;
+"59
+[; ;main.c: 59:     TRISAbits.TRISA4=0;
 [e = . . _TRISAbits 0 4 -> -> 0 `i `uc ]
-"62
-[; ;main.c: 62:     LATFbits.LATF7=1;
-[e = . . _LATFbits 0 7 -> -> 1 `i `uc ]
-"63
-[; ;main.c: 63:     TRISFbits.TRISF7=0;
+"60
+[; ;main.c: 60:     LATFbits.LATF7=0;
+[e = . . _LATFbits 0 7 -> -> 0 `i `uc ]
+"61
+[; ;main.c: 61:     TRISFbits.TRISF7=0;
 [e = . . _TRISFbits 0 7 -> -> 0 `i `uc ]
-"70
-[; ;main.c: 70:     TRISDbits.TRISD7 = 0;
+"64
+[; ;main.c: 64:     TRISDbits.TRISD7 = 0;
 [e = . . _TRISDbits 0 7 -> -> 0 `i `uc ]
-"71
-[; ;main.c: 71:     LATDbits.LATD7 = 0;
+"65
+[; ;main.c: 65:     LATDbits.LATD7 = 0;
 [e = . . _LATDbits 0 7 -> -> 0 `i `uc ]
+"68
+[; ;main.c: 68:     TRISHbits.TRISH3 = 0;
+[e = . . _TRISHbits 0 3 -> -> 0 `i `uc ]
+"69
+[; ;main.c: 69:     LATHbits.LATH3 = 0;
+[e = . . _LATHbits 0 3 -> -> 0 `i `uc ]
+"71
+[; ;main.c: 71:     char string[20];
+[v _string `uc ~T0 @X0 -> 20 `i a ]
+"72
+[; ;main.c: 72:     char string0[20];
+[v _string0 `uc ~T0 @X0 -> 20 `i a ]
 "73
-[; ;main.c: 73:     while(1){
+[; ;main.c: 73:     char string1[20];
+[v _string1 `uc ~T0 @X0 -> 20 `i a ]
+"74
+[; ;main.c: 74:     char string2[20];
+[v _string2 `uc ~T0 @X0 -> 20 `i a ]
+"75
+[; ;main.c: 75:     char string3[20];
+[v _string3 `uc ~T0 @X0 -> 20 `i a ]
+"76
+[; ;main.c: 76:     unsigned int RedRatio, GreenRatio, BlueRatio;
+[v _RedRatio `ui ~T0 @X0 1 a ]
+[v _GreenRatio `ui ~T0 @X0 1 a ]
+[v _BlueRatio `ui ~T0 @X0 1 a ]
+"78
+[; ;main.c: 78:     LATGbits.LATG1=1;
+[e = . . _LATGbits 0 1 -> -> 1 `i `uc ]
+"79
+[; ;main.c: 79:     LATAbits.LATA4=1;
+[e = . . _LATAbits 0 4 -> -> 1 `i `uc ]
+"80
+[; ;main.c: 80:     LATFbits.LATF7=1;
+[e = . . _LATFbits 0 7 -> -> 1 `i `uc ]
+"82
+[; ;main.c: 82:     unsigned int cal = 0;
+[v _cal `ui ~T0 @X0 1 a ]
+[e = _cal -> -> 0 `i `ui ]
+"85
+[; ;main.c: 85:     while(cal==0){
+[e $U 2024  ]
 [e :U 2025 ]
 {
-"74
-[; ;main.c: 74:         read_colours(&test);
-[e ( _read_colours (1 &U _test ]
-"75
-[; ;main.c: 75:         LATDbits.LATD7 = 0;
-[e = . . _LATDbits 0 7 -> -> 0 `i `uc ]
-"76
-[; ;main.c: 76:         if (!PORTFbits.RF2){
-[e $ ! ! != -> . . _PORTFbits 0 2 `i -> 0 `i 2027  ]
-{
-[v F15077 `ui ~T0 @X0 -> 3 `i s ]
-[i F15077
-:U ..
-"77
-[; ;main.c: 77:             unsigned int testresults[3] = {0,0,0};
--> -> 0 `i `ui
--> -> 0 `i `ui
--> -> 0 `i `ui
-..
-]
-[v _testresults `ui ~T0 @X0 -> 3 `i a ]
-[e = _testresults F15077 ]
-[v F15079 `ui ~T0 @X0 -> 3 `i s ]
-[i F15079
-:U ..
-"78
-[; ;main.c: 78:             unsigned int test1[3] = {0,0,0};
--> -> 0 `i `ui
--> -> 0 `i `ui
--> -> 0 `i `ui
-..
-]
-[v _test1 `ui ~T0 @X0 -> 3 `i a ]
-[e = _test1 F15079 ]
-[v F15081 `ui ~T0 @X0 -> 3 `i s ]
-[i F15081
-:U ..
-"79
-[; ;main.c: 79:             unsigned int test2[3] = {0,0,0};
--> -> 0 `i `ui
--> -> 0 `i `ui
--> -> 0 `i `ui
-..
-]
-[v _test2 `ui ~T0 @X0 -> 3 `i a ]
-[e = _test2 F15081 ]
-[v F15083 `ui ~T0 @X0 -> 3 `i s ]
-[i F15083
-:U ..
-"80
-[; ;main.c: 80:             unsigned int test3[3] = {0,0,0};
--> -> 0 `i `ui
--> -> 0 `i `ui
--> -> 0 `i `ui
-..
-]
-[v _test3 `ui ~T0 @X0 -> 3 `i a ]
-[e = _test3 F15083 ]
-"82
-[; ;main.c: 82:             LATDbits.LATD7 = 1;
-[e = . . _LATDbits 0 7 -> -> 1 `i `uc ]
-"83
-[; ;main.c: 83:             LATGbits.LATG1=1;
-[e = . . _LATGbits 0 1 -> -> 1 `i `uc ]
-"84
-[; ;main.c: 84:             LATAbits.LATA4=1;
-[e = . . _LATAbits 0 4 -> -> 1 `i `uc ]
-"85
-[; ;main.c: 85:             LATFbits.LATF7=1;
-[e = . . _LATFbits 0 7 -> -> 1 `i `uc ]
 "86
-[; ;main.c: 86:             read_colours(&test);
-[e ( _read_colours (1 &U _test ]
+[; ;main.c: 86:         LATDbits.LATD7 = 1;
+[e = . . _LATDbits 0 7 -> -> 1 `i `uc ]
 "87
-[; ;main.c: 87:             test1[0] = test.R;
-[e = *U + &U _test1 * -> -> -> 0 `i `ui `ux -> -> # *U &U _test1 `ui `ux . _test 0 ]
-"88
-[; ;main.c: 88:             test1[1] = test.G;
-[e = *U + &U _test1 * -> -> -> 1 `i `ui `ux -> -> # *U &U _test1 `ui `ux . _test 1 ]
-"89
-[; ;main.c: 89:             test1[2] = test.B;
-[e = *U + &U _test1 * -> -> -> 2 `i `ui `ux -> -> # *U &U _test1 `ui `ux . _test 2 ]
-"90
-[; ;main.c: 90:             testresults[0] = determine_color1(&test);
-[e = *U + &U _testresults * -> -> -> 0 `i `ui `ux -> -> # *U &U _testresults `ui `ux ( _determine_color1 (1 &U _test ]
-"91
-[; ;main.c: 91:             _delay((unsigned long)((100)*(64000000/4000.0)));
-[e ( __delay (1 -> * -> -> 100 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
-"92
-[; ;main.c: 92:             LATGbits.LATG1=1;
-[e = . . _LATGbits 0 1 -> -> 1 `i `uc ]
-"93
-[; ;main.c: 93:             LATAbits.LATA4=0;
-[e = . . _LATAbits 0 4 -> -> 0 `i `uc ]
-"94
-[; ;main.c: 94:             LATFbits.LATF7=0;
-[e = . . _LATFbits 0 7 -> -> 0 `i `uc ]
-"95
-[; ;main.c: 95:             read_colours(&test);
-[e ( _read_colours (1 &U _test ]
-"96
-[; ;main.c: 96:             test2[0] = test.R;
-[e = *U + &U _test2 * -> -> -> 0 `i `ui `ux -> -> # *U &U _test2 `ui `ux . _test 0 ]
-"97
-[; ;main.c: 97:             test2[1] = test.G;
-[e = *U + &U _test2 * -> -> -> 1 `i `ui `ux -> -> # *U &U _test2 `ui `ux . _test 1 ]
-"98
-[; ;main.c: 98:             test2[2] = test.B;
-[e = *U + &U _test2 * -> -> -> 2 `i `ui `ux -> -> # *U &U _test2 `ui `ux . _test 2 ]
-"99
-[; ;main.c: 99:             testresults[1] = determine_color2(&test);
-[e = *U + &U _testresults * -> -> -> 1 `i `ui `ux -> -> # *U &U _testresults `ui `ux ( _determine_color2 (1 &U _test ]
-"100
-[; ;main.c: 100:             _delay((unsigned long)((100)*(64000000/4000.0)));
-[e ( __delay (1 -> * -> -> 100 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
-"101
-[; ;main.c: 101:             LATGbits.LATG1=0;
-[e = . . _LATGbits 0 1 -> -> 0 `i `uc ]
-"102
-[; ;main.c: 102:             LATAbits.LATA4=1;
-[e = . . _LATAbits 0 4 -> -> 1 `i `uc ]
-"103
-[; ;main.c: 103:             LATFbits.LATF7=0;
-[e = . . _LATFbits 0 7 -> -> 0 `i `uc ]
-"104
-[; ;main.c: 104:             read_colours(&test);
-[e ( _read_colours (1 &U _test ]
-"105
-[; ;main.c: 105:             test3[0] = test.R;
-[e = *U + &U _test3 * -> -> -> 0 `i `ui `ux -> -> # *U &U _test3 `ui `ux . _test 0 ]
-"106
-[; ;main.c: 106:             test3[1] = test.G;
-[e = *U + &U _test3 * -> -> -> 1 `i `ui `ux -> -> # *U &U _test3 `ui `ux . _test 1 ]
-"107
-[; ;main.c: 107:             test3[2] = test.B;
-[e = *U + &U _test3 * -> -> -> 2 `i `ui `ux -> -> # *U &U _test3 `ui `ux . _test 2 ]
-"108
-[; ;main.c: 108:             testresults[2] = determine_color3(&test);
-[e = *U + &U _testresults * -> -> -> 2 `i `ui `ux -> -> # *U &U _testresults `ui `ux ( _determine_color3 (1 &U _test ]
-"109
-[; ;main.c: 109:             _delay((unsigned long)((100)*(64000000/4000.0)));
-[e ( __delay (1 -> * -> -> 100 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
-"110
-[; ;main.c: 110:             LATGbits.LATG1=0;
-[e = . . _LATGbits 0 1 -> -> 0 `i `uc ]
-"111
-[; ;main.c: 111:             LATAbits.LATA4=0;
-[e = . . _LATAbits 0 4 -> -> 0 `i `uc ]
-"112
-[; ;main.c: 112:             LATFbits.LATF7=0;
-[e = . . _LATFbits 0 7 -> -> 0 `i `uc ]
-"113
-[; ;main.c: 113:             unsigned int out;
-[v _out `ui ~T0 @X0 1 a ]
-"115
-[; ;main.c: 115:             int count = sizeof(testresults) / sizeof(testresults[0]);
-[v _count `i ~T0 @X0 1 a ]
-[e = _count -> / -> # _testresults `ui -> # *U + &U _testresults * -> -> -> 0 `i `ui `ux -> -> # *U &U _testresults `ui `ux `ui `i ]
-"116
-[; ;main.c: 116:             for (int i = 0; i < count - 1; i++) {
-{
-[v _i `i ~T0 @X0 1 a ]
-[e = _i -> 0 `i ]
-[e $U 2031  ]
+[; ;main.c: 87:         while (PORTFbits.RF2);
+[e $U 2027  ]
 [e :U 2028 ]
-{
-"117
-[; ;main.c: 117:                 for (int j = i + 1; j < count; j++) {
-{
-[v _j `i ~T0 @X0 1 a ]
-[e = _j + _i -> 1 `i ]
-[e $U 2035  ]
-[e :U 2032 ]
-{
-"118
-[; ;main.c: 118:                     if (testresults[i] == testresults[j]) {
-[e $ ! == *U + &U _testresults * -> -> _i `ui `ux -> -> # *U &U _testresults `ui `ux *U + &U _testresults * -> -> _j `ui `ux -> -> # *U &U _testresults `ui `ux 2036  ]
-{
-"119
-[; ;main.c: 119:                         out = testresults[i];
-[e = _out *U + &U _testresults * -> -> _i `ui `ux -> -> # *U &U _testresults `ui `ux ]
-"120
-[; ;main.c: 120:                     }
-}
-[e :U 2036 ]
-"121
-[; ;main.c: 121:                 }
-}
-[e ++ _j -> 1 `i ]
-[e :U 2035 ]
-[e $ < _j _count 2032  ]
-[e :U 2033 ]
-}
-"122
-[; ;main.c: 122:             }
-}
-[e ++ _i -> 1 `i ]
-[e :U 2031 ]
-[e $ < _i - _count -> 1 `i 2028  ]
-[e :U 2029 ]
-}
-"124
-[; ;main.c: 124:             unsigned int x = testresults[0];
-[v _x `ui ~T0 @X0 1 a ]
-[e = _x *U + &U _testresults * -> -> -> 0 `i `ui `ux -> -> # *U &U _testresults `ui `ux ]
-"125
-[; ;main.c: 125:             unsigned int y = testresults[1];
-[v _y `ui ~T0 @X0 1 a ]
-[e = _y *U + &U _testresults * -> -> -> 1 `i `ui `ux -> -> # *U &U _testresults `ui `ux ]
-"126
-[; ;main.c: 126:             unsigned int z = testresults[2];
-[v _z `ui ~T0 @X0 1 a ]
-[e = _z *U + &U _testresults * -> -> -> 2 `i `ui `ux -> -> # *U &U _testresults `ui `ux ]
-"127
-[; ;main.c: 127:             sprintf(string," T1:%d T2:%d T3:%d ",x,y,z);
-[e ( _sprintf (1 , , , (. , &U _string :s 1C _x _y _z ]
-"128
-[; ;main.c: 128:             TxBufferedString(string);
-[e ( _TxBufferedString (1 &U _string ]
-"129
-[; ;main.c: 129:             sendTxBuf();
-[e ( _sendTxBuf ..  ]
-"130
-[; ;main.c: 130:             _delay((unsigned long)((100)*(64000000/4000.0)));
-[e ( __delay (1 -> * -> -> 100 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
-"132
-[; ;main.c: 132:             unsigned int a = test1[0];
-[v _a `ui ~T0 @X0 1 a ]
-[e = _a *U + &U _test1 * -> -> -> 0 `i `ui `ux -> -> # *U &U _test1 `ui `ux ]
-"133
-[; ;main.c: 133:             unsigned int b = test1[1];
-[v _b `ui ~T0 @X0 1 a ]
-[e = _b *U + &U _test1 * -> -> -> 1 `i `ui `ux -> -> # *U &U _test1 `ui `ux ]
-"134
-[; ;main.c: 134:             unsigned int c = test1[2];
-[v _c `ui ~T0 @X0 1 a ]
-[e = _c *U + &U _test1 * -> -> -> 2 `i `ui `ux -> -> # *U &U _test1 `ui `ux ]
-"135
-[; ;main.c: 135:             sprintf(string1," T1r:%d T1g:%d T1b:%d ",a,b,c);
-[e ( _sprintf (1 , , , (. , &U _string1 :s 2C _a _b _c ]
-"136
-[; ;main.c: 136:             TxBufferedString(string1);
-[e ( _TxBufferedString (1 &U _string1 ]
-"137
-[; ;main.c: 137:             sendTxBuf();
-[e ( _sendTxBuf ..  ]
-"138
-[; ;main.c: 138:             _delay((unsigned long)((100)*(64000000/4000.0)));
-[e ( __delay (1 -> * -> -> 100 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
-"140
-[; ;main.c: 140:             unsigned int d = test2[0];
-[v _d `ui ~T0 @X0 1 a ]
-[e = _d *U + &U _test2 * -> -> -> 0 `i `ui `ux -> -> # *U &U _test2 `ui `ux ]
-"141
-[; ;main.c: 141:             unsigned int e = test2[1];
-[v _e `ui ~T0 @X0 1 a ]
-[e = _e *U + &U _test2 * -> -> -> 1 `i `ui `ux -> -> # *U &U _test2 `ui `ux ]
-"142
-[; ;main.c: 142:             unsigned int f = test2[2];
-[v _f `ui ~T0 @X0 1 a ]
-[e = _f *U + &U _test2 * -> -> -> 2 `i `ui `ux -> -> # *U &U _test2 `ui `ux ]
-"143
-[; ;main.c: 143:             sprintf(string2," T2r:%d T2g:%d T2b:%d ",d,e,f);
-[e ( _sprintf (1 , , , (. , &U _string2 :s 3C _d _e _f ]
-"144
-[; ;main.c: 144:             TxBufferedString(string2);
-[e ( _TxBufferedString (1 &U _string2 ]
-"145
-[; ;main.c: 145:             sendTxBuf();
-[e ( _sendTxBuf ..  ]
-"146
-[; ;main.c: 146:             _delay((unsigned long)((100)*(64000000/4000.0)));
-[e ( __delay (1 -> * -> -> 100 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
-"148
-[; ;main.c: 148:             unsigned int g = test3[0];
-[v _g `ui ~T0 @X0 1 a ]
-[e = _g *U + &U _test3 * -> -> -> 0 `i `ui `ux -> -> # *U &U _test3 `ui `ux ]
-"149
-[; ;main.c: 149:             unsigned int h = test3[1];
-[v _h `ui ~T0 @X0 1 a ]
-[e = _h *U + &U _test3 * -> -> -> 1 `i `ui `ux -> -> # *U &U _test3 `ui `ux ]
-"150
-[; ;main.c: 150:             unsigned int i = test3[2];
-[v _i `ui ~T0 @X0 1 a ]
-[e = _i *U + &U _test3 * -> -> -> 2 `i `ui `ux -> -> # *U &U _test3 `ui `ux ]
-"151
-[; ;main.c: 151:             sprintf(string3," T3r:%d T3g:%d T3b:%d ",g,h,i);
-[e ( _sprintf (1 , , , (. , &U _string3 :s 4C _g _h _i ]
-"152
-[; ;main.c: 152:             TxBufferedString(string3);
-[e ( _TxBufferedString (1 &U _string3 ]
-"153
-[; ;main.c: 153:             sendTxBuf();
-[e ( _sendTxBuf ..  ]
-"154
-[; ;main.c: 154:             _delay((unsigned long)((100)*(64000000/4000.0)));
-[e ( __delay (1 -> * -> -> 100 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
-"158
-[; ;main.c: 158:         }
-}
 [e :U 2027 ]
-"159
-[; ;main.c: 159:     }
+[e $ != -> . . _PORTFbits 0 2 `i -> 0 `i 2028  ]
+[e :U 2029 ]
+"88
+[; ;main.c: 88:         if (!PORTFbits.RF2){
+[e $ ! ! != -> . . _PORTFbits 0 2 `i -> 0 `i 2030  ]
+{
+"89
+[; ;main.c: 89:             LATDbits.LATD7 = 0;
+[e = . . _LATDbits 0 7 -> -> 0 `i `uc ]
+"90
+[; ;main.c: 90:             calibrateW(&test);
+[e ( _calibrateW (1 &U _test ]
+"91
+[; ;main.c: 91:             _delay((unsigned long)((300)*(64000000/4000.0)));
+[e ( __delay (1 -> * -> -> 300 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
+"92
+[; ;main.c: 92:             }
+}
+[e :U 2030 ]
+"94
+[; ;main.c: 94:         LATDbits.LATD7 = 1;
+[e = . . _LATDbits 0 7 -> -> 1 `i `uc ]
+"95
+[; ;main.c: 95:         while (PORTFbits.RF2);
+[e $U 2031  ]
+[e :U 2032 ]
+[e :U 2031 ]
+[e $ != -> . . _PORTFbits 0 2 `i -> 0 `i 2032  ]
+[e :U 2033 ]
+"96
+[; ;main.c: 96:         if (!PORTFbits.RF2){
+[e $ ! ! != -> . . _PORTFbits 0 2 `i -> 0 `i 2034  ]
+{
+"97
+[; ;main.c: 97:             LATDbits.LATD7 = 0;
+[e = . . _LATDbits 0 7 -> -> 0 `i `uc ]
+"98
+[; ;main.c: 98:             calibrateA(&test);
+[e ( _calibrateA &U _test ]
+"99
+[; ;main.c: 99:             _delay((unsigned long)((300)*(64000000/4000.0)));
+[e ( __delay (1 -> * -> -> 300 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
+"100
+[; ;main.c: 100:             }
+}
+[e :U 2034 ]
+"102
+[; ;main.c: 102:         sprintf(string0," W R:%d G:%d B:%d \r\n",test.whiteR,test.whiteG,test.whiteB);
+[e ( _sprintf (1 , , , (. , &U _string0 :s 1C . _test 5 . _test 6 . _test 7 ]
+"103
+[; ;main.c: 103:         TxBufferedString(string0);
+[e ( _TxBufferedString (1 &U _string0 ]
+"104
+[; ;main.c: 104:         sendTxBuf();
+[e ( _sendTxBuf ..  ]
+"105
+[; ;main.c: 105:         _delay((unsigned long)((50)*(64000000/4000.0)));
+[e ( __delay (1 -> * -> -> 50 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
+"107
+[; ;main.c: 107:         sprintf(string0," B R:%d G:%d B:%d \r\n",test.blackR,test.blackG,test.blackB);
+[e ( _sprintf (1 , , , (. , &U _string0 :s 2C . _test 1 . _test 2 . _test 3 ]
+"108
+[; ;main.c: 108:         TxBufferedString(string0);
+[e ( _TxBufferedString (1 &U _string0 ]
+"109
+[; ;main.c: 109:         sendTxBuf();
+[e ( _sendTxBuf ..  ]
+"110
+[; ;main.c: 110:         _delay((unsigned long)((50)*(64000000/4000.0)));
+[e ( __delay (1 -> * -> -> 50 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
+"112
+[; ;main.c: 112:         LATHbits.LATH3 = 1;
+[e = . . _LATHbits 0 3 -> -> 1 `i `uc ]
+"113
+[; ;main.c: 113:         while (PORTFbits.RF3);
+[e $U 2035  ]
+[e :U 2036 ]
+[e :U 2035 ]
+[e $ != -> . . _PORTFbits 0 3 `i -> 0 `i 2036  ]
+[e :U 2037 ]
+"114
+[; ;main.c: 114:         if (!PORTFbits.RF3){
+[e $ ! ! != -> . . _PORTFbits 0 3 `i -> 0 `i 2038  ]
+{
+"115
+[; ;main.c: 115:             LATHbits.LATH3 = 0;
+[e = . . _LATHbits 0 3 -> -> 0 `i `uc ]
+"116
+[; ;main.c: 116:             cal = 1;
+[e = _cal -> -> 1 `i `ui ]
+"117
+[; ;main.c: 117:         }
+}
+[e :U 2038 ]
+"118
+[; ;main.c: 118:     }
 }
 [e :U 2024 ]
-[e $U 2025  ]
+"85
+[; ;main.c: 85:     while(cal==0){
+[e $ == _cal -> -> 0 `i `ui 2025  ]
 [e :U 2026 ]
-"160
-[; ;main.c: 160: }
+"120
+[; ;main.c: 120:     while(1){
+[e :U 2040 ]
+{
+"121
+[; ;main.c: 121:         unsigned int output;
+[v _output `ui ~T0 @X0 1 a ]
+"122
+[; ;main.c: 122:         LATGbits.LATG1=1;
+[e = . . _LATGbits 0 1 -> -> 1 `i `uc ]
+"123
+[; ;main.c: 123:         LATAbits.LATA4=1;
+[e = . . _LATAbits 0 4 -> -> 1 `i `uc ]
+"124
+[; ;main.c: 124:         LATFbits.LATF7=0;
+[e = . . _LATFbits 0 7 -> -> 0 `i `uc ]
+"125
+[; ;main.c: 125:         read_colours(&test);
+[e ( _read_colours (1 &U _test ]
+"126
+[; ;main.c: 126:         output = determine_color_new(&test);
+[e = _output ( _determine_color_new (1 &U _test ]
+"127
+[; ;main.c: 127:         RedRatio = (((float)test.R) / ((float)test.whiteC) )*10000;
+[e = _RedRatio -> * / -> . _test 9 `f -> . _test 4 `f -> -> 10000 `i `f `ui ]
+"128
+[; ;main.c: 128:         GreenRatio = (((float)test.G) / ((float)test.whiteC)) *10000;
+[e = _GreenRatio -> * / -> . _test 10 `f -> . _test 4 `f -> -> 10000 `i `f `ui ]
+"129
+[; ;main.c: 129:         BlueRatio = (((float)test.B) / ((float)test.whiteC)) *10000;
+[e = _BlueRatio -> * / -> . _test 11 `f -> . _test 4 `f -> -> 10000 `i `f `ui ]
+"130
+[; ;main.c: 130:         _delay((unsigned long)((50)*(64000000/4000.0)));
+[e ( __delay (1 -> * -> -> 50 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
+"131
+[; ;main.c: 131:         LATGbits.LATG1=0;
+[e = . . _LATGbits 0 1 -> -> 0 `i `uc ]
+"132
+[; ;main.c: 132:         LATAbits.LATA4=0;
+[e = . . _LATAbits 0 4 -> -> 0 `i `uc ]
+"133
+[; ;main.c: 133:         LATFbits.LATF7=0;
+[e = . . _LATFbits 0 7 -> -> 0 `i `uc ]
+"134
+[; ;main.c: 134:         _delay((unsigned long)((50)*(64000000/4000.0)));
+[e ( __delay (1 -> * -> -> 50 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
+"136
+[; ;main.c: 136:         sprintf(string1," RR:%d ",RedRatio);
+[e ( _sprintf (1 , (. , &U _string1 :s 3C _RedRatio ]
+"137
+[; ;main.c: 137:         TxBufferedString(string1);
+[e ( _TxBufferedString (1 &U _string1 ]
+"138
+[; ;main.c: 138:         sendTxBuf();
+[e ( _sendTxBuf ..  ]
+"139
+[; ;main.c: 139:         _delay((unsigned long)((50)*(64000000/4000.0)));
+[e ( __delay (1 -> * -> -> 50 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
+"141
+[; ;main.c: 141:         sprintf(string2," GR:%d ",GreenRatio);
+[e ( _sprintf (1 , (. , &U _string2 :s 4C _GreenRatio ]
+"142
+[; ;main.c: 142:         TxBufferedString(string2);
+[e ( _TxBufferedString (1 &U _string2 ]
+"143
+[; ;main.c: 143:         sendTxBuf();
+[e ( _sendTxBuf ..  ]
+"144
+[; ;main.c: 144:         _delay((unsigned long)((50)*(64000000/4000.0)));
+[e ( __delay (1 -> * -> -> 50 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
+"146
+[; ;main.c: 146:         sprintf(string3," BR:%d ",BlueRatio);
+[e ( _sprintf (1 , (. , &U _string3 :s 5C _BlueRatio ]
+"147
+[; ;main.c: 147:         TxBufferedString(string3);
+[e ( _TxBufferedString (1 &U _string3 ]
+"148
+[; ;main.c: 148:         sendTxBuf();
+[e ( _sendTxBuf ..  ]
+"149
+[; ;main.c: 149:         _delay((unsigned long)((50)*(64000000/4000.0)));
+[e ( __delay (1 -> * -> -> 50 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
+"155
+[; ;main.c: 155:     }
+}
+[e :U 2039 ]
+[e $U 2040  ]
+[e :U 2041 ]
+"156
+[; ;main.c: 156: }
 [e :UE 2023 ]
 }
 [p f _sprintf 8388736 ]
-[a 4C 32 84 51 114 58 37 100 32 84 51 103 58 37 100 32 84 51 98 58 37 100 32 0 ]
-[a 3C 32 84 50 114 58 37 100 32 84 50 103 58 37 100 32 84 50 98 58 37 100 32 0 ]
-[a 2C 32 84 49 114 58 37 100 32 84 49 103 58 37 100 32 84 49 98 58 37 100 32 0 ]
-[a 1C 32 84 49 58 37 100 32 84 50 58 37 100 32 84 51 58 37 100 32 0 ]
+[a 3C 32 82 82 58 37 100 32 0 ]
+[a 4C 32 71 82 58 37 100 32 0 ]
+[a 5C 32 66 82 58 37 100 32 0 ]
+[a 1C 32 87 32 82 58 37 100 32 71 58 37 100 32 66 58 37 100 32 13 10 0 ]
+[a 2C 32 66 32 82 58 37 100 32 71 58 37 100 32 66 58 37 100 32 13 10 0 ]

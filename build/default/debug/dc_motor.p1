@@ -2395,11 +2395,11 @@ Version 4.0 HI-TECH Software Intermediate Code
 [; ;dc_motor.c: 81:     setMotorPWM(mR);
 [e ( _setMotorPWM (1 _mR ]
 "82
-[; ;dc_motor.c: 82:     for (unsigned int i = 0; i < 80; ++i){
+[; ;dc_motor.c: 82:     for (unsigned int i = 0; i < 50; ++i){
 {
 [v _i `ui ~T0 @X0 1 a ]
 [e = _i -> -> 0 `i `ui ]
-[e $ < _i -> -> 80 `i `ui 2033  ]
+[e $ < _i -> -> 50 `i `ui 2033  ]
 [e $U 2034  ]
 [e :U 2033 ]
 {
@@ -2422,7 +2422,7 @@ Version 4.0 HI-TECH Software Intermediate Code
 [; ;dc_motor.c: 88:     }
 }
 [e =+ _i -> -> 1 `i `ui ]
-[e $ < _i -> -> 80 `i `ui 2033  ]
+[e $ < _i -> -> 50 `i `ui 2033  ]
 [e :U 2034 ]
 }
 "89
@@ -2456,11 +2456,11 @@ Version 4.0 HI-TECH Software Intermediate Code
 [; ;dc_motor.c: 97:     setMotorPWM(mR);
 [e ( _setMotorPWM (1 _mR ]
 "98
-[; ;dc_motor.c: 98:     for (unsigned int i = 0; i < 80; ++i){
+[; ;dc_motor.c: 98:     for (unsigned int i = 0; i < 50; ++i){
 {
 [v _i `ui ~T0 @X0 1 a ]
 [e = _i -> -> 0 `i `ui ]
-[e $ < _i -> -> 80 `i `ui 2037  ]
+[e $ < _i -> -> 50 `i `ui 2037  ]
 [e $U 2038  ]
 [e :U 2037 ]
 {
@@ -2483,7 +2483,7 @@ Version 4.0 HI-TECH Software Intermediate Code
 [; ;dc_motor.c: 104:     }
 }
 [e =+ _i -> -> 1 `i `ui ]
-[e $ < _i -> -> 80 `i `ui 2037  ]
+[e $ < _i -> -> 50 `i `ui 2037  ]
 [e :U 2038 ]
 }
 "105

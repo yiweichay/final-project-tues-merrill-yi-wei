@@ -24358,10 +24358,7 @@ void anticlockwisesq(struct DC_motor *mL, struct DC_motor *mR);
 # 11 "main.c" 2
 
 # 1 "./color.h" 1
-
-
-
-
+# 11 "./color.h"
 # 1 "C:\\Program Files\\Microchip\\xc8\\v2.32\\pic\\include\\c99\\math.h" 1 3
 # 10 "C:\\Program Files\\Microchip\\xc8\\v2.32\\pic\\include\\c99\\math.h" 3
 # 1 "C:\\Program Files\\Microchip\\xc8\\v2.32\\pic\\include\\c99\\stdint.h" 1 3
@@ -24825,52 +24822,7 @@ double jn(int, double);
 double y0(double);
 double y1(double);
 double yn(int, double);
-# 5 "./color.h" 2
-
-
-
-
-struct RGB_val {
-        unsigned int R;
-        unsigned int G;
-        unsigned int B;
-        unsigned int t1r;
-        unsigned int t1g;
-        unsigned int t1b;
-        unsigned int t2r;
-        unsigned int t2g;
-        unsigned int t2b;
-        unsigned int t3r;
-        unsigned int t3g;
-        unsigned int t3b;
-    };
-
-
-
-
-void color_click_init(void);
-
-
-
-
-
-
-void color_writetoaddr(char address, char value);
-
-
-
-
-
-unsigned int color_read_Red(void);
-unsigned int color_read_Green(void);
-unsigned int color_read_Blue(void);
-void read_colours(struct RGB_val *m);
-void read_color_sensor(struct RGB_val *m);
-
-unsigned int determine_color1(struct RGB_val *m);
-unsigned int determine_color2(struct RGB_val *m);
-unsigned int determine_color3(struct RGB_val *m);
-# 12 "main.c" 2
+# 11 "./color.h" 2
 
 # 1 "./i2c.h" 1
 # 13 "./i2c.h"
@@ -24905,7 +24857,7 @@ void I2C_2_Master_Write(unsigned char data_byte);
 
 
 unsigned char I2C_2_Master_Read(unsigned char ack);
-# 13 "main.c" 2
+# 12 "./color.h" 2
 
 # 1 "./serial.h" 1
 # 13 "./serial.h"
@@ -24935,7 +24887,57 @@ void putCharToTxBuf(char byte);
 char isDataInTxBuf (void);
 void TxBufferedString(char *string);
 void sendTxBuf(void);
-# 14 "main.c" 2
+# 13 "./color.h" 2
+
+
+
+
+struct RGB_val {
+        unsigned int blackC;
+        unsigned int blackR;
+        unsigned int blackG;
+        unsigned int blackB;
+        unsigned int whiteC;
+        unsigned int whiteR;
+        unsigned int whiteG;
+        unsigned int whiteB;
+        unsigned int C;
+        unsigned int R;
+        unsigned int G;
+        unsigned int B;
+    };
+
+
+
+
+void color_click_init(void);
+
+
+
+
+
+
+void color_writetoaddr(char address, char value);
+
+
+
+
+
+unsigned int color_read_Clear(void);
+unsigned int color_read_Red(void);
+unsigned int color_read_Green(void);
+unsigned int color_read_Blue(void);
+void read_colours(struct RGB_val *m);
+unsigned int determine_color1(struct RGB_val *m);
+unsigned int determine_color2(struct RGB_val *m);
+unsigned int determine_color3(struct RGB_val *m);
+unsigned int isbtw(float num, float low, float high);
+void calibrateW(struct RGB_val *m);
+void calibrateB(struct RGB_val *m);
+unsigned int determine_color_new(struct RGB_val *m);
+# 12 "main.c" 2
+
+
 
 # 1 "./interrupts.h" 1
 
@@ -24959,14 +24961,11 @@ void main(void){
     initUSART4();
     Interrupts_init();
 
-    char string[20];
-    char string1[20];
-    char string2[20];
-    char string3[20];
-
 
     TRISFbits.TRISF2=1;
     ANSELFbits.ANSELF2=0;
+    TRISFbits.TRISF3=1;
+    ANSELFbits.ANSELF3=0;
 
     struct DC_motor motorL, motorR;
     unsigned int PWMcycle = 99;
@@ -24986,6 +24985,7 @@ void main(void){
 
 
     struct RGB_val test;
+    test.C = 0;
     test.R = 0;
     test.G = 0;
     test.B = 0;
@@ -24995,102 +24995,100 @@ void main(void){
     TRISGbits.TRISG1=0;
     LATAbits.LATA4=0;
     TRISAbits.TRISA4=0;
-    LATFbits.LATF7=1;
+    LATFbits.LATF7=0;
     TRISFbits.TRISF7=0;
-
-
-
-
 
 
     TRISDbits.TRISD7 = 0;
     LATDbits.LATD7 = 0;
 
-    while(1){
-        read_colours(&test);
-        LATDbits.LATD7 = 0;
+
+    TRISHbits.TRISH3 = 0;
+    LATHbits.LATH3 = 0;
+
+    char string[20];
+    char string0[20];
+    char string1[20];
+    char string2[20];
+    char string3[20];
+    unsigned int RedRatio, GreenRatio, BlueRatio;
+
+    LATGbits.LATG1=1;
+    LATAbits.LATA4=1;
+    LATFbits.LATF7=1;
+
+    unsigned int cal = 0;
+
+
+    while(cal==0){
+        LATDbits.LATD7 = 1;
+        while (PORTFbits.RF2);
         if (!PORTFbits.RF2){
-            unsigned int testresults[3] = {0,0,0};
-            unsigned int test1[3] = {0,0,0};
-            unsigned int test2[3] = {0,0,0};
-            unsigned int test3[3] = {0,0,0};
-
-            LATDbits.LATD7 = 1;
-            LATGbits.LATG1=1;
-            LATAbits.LATA4=1;
-            LATFbits.LATF7=1;
-            read_colours(&test);
-            test1[0] = test.R;
-            test1[1] = test.G;
-            test1[2] = test.B;
-            testresults[0] = determine_color1(&test);
-            _delay((unsigned long)((100)*(64000000/4000.0)));
-            LATGbits.LATG1=1;
-            LATAbits.LATA4=0;
-            LATFbits.LATF7=0;
-            read_colours(&test);
-            test2[0] = test.R;
-            test2[1] = test.G;
-            test2[2] = test.B;
-            testresults[1] = determine_color2(&test);
-            _delay((unsigned long)((100)*(64000000/4000.0)));
-            LATGbits.LATG1=0;
-            LATAbits.LATA4=1;
-            LATFbits.LATF7=0;
-            read_colours(&test);
-            test3[0] = test.R;
-            test3[1] = test.G;
-            test3[2] = test.B;
-            testresults[2] = determine_color3(&test);
-            _delay((unsigned long)((100)*(64000000/4000.0)));
-            LATGbits.LATG1=0;
-            LATAbits.LATA4=0;
-            LATFbits.LATF7=0;
-            unsigned int out;
-
-            int count = sizeof(testresults) / sizeof(testresults[0]);
-            for (int i = 0; i < count - 1; i++) {
-                for (int j = i + 1; j < count; j++) {
-                    if (testresults[i] == testresults[j]) {
-                        out = testresults[i];
-                    }
-                }
+            LATDbits.LATD7 = 0;
+            calibrateW(&test);
+            _delay((unsigned long)((300)*(64000000/4000.0)));
             }
 
-            unsigned int x = testresults[0];
-            unsigned int y = testresults[1];
-            unsigned int z = testresults[2];
-            sprintf(string," T1:%d T2:%d T3:%d ",x,y,z);
-            TxBufferedString(string);
-            sendTxBuf();
-            _delay((unsigned long)((100)*(64000000/4000.0)));
+        LATDbits.LATD7 = 1;
+        while (PORTFbits.RF2);
+        if (!PORTFbits.RF2){
+            LATDbits.LATD7 = 0;
+            calibrateA(&test);
+            _delay((unsigned long)((300)*(64000000/4000.0)));
+            }
 
-            unsigned int a = test1[0];
-            unsigned int b = test1[1];
-            unsigned int c = test1[2];
-            sprintf(string1," T1r:%d T1g:%d T1b:%d ",a,b,c);
-            TxBufferedString(string1);
-            sendTxBuf();
-            _delay((unsigned long)((100)*(64000000/4000.0)));
+        sprintf(string0," W R:%d G:%d B:%d \r\n",test.whiteR,test.whiteG,test.whiteB);
+        TxBufferedString(string0);
+        sendTxBuf();
+        _delay((unsigned long)((50)*(64000000/4000.0)));
 
-            unsigned int d = test2[0];
-            unsigned int e = test2[1];
-            unsigned int f = test2[2];
-            sprintf(string2," T2r:%d T2g:%d T2b:%d ",d,e,f);
-            TxBufferedString(string2);
-            sendTxBuf();
-            _delay((unsigned long)((100)*(64000000/4000.0)));
+        sprintf(string0," B R:%d G:%d B:%d \r\n",test.blackR,test.blackG,test.blackB);
+        TxBufferedString(string0);
+        sendTxBuf();
+        _delay((unsigned long)((50)*(64000000/4000.0)));
 
-            unsigned int g = test3[0];
-            unsigned int h = test3[1];
-            unsigned int i = test3[2];
-            sprintf(string3," T3r:%d T3g:%d T3b:%d ",g,h,i);
-            TxBufferedString(string3);
-            sendTxBuf();
-            _delay((unsigned long)((100)*(64000000/4000.0)));
-
-
-
+        LATHbits.LATH3 = 1;
+        while (PORTFbits.RF3);
+        if (!PORTFbits.RF3){
+            LATHbits.LATH3 = 0;
+            cal = 1;
         }
+    }
+
+    while(1){
+        unsigned int output;
+        LATGbits.LATG1=1;
+        LATAbits.LATA4=1;
+        LATFbits.LATF7=0;
+        read_colours(&test);
+        output = determine_color_new(&test);
+        RedRatio = (((float)test.R) / ((float)test.whiteC) )*10000;
+        GreenRatio = (((float)test.G) / ((float)test.whiteC)) *10000;
+        BlueRatio = (((float)test.B) / ((float)test.whiteC)) *10000;
+        _delay((unsigned long)((50)*(64000000/4000.0)));
+        LATGbits.LATG1=0;
+        LATAbits.LATA4=0;
+        LATFbits.LATF7=0;
+        _delay((unsigned long)((50)*(64000000/4000.0)));
+
+        sprintf(string1," RR:%d ",RedRatio);
+        TxBufferedString(string1);
+        sendTxBuf();
+        _delay((unsigned long)((50)*(64000000/4000.0)));
+
+        sprintf(string2," GR:%d ",GreenRatio);
+        TxBufferedString(string2);
+        sendTxBuf();
+        _delay((unsigned long)((50)*(64000000/4000.0)));
+
+        sprintf(string3," BR:%d ",BlueRatio);
+        TxBufferedString(string3);
+        sendTxBuf();
+        _delay((unsigned long)((50)*(64000000/4000.0)));
+
+
+
+
+
     }
 }
