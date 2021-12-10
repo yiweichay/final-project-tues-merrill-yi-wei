@@ -30,7 +30,7 @@ void main(void){
     initUSART4();
     Interrupts_init();
     Timer0_init(); //when button is pressed, then call TimerInit
-    RGB_init();
+    //RGB_init();
     __delay_ms(500);
     color_click_init();
     
@@ -62,20 +62,10 @@ void main(void){
     TRISDbits.TRISD7 =0;
     
     //code to test
-    Black(&motorL, &motorR);
+    //Black(&motorL, &motorR);
          
     while(1){
-        // send values to the serial to read the color of the cards
-        // Receiving data
-//        while (isDataInRxBuf()==1) {
-//            colorRead = color_read_Red(); //change this, there should be some error here
-//        }
-        
-//        colorInput.R = color_read_Red();
-//        colorInput.G = color_read_Green();
-//        colorInput.B = color_read_Blue();
-//        sprintf(string,"%d, %d, %d//",colorInput.R,colorInput.G,colorInput.B);
-        
+        /*
         // If button pressed
         if (!PORTFbits.RF2) {
             colorInput.R = color_read_Red();
@@ -95,6 +85,6 @@ void main(void){
             //LATDbits.LATD7 = !LATDbits.LATD7 ;
             __delay_ms(200);
         }
-
+*/
     }
 }

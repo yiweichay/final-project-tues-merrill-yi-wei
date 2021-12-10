@@ -69,13 +69,14 @@ void stop(struct DC_motor *mL, struct DC_motor *mR)
 //function to make the robot turn left 
 void turnLeft90(struct DC_motor *mL, struct DC_motor *mR)
 {
-    (*mL).direction = 0;
+    (*mL).direction = 0; //0 means reverse direction
     (*mR).direction = 1;
     (*mL).power = 75;
-    (*mR).power = 100;
+    (*mR).power = 75;
     setMotorPWM(mL);
     setMotorPWM(mR);
-    __delay_ms(300);
+    __delay_ms(290);
+    stop(mL, mR);
 }
 
 //function to make the robot turn left 135
@@ -84,10 +85,11 @@ void turnLeft135(struct DC_motor *mL, struct DC_motor *mR)
     (*mL).direction = 0;
     (*mR).direction = 1;
     (*mL).power = 75;
-    (*mR).power = 100;
+    (*mR).power = 75;
     setMotorPWM(mL);
     setMotorPWM(mR);
-    __delay_ms(450);
+    __delay_ms(435);
+    stop(mL, mR);
 }
 
 //function to make the robot turn right 
@@ -96,10 +98,11 @@ void turnRight90(struct DC_motor *mL, struct DC_motor *mR)
     (*mR).direction = 0;
     (*mL).direction = 1;
     (*mR).power = 75;
-    (*mL).power = 100;
+    (*mL).power = 75;
     setMotorPWM(mL);
     setMotorPWM(mR);
-    __delay_ms(300);
+    __delay_ms(290);
+    stop(mL, mR);
 }
 
 //function to make the robot turn right 
@@ -108,10 +111,11 @@ void turnRight135(struct DC_motor *mL, struct DC_motor *mR)
     (*mR).direction = 0;
     (*mL).direction = 1;
     (*mR).power = 75;
-    (*mL).power = 100;
+    (*mL).power = 75;
     setMotorPWM(mL);
     setMotorPWM(mR);
-    __delay_ms(450);
+    __delay_ms(435);
+    stop(mL, mR);
 }
 
 //function to turn robot 180 to the right
@@ -120,10 +124,11 @@ void turnRight180(struct DC_motor *mL, struct DC_motor *mR)
     (*mR).direction = 0;
     (*mL).direction = 1;
     (*mR).power = 75;
-    (*mL).power = 100;
+    (*mL).power = 75;
     setMotorPWM(mL);
     setMotorPWM(mR);
-    __delay_ms(600);
+    __delay_ms(580);
+    stop(mL, mR);
 }
 
 //function to make the robot go straight
@@ -165,10 +170,12 @@ void reverseTurnRight90(struct DC_motor *mL, struct DC_motor *mR)
 {
     (*mL).direction = 0;
     (*mR).direction = 0;
-    (*mL).power = 50;
-    (*mR).power = 50;
+    (*mL).power = 75;
+    (*mR).power = 75;
     setMotorPWM(mL);
     setMotorPWM(mR);
+    __delay_ms(800);
+    stop(mL, mR);
     __delay_ms(300);
     turnRight90(mL, mR);
 }
@@ -178,10 +185,12 @@ void reverseTurnLeft90(struct DC_motor *mL, struct DC_motor *mR)
 {
     (*mL).direction = 0;
     (*mR).direction = 0;
-    (*mL).power = 50;
-    (*mR).power = 50;
+    (*mL).power = 75;
+    (*mR).power = 75;
     setMotorPWM(mL);
     setMotorPWM(mR);
+    __delay_ms(800);
+    stop(mL, mR);
     __delay_ms(300);
     turnLeft90(mL, mR);
 }
