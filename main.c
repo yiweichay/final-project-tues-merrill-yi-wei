@@ -63,6 +63,7 @@ void main(void){
     
     //code to test
     //Black(&motorL, &motorR);
+    turnLeft90(&motorL, &motorR);
          
     while(1){
         /*

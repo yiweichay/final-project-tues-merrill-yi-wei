@@ -66,68 +66,68 @@ void stop(struct DC_motor *mL, struct DC_motor *mR)
     setMotorPWM(mR);
 }
 
-//function to make the robot turn left 
+//function to make the robot turn left (Green)
 void turnLeft90(struct DC_motor *mL, struct DC_motor *mR)
 {
     (*mL).direction = 0; //0 means reverse direction
     (*mR).direction = 1;
-    (*mL).power = 75;
-    (*mR).power = 75;
+    (*mL).power = 90;
+    (*mR).power = 90;
     setMotorPWM(mL);
     setMotorPWM(mR);
-    __delay_ms(290);
+    __delay_ms(180);
     stop(mL, mR);
 }
 
-//function to make the robot turn left 135
+//function to make the robot turn left 135 (Light Blue)
 void turnLeft135(struct DC_motor *mL, struct DC_motor *mR)
 {
     (*mL).direction = 0;
     (*mR).direction = 1;
-    (*mL).power = 75;
-    (*mR).power = 75;
+    (*mL).power = 90;
+    (*mR).power = 90;
     setMotorPWM(mL);
     setMotorPWM(mR);
-    __delay_ms(435);
+    __delay_ms(270);
     stop(mL, mR);
 }
 
-//function to make the robot turn right 
+//function to make the robot turn right (Red)
 void turnRight90(struct DC_motor *mL, struct DC_motor *mR)
 {
     (*mR).direction = 0;
     (*mL).direction = 1;
-    (*mR).power = 75;
-    (*mL).power = 75;
+    (*mR).power = 90;
+    (*mL).power = 90;
     setMotorPWM(mL);
     setMotorPWM(mR);
-    __delay_ms(290);
+    __delay_ms(180);
     stop(mL, mR);
 }
 
-//function to make the robot turn right 
+//function to make the robot turn right (Orange)
 void turnRight135(struct DC_motor *mL, struct DC_motor *mR)
 {
     (*mR).direction = 0;
     (*mL).direction = 1;
-    (*mR).power = 75;
-    (*mL).power = 75;
+    (*mR).power = 90;
+    (*mL).power = 90;
     setMotorPWM(mL);
     setMotorPWM(mR);
-    __delay_ms(435);
+    __delay_ms(270);
     stop(mL, mR);
 }
 
-//function to turn robot 180 to the right
+//function to turn robot 180 to the right (Blue)
 void turnRight180(struct DC_motor *mL, struct DC_motor *mR)
 {
     (*mR).direction = 0;
     (*mL).direction = 1;
-    (*mR).power = 75;
-    (*mL).power = 75;
+    (*mR).power = 90;
+    (*mL).power = 90;
     setMotorPWM(mL);
     setMotorPWM(mR);
-    __delay_ms(580);
+    __delay_ms(360);
     stop(mL, mR);
 }
 
