@@ -116,10 +116,28 @@ void main(void){
         }
     }
     
+    unsigned int check1 = 9;
+    unsigned int check2 = 9;
+    unsigned int check3 = 9;
+    unsigned int count = 0;
+    
     while(1){          
-        unsigned int output;
+        unsigned int detected_colour; // 
         read_colours(&test);
-        output = determine_color_new(&test); 
+        //output = determine_color_new(&test);
+        if (count==0) {check1 = determine_color_new(&test);count+=1;}
+        if (count==1) {check2 = determine_color_new(&test);count+=1;}
+        if (count==2) {check3 = determine_color_new(&test);count=0;}
+        
+        // 3 checks to detect colour
+        if (check1 == check2 && check2 == check3){
+            detected_colour = check1;
+        }
+        
+        //__delay_ms(150)  // Does the scanning every 1.5 secs 
+        
+        
+        // For debugging/reviewing purposes
         RedRatio = ((float)(test.R - test.blackR) / (float)(test.whiteR - test.blackR)) * 10000;
         GreenRatio = ((float)(test.G - test.blackG) / (float)(test.whiteG - test.blackG)) * 10000;
         BlueRatio = ((float)(test.B - test.blackB) / (float)(test.whiteB - test.blackB)) * 10000;
