@@ -68,7 +68,7 @@ intcode CODE 0 8 8 6E 1
 smallconst SMALLCONST 0 E00 E00 4E 1
 bssCOMRAM COMRAM 1 56 56 4 1
 config CONFIG 4 300000 300000 C 1
-$C:\Users\merri\AppData\Local\Temp\xcAsgeo.o
+$C:\Users\merri\AppData\Local\Temp\xcAsk7g.o
 idloc IDLOC 5 200000 200000 10 1
 init CODE 0 76 76 4 1
 reset_vec CODE 0 0 0 4 1
@@ -125,7 +125,7 @@ MEDIUMCONST 10E00-1FFFF 1
 # All other numeric values are in decimal.
 %LINETAB
 $dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
-8 intcode CODE >18668:C:\Users\merri\AppData\Local\Temp\xcAsgeo.s
+8 intcode CODE >18666:C:\Users\merri\AppData\Local\Temp\xcAsk7g.s
 8 intcode CODE >24:C:\Users\merri\MPLABXProjects\final-project-tues-merrill-yi-wei.X\interrupts.c
 12 intcode CODE >26:C:\Users\merri\MPLABXProjects\final-project-tues-merrill-yi-wei.X\interrupts.c
 22 intcode CODE >27:C:\Users\merri\MPLABXProjects\final-project-tues-merrill-yi-wei.X\interrupts.c
@@ -520,9 +520,8 @@ F3A text18 CODE >102:C:\Users\merri\MPLABXProjects\final-project-tues-merrill-yi
 181E text18 CODE >138:C:\Users\merri\MPLABXProjects\final-project-tues-merrill-yi-wei.X\color.c
 18F0 text18 CODE >139:C:\Users\merri\MPLABXProjects\final-project-tues-merrill-yi-wei.X\color.c
 18FA text18 CODE >142:C:\Users\merri\MPLABXProjects\final-project-tues-merrill-yi-wei.X\color.c
-193E text18 CODE >143:C:\Users\merri\MPLABXProjects\final-project-tues-merrill-yi-wei.X\color.c
-1946 text18 CODE >145:C:\Users\merri\MPLABXProjects\final-project-tues-merrill-yi-wei.X\color.c
-194E text18 CODE >146:C:\Users\merri\MPLABXProjects\final-project-tues-merrill-yi-wei.X\color.c
+1946 text18 CODE >144:C:\Users\merri\MPLABXProjects\final-project-tues-merrill-yi-wei.X\color.c
+194E text18 CODE >145:C:\Users\merri\MPLABXProjects\final-project-tues-merrill-yi-wei.X\color.c
 3696 text17 CODE >5:C:\Users\merri\MPLABXProjects\final-project-tues-merrill-yi-wei.X\dc_motor.c
 3696 text17 CODE >7:C:\Users\merri\MPLABXProjects\final-project-tues-merrill-yi-wei.X\dc_motor.c
 3698 text17 CODE >8:C:\Users\merri\MPLABXProjects\final-project-tues-merrill-yi-wei.X\dc_motor.c
@@ -815,28 +814,28 @@ F3A text18 CODE >102:C:\Users\merri\MPLABXProjects\final-project-tues-merrill-yi
 1E96 text0 CODE >143:C:\Users\merri\MPLABXProjects\final-project-tues-merrill-yi-wei.X\main.c
 1EA2 text0 CODE >144:C:\Users\merri\MPLABXProjects\final-project-tues-merrill-yi-wei.X\main.c
 1EA6 text0 CODE >145:C:\Users\merri\MPLABXProjects\final-project-tues-merrill-yi-wei.X\main.c
-38C6 cinit CODE >8301:C:\Users\merri\AppData\Local\Temp\xcAsgeo.s
-38C6 cinit CODE >8303:C:\Users\merri\AppData\Local\Temp\xcAsgeo.s
-38C6 cinit CODE >8306:C:\Users\merri\AppData\Local\Temp\xcAsgeo.s
-38C6 cinit CODE >8346:C:\Users\merri\AppData\Local\Temp\xcAsgeo.s
-38CA cinit CODE >8347:C:\Users\merri\AppData\Local\Temp\xcAsgeo.s
-38CC cinit CODE >8348:C:\Users\merri\AppData\Local\Temp\xcAsgeo.s
-38CC cinit CODE >8349:C:\Users\merri\AppData\Local\Temp\xcAsgeo.s
-38CE cinit CODE >8350:C:\Users\merri\AppData\Local\Temp\xcAsgeo.s
-38D0 cinit CODE >8351:C:\Users\merri\AppData\Local\Temp\xcAsgeo.s
-38D2 cinit CODE >8354:C:\Users\merri\AppData\Local\Temp\xcAsgeo.s
-38D4 cinit CODE >8355:C:\Users\merri\AppData\Local\Temp\xcAsgeo.s
-38D6 cinit CODE >8356:C:\Users\merri\AppData\Local\Temp\xcAsgeo.s
-38D8 cinit CODE >8357:C:\Users\merri\AppData\Local\Temp\xcAsgeo.s
-38DA cinit CODE >8363:C:\Users\merri\AppData\Local\Temp\xcAsgeo.s
-38DA cinit CODE >8365:C:\Users\merri\AppData\Local\Temp\xcAsgeo.s
-38DC cinit CODE >8366:C:\Users\merri\AppData\Local\Temp\xcAsgeo.s
-38DE cinit CODE >8368:C:\Users\merri\AppData\Local\Temp\xcAsgeo.s
-38E0 cinit CODE >8369:C:\Users\merri\AppData\Local\Temp\xcAsgeo.s
-38E2 cinit CODE >8370:C:\Users\merri\AppData\Local\Temp\xcAsgeo.s
-38E4 cinit CODE >8371:C:\Users\merri\AppData\Local\Temp\xcAsgeo.s
-38E6 cinit CODE >8372:C:\Users\merri\AppData\Local\Temp\xcAsgeo.s
-38E8 cinit CODE >8373:C:\Users\merri\AppData\Local\Temp\xcAsgeo.s
+38C6 cinit CODE >8301:C:\Users\merri\AppData\Local\Temp\xcAsk7g.s
+38C6 cinit CODE >8303:C:\Users\merri\AppData\Local\Temp\xcAsk7g.s
+38C6 cinit CODE >8306:C:\Users\merri\AppData\Local\Temp\xcAsk7g.s
+38C6 cinit CODE >8346:C:\Users\merri\AppData\Local\Temp\xcAsk7g.s
+38CA cinit CODE >8347:C:\Users\merri\AppData\Local\Temp\xcAsk7g.s
+38CC cinit CODE >8348:C:\Users\merri\AppData\Local\Temp\xcAsk7g.s
+38CC cinit CODE >8349:C:\Users\merri\AppData\Local\Temp\xcAsk7g.s
+38CE cinit CODE >8350:C:\Users\merri\AppData\Local\Temp\xcAsk7g.s
+38D0 cinit CODE >8351:C:\Users\merri\AppData\Local\Temp\xcAsk7g.s
+38D2 cinit CODE >8354:C:\Users\merri\AppData\Local\Temp\xcAsk7g.s
+38D4 cinit CODE >8355:C:\Users\merri\AppData\Local\Temp\xcAsk7g.s
+38D6 cinit CODE >8356:C:\Users\merri\AppData\Local\Temp\xcAsk7g.s
+38D8 cinit CODE >8357:C:\Users\merri\AppData\Local\Temp\xcAsk7g.s
+38DA cinit CODE >8363:C:\Users\merri\AppData\Local\Temp\xcAsk7g.s
+38DA cinit CODE >8365:C:\Users\merri\AppData\Local\Temp\xcAsk7g.s
+38DC cinit CODE >8366:C:\Users\merri\AppData\Local\Temp\xcAsk7g.s
+38DE cinit CODE >8368:C:\Users\merri\AppData\Local\Temp\xcAsk7g.s
+38E0 cinit CODE >8369:C:\Users\merri\AppData\Local\Temp\xcAsk7g.s
+38E2 cinit CODE >8370:C:\Users\merri\AppData\Local\Temp\xcAsk7g.s
+38E4 cinit CODE >8371:C:\Users\merri\AppData\Local\Temp\xcAsk7g.s
+38E6 cinit CODE >8372:C:\Users\merri\AppData\Local\Temp\xcAsk7g.s
+38E8 cinit CODE >8373:C:\Users\merri\AppData\Local\Temp\xcAsk7g.s
 # %SYMTAB Section
 # An enumeration of all symbols in the program.
 # The beginning of the section is indicated by %SYMTAB.
@@ -860,7 +859,7 @@ color_writetoaddr@address 8 0 COMRAM 1 cstackCOMRAM dist/default/production\fina
 _PWM6DCH FA3 0 ABS 0 - dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 _PWM7DCH FA0 0 ABS 0 - dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 __Hibigdata 0 0 CODE 0 ibigdata dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
-__mediumconst 0 0 MEDIUMCONST 0 mediumconst C:\Users\merri\AppData\Local\Temp\xcAsgeo.o
+__mediumconst 0 0 MEDIUMCONST 0 mediumconst C:\Users\merri\AppData\Local\Temp\xcAsk7g.o
 __Heeprom_data 0 0 EEDATA 0 eeprom_data dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 ?_abs 17 0 COMRAM 1 cstackCOMRAM dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 ?_pad 15 0 COMRAM 1 cstackCOMRAM dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
@@ -869,7 +868,7 @@ __Lsmallconst E00 0 SMALLCONST 0 smallconst dist/default/production\final-projec
 _LATE F7D 0 ABS 0 - dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 _LATG F7F 0 ABS 0 - dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 _T2PR FBC 0 ABS 0 - dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
-___sp 0 0 STACK 2 stack C:\Users\merri\AppData\Local\Temp\xcAsgeo.o
+___sp 0 0 STACK 2 stack C:\Users\merri\AppData\Local\Temp\xcAsk7g.o
 _dbuf B8 0 BANK0 1 bssBANK0 dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 _dtoa 268A 0 CODE 0 text4 dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 _main 1950 0 CODE 0 text0 dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
@@ -881,7 +880,7 @@ pad@i 1C 0 COMRAM 1 cstackCOMRAM dist/default/production\final-project-tues-merr
 pad@p 19 0 COMRAM 1 cstackCOMRAM dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 pad@w 1E 0 COMRAM 1 cstackCOMRAM dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 __size_of_color_read_Red 0 0 ABS 0 - dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
-start 76 0 CODE 0 init C:\Users\merri\AppData\Local\Temp\xcAsgeo.o
+start 76 0 CODE 0 init C:\Users\merri\AppData\Local\Temp\xcAsk7g.o
 ___aomod@counter 15 0 COMRAM 1 cstackCOMRAM dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 ___flmul@aexp 3D 0 COMRAM 1 cstackCOMRAM dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 ___flmul@bexp 3E 0 COMRAM 1 cstackCOMRAM dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
@@ -912,11 +911,11 @@ ttemp5 5B 0 COMRAM 1 temp dist/default/production\final-project-tues-merrill-yi-
 ttemp6 5E 0 COMRAM 1 temp dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 ttemp7 62 0 COMRAM 1 temp dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 __size_of_vfpfcnvrt 0 0 ABS 0 - dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
-__accesstop 60 0 ABS 0 - C:\Users\merri\AppData\Local\Temp\xcAsgeo.o
-intlevel0 0 0 CODE 0 text C:\Users\merri\AppData\Local\Temp\xcAsgeo.o
-intlevel1 0 0 CODE 0 text C:\Users\merri\AppData\Local\Temp\xcAsgeo.o
-intlevel2 0 0 CODE 0 text C:\Users\merri\AppData\Local\Temp\xcAsgeo.o
-intlevel3 0 0 CODE 0 text C:\Users\merri\AppData\Local\Temp\xcAsgeo.o
+__accesstop 60 0 ABS 0 - C:\Users\merri\AppData\Local\Temp\xcAsk7g.o
+intlevel0 0 0 CODE 0 text C:\Users\merri\AppData\Local\Temp\xcAsk7g.o
+intlevel1 0 0 CODE 0 text C:\Users\merri\AppData\Local\Temp\xcAsk7g.o
+intlevel2 0 0 CODE 0 text C:\Users\merri\AppData\Local\Temp\xcAsk7g.o
+intlevel3 0 0 CODE 0 text C:\Users\merri\AppData\Local\Temp\xcAsk7g.o
 __LbssCOMRAM 0 0 ABS 0 bssCOMRAM dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 __size_of_initUSART4 0 0 ABS 0 - dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 __LnvFARRAM 0 0 FARRAM 0 nvFARRAM dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
@@ -930,8 +929,8 @@ __Hclrtext 0 0 ABS 0 clrtext dist/default/production\final-project-tues-merrill-
 _vfpfcnvrt 296C 0 CODE 0 text3 dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 dtoa@fp 20 0 COMRAM 1 cstackCOMRAM dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 __end_of_Interrupts_init 398E 0 CODE 0 text41 dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
-___inthi_sp 0 0 STACK 2 stack C:\Users\merri\AppData\Local\Temp\xcAsgeo.o
-___intlo_sp 0 0 STACK 2 stack C:\Users\merri\AppData\Local\Temp\xcAsgeo.o
+___inthi_sp 0 0 STACK 2 stack C:\Users\merri\AppData\Local\Temp\xcAsk7g.o
+___intlo_sp 0 0 STACK 2 stack C:\Users\merri\AppData\Local\Temp\xcAsk7g.o
 __end_of_sendTxBuf 3946 0 CODE 0 text13 dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 determine_color_new@GreenRatio E2 0 BANK0 1 cstackBANK0 dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 I2C_2_Master_Read@ack 7 0 COMRAM 1 cstackCOMRAM dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
@@ -1011,7 +1010,7 @@ __end_of_I2C_2_Master_Start 39A2 0 CODE 0 text35 dist/default/production\final-p
 __end_of_I2C_2_Master_Write 3982 0 CODE 0 text33 dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 _TX4REG EE4 0 ABS 0 - dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 I2C_2_Master_Write@data_byte 6 0 COMRAM 1 cstackCOMRAM dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
-isa$xinst 0 0 ABS 0 - C:\Users\merri\AppData\Local\Temp\xcAsgeo.o
+isa$xinst 0 0 ABS 0 - C:\Users\merri\AppData\Local\Temp\xcAsk7g.o
 fputc@fp 7 0 COMRAM 1 cstackCOMRAM dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 fputs@fp 10 0 COMRAM 1 cstackCOMRAM dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 i2_isDataInTxBuf 395E 0 CODE 0 text43 dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
@@ -1061,7 +1060,7 @@ __size_of_I2C_2_Master_Read 0 0 ABS 0 - dist/default/production\final-project-tu
 __size_of_I2C_2_Master_Stop 0 0 ABS 0 - dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 __Hbigbss 0 0 BIGRAM 1 bigbss dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 __Hbigram 0 0 ABS 0 bigram dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
-__smallconst E00 0 SMALLCONST 0 smallconst C:\Users\merri\AppData\Local\Temp\xcAsgeo.o
+__smallconst E00 0 SMALLCONST 0 smallconst C:\Users\merri\AppData\Local\Temp\xcAsk7g.o
 ___xxtofl@arg F 0 COMRAM 1 cstackCOMRAM dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 ___xxtofl@exp E 0 COMRAM 1 cstackCOMRAM dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 ___xxtofl@val 5 0 COMRAM 1 cstackCOMRAM dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
@@ -1282,13 +1281,13 @@ __Lfarbss 0 0 FARRAM 0 farbss dist/default/production\final-project-tues-merrill
 ?_color_read_Red 9 0 COMRAM 1 cstackCOMRAM dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 _strlen 375A 0 CODE 0 text6 dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 __Lfardata 0 0 FARRAM 0 fardata dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
-isa$std 1 0 ABS 0 - C:\Users\merri\AppData\Local\Temp\xcAsgeo.o
+isa$std 1 0 ABS 0 - C:\Users\merri\AppData\Local\Temp\xcAsk7g.o
 ___fldiv@new_exp 24 0 COMRAM 1 cstackCOMRAM dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 _EUSART4RXbuf 9C 0 BANK0 1 bssBANK0 dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 _EUSART4TXbuf 60 0 BANK0 1 bssBANK0 dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 __size_of_vfprintf 0 0 ABS 0 - dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
-stackhi DE9 0 ABS 0 - C:\Users\merri\AppData\Local\Temp\xcAsgeo.o
-stacklo 1C4 0 ABS 0 - C:\Users\merri\AppData\Local\Temp\xcAsgeo.o
+stackhi DE9 0 ABS 0 - C:\Users\merri\AppData\Local\Temp\xcAsk7g.o
+stacklo 1C4 0 ABS 0 - C:\Users\merri\AppData\Local\Temp\xcAsk7g.o
 __Lintcode 8 0 CODE 0 intcode dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 __Lintret 0 0 ABS 0 intret dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 __Lirdata 0 0 CODE 0 irdata dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
@@ -1393,7 +1392,7 @@ __Ltext43 0 0 ABS 0 text43 dist/default/production\final-project-tues-merrill-yi
 __Ltext44 0 0 ABS 0 text44 dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 __Ltext45 0 0 ABS 0 text45 dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 __end_of_color_writetoaddr 392C 0 CODE 0 text26 dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
-__ramtop E00 0 RAM 0 ramtop C:\Users\merri\AppData\Local\Temp\xcAsgeo.o
+__ramtop E00 0 RAM 0 ramtop C:\Users\merri\AppData\Local\Temp\xcAsk7g.o
 _sprintf 3436 0 CODE 0 text1 dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 _HighISR 8 0 CODE 0 intcode dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 _vfprintf 33D4 0 CODE 0 text2 dist/default/production\final-project-tues-merrill-yi-wei.X.production.o

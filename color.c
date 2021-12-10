@@ -111,7 +111,7 @@ unsigned int determine_color_new(struct RGB_val *m){
     {out = 0;} 
     
     // Green - will output 1 
-    if (isbtw(RelR,0.2,0.49)==1 && isbtw(RelG,0.3,0.59)==1 && isbtw(RelB,0.7,0.9)==1)
+    if (isbtw(RelR,0.2,0.49)==1 && isbtw(RelG,0.28,0.59)==1 && isbtw(RelB,0.7,0.9)==1)
     {out = 1;} 
     
     // Blue - will output 2 (Good for 1)
@@ -127,7 +127,7 @@ unsigned int determine_color_new(struct RGB_val *m){
     {out = 4;}
     
      // Orange - will output 5
-    if (isbtw(RelR,3.5,4.85)==1 && isbtw(RelG,2.2,2.83)==1 && isbtw(RelB,1.48,1.8)==1)
+    if (isbtw(RelR,3.1,4.85)==1 && isbtw(RelG,2.2,2.83)==1 && isbtw(RelB,1.27,1.8)==1)
     {out = 5;}
     
      // Light Blue - will output 6 
@@ -139,8 +139,9 @@ unsigned int determine_color_new(struct RGB_val *m){
     {out = 7;}
     
      // Black - will output 8 (FOR RIGHT IS WEAK)
-    if (RedRatio < 100 || GreenRatio < 100 || BlueRatio < 100)
-    {out = 8;}
+    if (RedRatio < 50 && GreenRatio < 50 && BlueRatio < 50) {out = 8;}
     
     return out;    
 }
+
+

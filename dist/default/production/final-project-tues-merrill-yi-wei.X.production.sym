@@ -649,7 +649,7 @@ text18 E4E 39AD CODE E4E 0
 %locals
 dist/default/production\final-project-tues-merrill-yi-wei.X.production.o
 C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f67k40.h
-C:\Users\merri\AppData\Local\Temp\xcAsgeo.s
+C:\Users\merri\AppData\Local\Temp\xcAsk7g.s
 8301 38C6 0 CODE 0
 8303 38C6 0 CODE 0
 8306 38C6 0 CODE 0
@@ -1008,9 +1008,8 @@ color.c
 138 181E 0 CODE 0
 139 18F0 0 CODE 0
 142 18FA 0 CODE 0
-143 193E 0 CODE 0
-145 1946 0 CODE 0
-146 194E 0 CODE 0
+144 1946 0 CODE 0
+145 194E 0 CODE 0
 color.c
 78 335A 0 CODE 0
 79 335A 0 CODE 0
@@ -1385,8 +1384,8 @@ interrupts.c
 16 3988 0 CODE 0
 17 398A 0 CODE 0
 18 398C 0 CODE 0
-C:\Users\merri\AppData\Local\Temp\xcAsgeo.s
-18668 8 0 CODE 0
+C:\Users\merri\AppData\Local\Temp\xcAsk7g.s
+18666 8 0 CODE 0
 interrupts.c
 24 8 0 CODE 0
 26 12 0 CODE 0
