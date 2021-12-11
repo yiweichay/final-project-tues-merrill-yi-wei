@@ -61,11 +61,11 @@ void main(void){
     test.B = 0;
     
     // Initialise Front LEDs 
-    LATGbits.LATG1=0;   //set initial output state
+    LATGbits.LATG1=1;   //set initial output state
     TRISGbits.TRISG1=0; //set TRIS value for pin (output)
-    LATAbits.LATA4=0;   //set initial output state
+    LATAbits.LATA4=1;   //set initial output state
     TRISAbits.TRISA4=0; //set TRIS value for pin (output)
-    LATFbits.LATF7=0;   //set initial output state
+    LATFbits.LATF7=1;   //set initial output state
     TRISFbits.TRISF7=0; //set TRIS value for pin (output)
     
     // LEDs on board
@@ -73,18 +73,8 @@ void main(void){
     LATDbits.LATD7 = 0;
     TRISHbits.TRISH3 = 0;
     LATHbits.LATH3 = 0;
-//    
-//    char string[30];
-//    char string0[30];
-//    char string1[30];
-//    char string2[30];
-//    char string3[30];
+    
     unsigned int RedRatio, GreenRatio, BlueRatio;
-   
-    // Turn on Front White LED Lights
-    LATGbits.LATG1=1;   
-    LATAbits.LATA4=1;   
-    LATFbits.LATF7=1; 
     
     // Calibration Function
     unsigned int cal = 0;
