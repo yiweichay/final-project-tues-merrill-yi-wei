@@ -3,8 +3,8 @@ Version 4.0 HI-TECH Software Intermediate Code
 "18 ./dc_motor.h
 [; ;./dc_motor.h: 18: void initDCmotorsPWM(int PWMperiod);
 [v _initDCmotorsPWM `(v ~T0 @X0 0 ef1`i ]
-"26 ./color.h
-[; ;./color.h: 26: void color_click_init(void);
+"27 ./color.h
+[; ;./color.h: 27: void color_click_init(void);
 [v _color_click_init `(v ~T0 @X0 0 ef ]
 "23 ./serial.h
 [; ;./serial.h: 23: void initUSART4(void);
@@ -52,8 +52,8 @@ Version 4.0 HI-TECH Software Intermediate Code
 [v _LATG `Vuc ~T0 @X0 0 e@3967 ]
 "11 ./color.h
 [; ;./color.h: 11: struct RGB_val {
-[s S2022 `ui 1 `ui 1 `ui 1 `ui 1 `ui 1 `ui 1 `ui 1 `ui 1 `ui 1 ]
-[n S2022 RGB_val blackR blackG blackB whiteR whiteG whiteB R G B ]
+[s S2022 `ui 1 `ui 1 `ui 1 `ui 1 `ui 1 `ui 1 `ui 1 `ui 1 `ui 1 `ui 1 ]
+[n S2022 RGB_val blackR blackG blackB whiteR whiteG whiteB C R G B ]
 "29191 C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f67k40.h
 [; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f67k40.h: 29191:     struct {
 [s S1361 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
@@ -204,15 +204,15 @@ Version 4.0 HI-TECH Software Intermediate Code
 "30646
 [; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f67k40.h: 30646: extern volatile PORTFbits_t PORTFbits __attribute__((address(0xF8E)));
 [v _PORTFbits `VS1414 ~T0 @X0 0 e@3982 ]
-"44 ./color.h
-[; ;./color.h: 44: void calibrateW(struct RGB_val *m);
+"46 ./color.h
+[; ;./color.h: 46: void calibrateW(struct RGB_val *m);
 [v _calibrateW `(v ~T0 @X0 0 ef1`*S2022 ]
 [v F14184 `(v ~T0 @X0 1 tf1`ul ]
 "203 C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\pic18.h
 [v __delay `JF14184 ~T0 @X0 0 e ]
 [p i __delay ]
-"45 ./color.h
-[; ;./color.h: 45: void calibrateB(struct RGB_val *m);
+"47 ./color.h
+[; ;./color.h: 47: void calibrateB(struct RGB_val *m);
 [v _calibrateB `(v ~T0 @X0 0 ef1`*S2022 ]
 "113 C:\Program Files\Microchip\xc8\v2.32\pic\include\c99\stdio.h
 [v _sprintf `(i ~T0 @X0 0 e1v`*uc`*Cuc ]
@@ -222,12 +222,15 @@ Version 4.0 HI-TECH Software Intermediate Code
 "38
 [; ;./serial.h: 38: void sendTxBuf(void);
 [v _sendTxBuf `(v ~T0 @X0 0 ef ]
-"42 ./color.h
-[; ;./color.h: 42: void read_colours(struct RGB_val *m);
+"44 ./color.h
+[; ;./color.h: 44: void read_colours(struct RGB_val *m);
 [v _read_colours `(v ~T0 @X0 0 ef1`*S2022 ]
-"46
-[; ;./color.h: 46: unsigned int determine_color_new(struct RGB_val *m);
+"48
+[; ;./color.h: 48: unsigned int determine_color_new(struct RGB_val *m);
 [v _determine_color_new `(ui ~T0 @X0 0 ef1`*S2022 ]
+"49
+[; ;./color.h: 49: unsigned int lumin(struct RGB_val *m);
+[v _lumin `(ui ~T0 @X0 0 ef1`*S2022 ]
 "2 main.c
 [p x FEXTOSC  =  HS      ]
 "3
@@ -2319,276 +2322,333 @@ Version 4.0 HI-TECH Software Intermediate Code
 [; ;main.c: 49:     struct RGB_val test;
 [v _test `S2022 ~T0 @X0 1 a ]
 "50
-[; ;main.c: 50:     test.R = 0;
+[; ;main.c: 50:     test.C = 0;
 [e = . _test 6 -> -> 0 `i `ui ]
 "51
-[; ;main.c: 51:     test.G = 0;
+[; ;main.c: 51:     test.R = 0;
 [e = . _test 7 -> -> 0 `i `ui ]
 "52
-[; ;main.c: 52:     test.B = 0;
+[; ;main.c: 52:     test.G = 0;
 [e = . _test 8 -> -> 0 `i `ui ]
-"55
-[; ;main.c: 55:     LATGbits.LATG1=0;
-[e = . . _LATGbits 0 1 -> -> 0 `i `uc ]
+"53
+[; ;main.c: 53:     test.B = 0;
+[e = . _test 9 -> -> 0 `i `ui ]
 "56
-[; ;main.c: 56:     TRISGbits.TRISG1=0;
-[e = . . _TRISGbits 0 1 -> -> 0 `i `uc ]
+[; ;main.c: 56:     LATGbits.LATG1=0;
+[e = . . _LATGbits 0 1 -> -> 0 `i `uc ]
 "57
-[; ;main.c: 57:     LATAbits.LATA4=0;
-[e = . . _LATAbits 0 4 -> -> 0 `i `uc ]
+[; ;main.c: 57:     TRISGbits.TRISG1=0;
+[e = . . _TRISGbits 0 1 -> -> 0 `i `uc ]
 "58
-[; ;main.c: 58:     TRISAbits.TRISA4=0;
-[e = . . _TRISAbits 0 4 -> -> 0 `i `uc ]
+[; ;main.c: 58:     LATAbits.LATA4=0;
+[e = . . _LATAbits 0 4 -> -> 0 `i `uc ]
 "59
-[; ;main.c: 59:     LATFbits.LATF7=0;
-[e = . . _LATFbits 0 7 -> -> 0 `i `uc ]
+[; ;main.c: 59:     TRISAbits.TRISA4=0;
+[e = . . _TRISAbits 0 4 -> -> 0 `i `uc ]
 "60
-[; ;main.c: 60:     TRISFbits.TRISF7=0;
+[; ;main.c: 60:     LATFbits.LATF7=0;
+[e = . . _LATFbits 0 7 -> -> 0 `i `uc ]
+"61
+[; ;main.c: 61:     TRISFbits.TRISF7=0;
 [e = . . _TRISFbits 0 7 -> -> 0 `i `uc ]
-"63
-[; ;main.c: 63:     TRISDbits.TRISD7 = 0;
-[e = . . _TRISDbits 0 7 -> -> 0 `i `uc ]
 "64
-[; ;main.c: 64:     LATDbits.LATD7 = 0;
+[; ;main.c: 64:     TRISDbits.TRISD7 = 0;
+[e = . . _TRISDbits 0 7 -> -> 0 `i `uc ]
+"65
+[; ;main.c: 65:     LATDbits.LATD7 = 0;
 [e = . . _LATDbits 0 7 -> -> 0 `i `uc ]
-"67
-[; ;main.c: 67:     TRISHbits.TRISH3 = 0;
-[e = . . _TRISHbits 0 3 -> -> 0 `i `uc ]
 "68
-[; ;main.c: 68:     LATHbits.LATH3 = 0;
+[; ;main.c: 68:     TRISHbits.TRISH3 = 0;
+[e = . . _TRISHbits 0 3 -> -> 0 `i `uc ]
+"69
+[; ;main.c: 69:     LATHbits.LATH3 = 0;
 [e = . . _LATHbits 0 3 -> -> 0 `i `uc ]
-"70
-[; ;main.c: 70:     char string[30];
-[v _string `uc ~T0 @X0 -> 30 `i a ]
 "71
-[; ;main.c: 71:     char string0[30];
-[v _string0 `uc ~T0 @X0 -> 30 `i a ]
+[; ;main.c: 71:     char string[30];
+[v _string `uc ~T0 @X0 -> 30 `i a ]
 "72
-[; ;main.c: 72:     char string1[30];
-[v _string1 `uc ~T0 @X0 -> 30 `i a ]
+[; ;main.c: 72:     char string0[30];
+[v _string0 `uc ~T0 @X0 -> 30 `i a ]
 "73
-[; ;main.c: 73:     char string2[30];
-[v _string2 `uc ~T0 @X0 -> 30 `i a ]
+[; ;main.c: 73:     char string1[30];
+[v _string1 `uc ~T0 @X0 -> 30 `i a ]
 "74
-[; ;main.c: 74:     char string3[30];
-[v _string3 `uc ~T0 @X0 -> 30 `i a ]
+[; ;main.c: 74:     char string2[30];
+[v _string2 `uc ~T0 @X0 -> 30 `i a ]
 "75
-[; ;main.c: 75:     unsigned int RedRatio, GreenRatio, BlueRatio;
+[; ;main.c: 75:     char string3[30];
+[v _string3 `uc ~T0 @X0 -> 30 `i a ]
+"76
+[; ;main.c: 76:     unsigned int RedRatio, GreenRatio, BlueRatio;
 [v _RedRatio `ui ~T0 @X0 1 a ]
 [v _GreenRatio `ui ~T0 @X0 1 a ]
 [v _BlueRatio `ui ~T0 @X0 1 a ]
-"77
-[; ;main.c: 77:     LATGbits.LATG1=1;
-[e = . . _LATGbits 0 1 -> -> 1 `i `uc ]
 "78
-[; ;main.c: 78:     LATAbits.LATA4=1;
-[e = . . _LATAbits 0 4 -> -> 1 `i `uc ]
+[; ;main.c: 78:     LATGbits.LATG1=1;
+[e = . . _LATGbits 0 1 -> -> 1 `i `uc ]
 "79
-[; ;main.c: 79:     LATFbits.LATF7=1;
+[; ;main.c: 79:     LATAbits.LATA4=1;
+[e = . . _LATAbits 0 4 -> -> 1 `i `uc ]
+"80
+[; ;main.c: 80:     LATFbits.LATF7=1;
 [e = . . _LATFbits 0 7 -> -> 1 `i `uc ]
-"81
-[; ;main.c: 81:     unsigned int cal = 0;
+"82
+[; ;main.c: 82:     unsigned int cal = 0;
 [v _cal `ui ~T0 @X0 1 a ]
 [e = _cal -> -> 0 `i `ui ]
-"84
-[; ;main.c: 84:     while(cal==0){
+"85
+[; ;main.c: 85:     while(cal==0){
 [e $U 2024  ]
 [e :U 2025 ]
 {
-"85
-[; ;main.c: 85:         LATDbits.LATD7 = 1;
-[e = . . _LATDbits 0 7 -> -> 1 `i `uc ]
 "86
-[; ;main.c: 86:         while (PORTFbits.RF2);
+[; ;main.c: 86:         LATDbits.LATD7 = 1;
+[e = . . _LATDbits 0 7 -> -> 1 `i `uc ]
+"87
+[; ;main.c: 87:         while (PORTFbits.RF2);
 [e $U 2027  ]
 [e :U 2028 ]
 [e :U 2027 ]
 [e $ != -> . . _PORTFbits 0 2 `i -> 0 `i 2028  ]
 [e :U 2029 ]
-"87
-[; ;main.c: 87:         if (!PORTFbits.RF2){
+"88
+[; ;main.c: 88:         if (!PORTFbits.RF2){
 [e $ ! ! != -> . . _PORTFbits 0 2 `i -> 0 `i 2030  ]
 {
-"88
-[; ;main.c: 88:             LATDbits.LATD7 = 0;
-[e = . . _LATDbits 0 7 -> -> 0 `i `uc ]
 "89
-[; ;main.c: 89:             calibrateW(&test);
-[e ( _calibrateW (1 &U _test ]
+[; ;main.c: 89:             LATDbits.LATD7 = 0;
+[e = . . _LATDbits 0 7 -> -> 0 `i `uc ]
 "90
-[; ;main.c: 90:             _delay((unsigned long)((300)*(64000000/4000.0)));
-[e ( __delay (1 -> * -> -> 300 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
+[; ;main.c: 90:             calibrateW(&test);
+[e ( _calibrateW (1 &U _test ]
 "91
-[; ;main.c: 91:             }
+[; ;main.c: 91:             _delay((unsigned long)((300)*(64000000/4000.0)));
+[e ( __delay (1 -> * -> -> 300 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
+"92
+[; ;main.c: 92:             }
 }
 [e :U 2030 ]
-"93
-[; ;main.c: 93:         LATDbits.LATD7 = 1;
-[e = . . _LATDbits 0 7 -> -> 1 `i `uc ]
 "94
-[; ;main.c: 94:         while (PORTFbits.RF2);
+[; ;main.c: 94:         LATDbits.LATD7 = 1;
+[e = . . _LATDbits 0 7 -> -> 1 `i `uc ]
+"95
+[; ;main.c: 95:         while (PORTFbits.RF2);
 [e $U 2031  ]
 [e :U 2032 ]
 [e :U 2031 ]
 [e $ != -> . . _PORTFbits 0 2 `i -> 0 `i 2032  ]
 [e :U 2033 ]
-"95
-[; ;main.c: 95:         if (!PORTFbits.RF2){
+"96
+[; ;main.c: 96:         if (!PORTFbits.RF2){
 [e $ ! ! != -> . . _PORTFbits 0 2 `i -> 0 `i 2034  ]
 {
-"96
-[; ;main.c: 96:             LATDbits.LATD7 = 0;
-[e = . . _LATDbits 0 7 -> -> 0 `i `uc ]
 "97
-[; ;main.c: 97:             calibrateB(&test);
-[e ( _calibrateB (1 &U _test ]
+[; ;main.c: 97:             LATDbits.LATD7 = 0;
+[e = . . _LATDbits 0 7 -> -> 0 `i `uc ]
 "98
-[; ;main.c: 98:             _delay((unsigned long)((300)*(64000000/4000.0)));
-[e ( __delay (1 -> * -> -> 300 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
+[; ;main.c: 98:             calibrateB(&test);
+[e ( _calibrateB (1 &U _test ]
 "99
-[; ;main.c: 99:             }
+[; ;main.c: 99:             _delay((unsigned long)((300)*(64000000/4000.0)));
+[e ( __delay (1 -> * -> -> 300 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
+"100
+[; ;main.c: 100:             }
 }
 [e :U 2034 ]
-"101
-[; ;main.c: 101:         sprintf(string0," W R:%d G:%d B:%d \r\n",test.whiteR,test.whiteG,test.whiteB);
-[e ( _sprintf (1 , , , (. , &U _string0 :s 1C . _test 3 . _test 4 . _test 5 ]
 "102
-[; ;main.c: 102:         TxBufferedString(string0);
-[e ( _TxBufferedString (1 &U _string0 ]
+[; ;main.c: 102:         sprintf(string0," W R:%d G:%d B:%d \r\n",test.whiteR,test.whiteG,test.whiteB);
+[e ( _sprintf (1 , , , (. , &U _string0 :s 1C . _test 3 . _test 4 . _test 5 ]
 "103
-[; ;main.c: 103:         sendTxBuf();
-[e ( _sendTxBuf ..  ]
+[; ;main.c: 103:         TxBufferedString(string0);
+[e ( _TxBufferedString (1 &U _string0 ]
 "104
-[; ;main.c: 104:         _delay((unsigned long)((50)*(64000000/4000.0)));
-[e ( __delay (1 -> * -> -> 50 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
-"106
-[; ;main.c: 106:         sprintf(string," B R:%d G:%d B:%d \r\n",test.blackR,test.blackG,test.blackB);
-[e ( _sprintf (1 , , , (. , &U _string :s 2C . _test 0 . _test 1 . _test 2 ]
-"107
-[; ;main.c: 107:         TxBufferedString(string);
-[e ( _TxBufferedString (1 &U _string ]
-"108
-[; ;main.c: 108:         sendTxBuf();
+[; ;main.c: 104:         sendTxBuf();
 [e ( _sendTxBuf ..  ]
-"109
-[; ;main.c: 109:         _delay((unsigned long)((50)*(64000000/4000.0)));
+"105
+[; ;main.c: 105:         _delay((unsigned long)((50)*(64000000/4000.0)));
 [e ( __delay (1 -> * -> -> 50 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
-"111
-[; ;main.c: 111:         LATHbits.LATH3 = 1;
-[e = . . _LATHbits 0 3 -> -> 1 `i `uc ]
+"107
+[; ;main.c: 107:         sprintf(string," B R:%d G:%d B:%d \r\n",test.blackR,test.blackG,test.blackB);
+[e ( _sprintf (1 , , , (. , &U _string :s 2C . _test 0 . _test 1 . _test 2 ]
+"108
+[; ;main.c: 108:         TxBufferedString(string);
+[e ( _TxBufferedString (1 &U _string ]
+"109
+[; ;main.c: 109:         sendTxBuf();
+[e ( _sendTxBuf ..  ]
+"110
+[; ;main.c: 110:         _delay((unsigned long)((50)*(64000000/4000.0)));
+[e ( __delay (1 -> * -> -> 50 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
 "112
-[; ;main.c: 112:         while (PORTFbits.RF3);
+[; ;main.c: 112:         LATHbits.LATH3 = 1;
+[e = . . _LATHbits 0 3 -> -> 1 `i `uc ]
+"113
+[; ;main.c: 113:         while (PORTFbits.RF3);
 [e $U 2035  ]
 [e :U 2036 ]
 [e :U 2035 ]
 [e $ != -> . . _PORTFbits 0 3 `i -> 0 `i 2036  ]
 [e :U 2037 ]
-"113
-[; ;main.c: 113:         if (!PORTFbits.RF3){
+"114
+[; ;main.c: 114:         if (!PORTFbits.RF3){
 [e $ ! ! != -> . . _PORTFbits 0 3 `i -> 0 `i 2038  ]
 {
-"114
-[; ;main.c: 114:             LATHbits.LATH3 = 0;
-[e = . . _LATHbits 0 3 -> -> 0 `i `uc ]
 "115
-[; ;main.c: 115:             cal = 1;
-[e = _cal -> -> 1 `i `ui ]
+[; ;main.c: 115:             LATHbits.LATH3 = 0;
+[e = . . _LATHbits 0 3 -> -> 0 `i `uc ]
 "116
-[; ;main.c: 116:         }
+[; ;main.c: 116:             cal = 1;
+[e = _cal -> -> 1 `i `ui ]
+"117
+[; ;main.c: 117:         }
 }
 [e :U 2038 ]
-"117
-[; ;main.c: 117:     }
+"118
+[; ;main.c: 118:     }
 }
 [e :U 2024 ]
-"84
-[; ;main.c: 84:     while(cal==0){
+"85
+[; ;main.c: 85:     while(cal==0){
 [e $ == _cal -> -> 0 `i `ui 2025  ]
 [e :U 2026 ]
-"119
-[; ;main.c: 119:     while(1){
+"120
+[; ;main.c: 120:     unsigned int check1 = 9;
+[v _check1 `ui ~T0 @X0 1 a ]
+[e = _check1 -> -> 9 `i `ui ]
+"121
+[; ;main.c: 121:     unsigned int check2 = 9;
+[v _check2 `ui ~T0 @X0 1 a ]
+[e = _check2 -> -> 9 `i `ui ]
+"122
+[; ;main.c: 122:     unsigned int check3 = 9;
+[v _check3 `ui ~T0 @X0 1 a ]
+[e = _check3 -> -> 9 `i `ui ]
+"123
+[; ;main.c: 123:     unsigned int count = 0;
+[v _count `ui ~T0 @X0 1 a ]
+[e = _count -> -> 0 `i `ui ]
+"125
+[; ;main.c: 125:     while(1){
 [e :U 2040 ]
 {
-"120
-[; ;main.c: 120:         unsigned int output;
-[v _output `ui ~T0 @X0 1 a ]
-"121
-[; ;main.c: 121:         read_colours(&test);
-[e ( _read_colours (1 &U _test ]
-"122
-[; ;main.c: 122:         output = determine_color_new(&test);
-[e = _output ( _determine_color_new (1 &U _test ]
-"123
-[; ;main.c: 123:         RedRatio = ((float)(test.R - test.blackR) / (float)(test.whiteR - test.blackR)) * 10000;
-[e = _RedRatio -> * / -> - . _test 6 . _test 0 `f -> - . _test 3 . _test 0 `f -> -> 10000 `i `f `ui ]
-"124
-[; ;main.c: 124:         GreenRatio = ((float)(test.G - test.blackG) / (float)(test.whiteG - test.blackG)) * 10000;
-[e = _GreenRatio -> * / -> - . _test 7 . _test 1 `f -> - . _test 4 . _test 1 `f -> -> 10000 `i `f `ui ]
-"125
-[; ;main.c: 125:         BlueRatio = ((float)(test.B - test.blackB) / (float)(test.whiteB - test.blackB)) * 10000;
-[e = _BlueRatio -> * / -> - . _test 8 . _test 2 `f -> - . _test 5 . _test 2 `f -> -> 10000 `i `f `ui ]
+"126
+[; ;main.c: 126:         unsigned int detected_colour;
+[v _detected_colour `ui ~T0 @X0 1 a ]
 "127
-[; ;main.c: 127:         sprintf(string1," R:%d ",RedRatio);
-[e ( _sprintf (1 , (. , &U _string1 :s 3C _RedRatio ]
+[; ;main.c: 127:         unsigned int brightness;
+[v _brightness `ui ~T0 @X0 1 a ]
 "128
-[; ;main.c: 128:         TxBufferedString(string1);
-[e ( _TxBufferedString (1 &U _string1 ]
-"129
-[; ;main.c: 129:         sendTxBuf();
-[e ( _sendTxBuf ..  ]
+[; ;main.c: 128:         read_colours(&test);
+[e ( _read_colours (1 &U _test ]
 "130
-[; ;main.c: 130:         _delay((unsigned long)((150)*(64000000/4000.0)));
-[e ( __delay (1 -> * -> -> 150 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
+[; ;main.c: 130:         if (count==0) {check1 = determine_color_new(&test);count+=1;}
+[e $ ! == _count -> -> 0 `i `ui 2042  ]
+{
+[e = _check1 ( _determine_color_new (1 &U _test ]
+[e =+ _count -> -> 1 `i `ui ]
+}
+[e :U 2042 ]
+"131
+[; ;main.c: 131:         if (count==1) {check2 = determine_color_new(&test);count+=1;}
+[e $ ! == _count -> -> 1 `i `ui 2043  ]
+{
+[e = _check2 ( _determine_color_new (1 &U _test ]
+[e =+ _count -> -> 1 `i `ui ]
+}
+[e :U 2043 ]
 "132
-[; ;main.c: 132:         sprintf(string2," G:%d ",GreenRatio);
-[e ( _sprintf (1 , (. , &U _string2 :s 4C _GreenRatio ]
-"133
-[; ;main.c: 133:         TxBufferedString(string2);
-[e ( _TxBufferedString (1 &U _string2 ]
-"134
-[; ;main.c: 134:         sendTxBuf();
-[e ( _sendTxBuf ..  ]
+[; ;main.c: 132:         if (count==2) {check3 = determine_color_new(&test);count=0;}
+[e $ ! == _count -> -> 2 `i `ui 2044  ]
+{
+[e = _check3 ( _determine_color_new (1 &U _test ]
+[e = _count -> -> 0 `i `ui ]
+}
+[e :U 2044 ]
 "135
-[; ;main.c: 135:         _delay((unsigned long)((150)*(64000000/4000.0)));
-[e ( __delay (1 -> * -> -> 150 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
+[; ;main.c: 135:         if (check1 == check2 && check2 == check3){
+[e $ ! && == _check1 _check2 == _check2 _check3 2045  ]
+{
+"136
+[; ;main.c: 136:             detected_colour = check1;
+[e = _detected_colour _check1 ]
 "137
-[; ;main.c: 137:         sprintf(string3," B:%d ",BlueRatio);
-[e ( _sprintf (1 , (. , &U _string3 :s 5C _BlueRatio ]
-"138
-[; ;main.c: 138:         TxBufferedString(string3);
-[e ( _TxBufferedString (1 &U _string3 ]
-"139
-[; ;main.c: 139:         sendTxBuf();
-[e ( _sendTxBuf ..  ]
-"140
-[; ;main.c: 140:         _delay((unsigned long)((150)*(64000000/4000.0)));
-[e ( __delay (1 -> * -> -> 150 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
-"142
-[; ;main.c: 142:         sprintf(string," Color:%d \r\n",output);
-[e ( _sprintf (1 , (. , &U _string :s 6C _output ]
+[; ;main.c: 137:         }
+}
+[e :U 2045 ]
 "143
-[; ;main.c: 143:         TxBufferedString(string);
-[e ( _TxBufferedString (1 &U _string ]
+[; ;main.c: 143:         RedRatio = ((float)(test.R - test.blackR) / (float)(test.whiteR - test.blackR)) * 10000;
+[e = _RedRatio -> * / -> - . _test 7 . _test 0 `f -> - . _test 3 . _test 0 `f -> -> 10000 `i `f `ui ]
 "144
-[; ;main.c: 144:         sendTxBuf();
-[e ( _sendTxBuf ..  ]
+[; ;main.c: 144:         GreenRatio = ((float)(test.G - test.blackG) / (float)(test.whiteG - test.blackG)) * 10000;
+[e = _GreenRatio -> * / -> - . _test 8 . _test 1 `f -> - . _test 4 . _test 1 `f -> -> 10000 `i `f `ui ]
 "145
-[; ;main.c: 145:         _delay((unsigned long)((50)*(64000000/4000.0)));
-[e ( __delay (1 -> * -> -> 50 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
+[; ;main.c: 145:         BlueRatio = ((float)(test.B - test.blackB) / (float)(test.whiteB - test.blackB)) * 10000;
+[e = _BlueRatio -> * / -> - . _test 9 . _test 2 `f -> - . _test 5 . _test 2 `f -> -> 10000 `i `f `ui ]
 "146
-[; ;main.c: 146:     }
+[; ;main.c: 146:         brightness = lumin(&test);
+[e = _brightness ( _lumin (1 &U _test ]
+"148
+[; ;main.c: 148:         sprintf(string1," R:%d ",RedRatio);
+[e ( _sprintf (1 , (. , &U _string1 :s 3C _RedRatio ]
+"149
+[; ;main.c: 149:         TxBufferedString(string1);
+[e ( _TxBufferedString (1 &U _string1 ]
+"150
+[; ;main.c: 150:         sendTxBuf();
+[e ( _sendTxBuf ..  ]
+"151
+[; ;main.c: 151:         _delay((unsigned long)((150)*(64000000/4000.0)));
+[e ( __delay (1 -> * -> -> 150 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
+"153
+[; ;main.c: 153:         sprintf(string2," G:%d ",GreenRatio);
+[e ( _sprintf (1 , (. , &U _string2 :s 4C _GreenRatio ]
+"154
+[; ;main.c: 154:         TxBufferedString(string2);
+[e ( _TxBufferedString (1 &U _string2 ]
+"155
+[; ;main.c: 155:         sendTxBuf();
+[e ( _sendTxBuf ..  ]
+"156
+[; ;main.c: 156:         _delay((unsigned long)((150)*(64000000/4000.0)));
+[e ( __delay (1 -> * -> -> 150 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
+"158
+[; ;main.c: 158:         sprintf(string3," B:%d ",BlueRatio);
+[e ( _sprintf (1 , (. , &U _string3 :s 5C _BlueRatio ]
+"159
+[; ;main.c: 159:         TxBufferedString(string3);
+[e ( _TxBufferedString (1 &U _string3 ]
+"160
+[; ;main.c: 160:         sendTxBuf();
+[e ( _sendTxBuf ..  ]
+"161
+[; ;main.c: 161:         _delay((unsigned long)((150)*(64000000/4000.0)));
+[e ( __delay (1 -> * -> -> 150 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
+"163
+[; ;main.c: 163:         sprintf(string," Color:%d B:%d\r\n",detected_colour,brightness);
+[e ( _sprintf (1 , , (. , &U _string :s 6C _detected_colour _brightness ]
+"164
+[; ;main.c: 164:         TxBufferedString(string);
+[e ( _TxBufferedString (1 &U _string ]
+"165
+[; ;main.c: 165:         sendTxBuf();
+[e ( _sendTxBuf ..  ]
+"166
+[; ;main.c: 166:         _delay((unsigned long)((50)*(64000000/4000.0)));
+[e ( __delay (1 -> * -> -> 50 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
+"167
+[; ;main.c: 167:     }
 }
 [e :U 2039 ]
 [e $U 2040  ]
 [e :U 2041 ]
-"147
-[; ;main.c: 147: }
+"168
+[; ;main.c: 168: }
 [e :UE 2023 ]
 }
 [p f _sprintf 8388736 ]
 [a 3C 32 82 58 37 100 32 0 ]
 [a 4C 32 71 58 37 100 32 0 ]
 [a 5C 32 66 58 37 100 32 0 ]
-[a 6C 32 67 111 108 111 114 58 37 100 32 13 10 0 ]
+[a 6C 32 67 111 108 111 114 58 37 100 32 66 58 37 100 13 10 0 ]
 [a 1C 32 87 32 82 58 37 100 32 71 58 37 100 32 66 58 37 100 32 13 10 0 ]
 [a 2C 32 66 32 82 58 37 100 32 71 58 37 100 32 66 58 37 100 32 13 10 0 ]

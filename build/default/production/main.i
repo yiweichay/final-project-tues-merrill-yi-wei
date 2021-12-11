@@ -24902,6 +24902,7 @@ struct RGB_val {
         unsigned int whiteR;
         unsigned int whiteG;
         unsigned int whiteB;
+        unsigned int C;
         unsigned int R;
         unsigned int G;
         unsigned int B;
@@ -24923,6 +24924,7 @@ void color_writetoaddr(char address, char value);
 
 
 
+unsigned int color_read_Clear(void);
 unsigned int color_read_Red(void);
 unsigned int color_read_Green(void);
 unsigned int color_read_Blue(void);
@@ -24931,6 +24933,7 @@ unsigned int isbtw(float num, float low, float high);
 void calibrateW(struct RGB_val *m);
 void calibrateB(struct RGB_val *m);
 unsigned int determine_color_new(struct RGB_val *m);
+unsigned int lumin(struct RGB_val *m);
 # 12 "main.c" 2
 
 
@@ -24981,6 +24984,7 @@ void main(void){
 
 
     struct RGB_val test;
+    test.C = 0;
     test.R = 0;
     test.G = 0;
     test.B = 0;
@@ -25050,13 +25054,33 @@ void main(void){
         }
     }
 
+    unsigned int check1 = 9;
+    unsigned int check2 = 9;
+    unsigned int check3 = 9;
+    unsigned int count = 0;
+
     while(1){
-        unsigned int output;
+        unsigned int detected_colour;
+        unsigned int brightness;
         read_colours(&test);
-        output = determine_color_new(&test);
+
+        if (count==0) {check1 = determine_color_new(&test);count+=1;}
+        if (count==1) {check2 = determine_color_new(&test);count+=1;}
+        if (count==2) {check3 = determine_color_new(&test);count=0;}
+
+
+        if (check1 == check2 && check2 == check3){
+            detected_colour = check1;
+        }
+
+
+
+
+
         RedRatio = ((float)(test.R - test.blackR) / (float)(test.whiteR - test.blackR)) * 10000;
         GreenRatio = ((float)(test.G - test.blackG) / (float)(test.whiteG - test.blackG)) * 10000;
         BlueRatio = ((float)(test.B - test.blackB) / (float)(test.whiteB - test.blackB)) * 10000;
+        brightness = lumin(&test);
 
         sprintf(string1," R:%d ",RedRatio);
         TxBufferedString(string1);
@@ -25073,7 +25097,7 @@ void main(void){
         sendTxBuf();
         _delay((unsigned long)((150)*(64000000/4000.0)));
 
-        sprintf(string," Color:%d \r\n",output);
+        sprintf(string," Color:%d B:%d\r\n",detected_colour,brightness);
         TxBufferedString(string);
         sendTxBuf();
         _delay((unsigned long)((50)*(64000000/4000.0)));

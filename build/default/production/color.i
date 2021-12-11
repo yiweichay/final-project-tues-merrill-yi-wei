@@ -24723,6 +24723,7 @@ struct RGB_val {
         unsigned int whiteR;
         unsigned int whiteG;
         unsigned int whiteB;
+        unsigned int C;
         unsigned int R;
         unsigned int G;
         unsigned int B;
@@ -24744,6 +24745,7 @@ void color_writetoaddr(char address, char value);
 
 
 
+unsigned int color_read_Clear(void);
 unsigned int color_read_Red(void);
 unsigned int color_read_Green(void);
 unsigned int color_read_Blue(void);
@@ -24752,6 +24754,7 @@ unsigned int isbtw(float num, float low, float high);
 void calibrateW(struct RGB_val *m);
 void calibrateB(struct RGB_val *m);
 unsigned int determine_color_new(struct RGB_val *m);
+unsigned int lumin(struct RGB_val *m);
 # 3 "color.c" 2
 
 
@@ -24812,6 +24815,21 @@ void color_writetoaddr(char address, char value){
     I2C_2_Master_Stop();
 }
 
+
+unsigned int color_read_Clear(void)
+{
+ unsigned int tmp;
+    I2C_2_Master_Start();
+    I2C_2_Master_Write(0x52 | 0x00);
+ I2C_2_Master_Write(0xA0 | 0x14);
+ I2C_2_Master_RepStart();
+ I2C_2_Master_Write(0x52 | 0x01);
+ tmp=I2C_2_Master_Read(1);
+ tmp=tmp | (I2C_2_Master_Read(0)<<8);
+    I2C_2_Master_Stop();
+    return tmp;
+}
+
 unsigned int color_read_Red(void)
 {
  unsigned int tmp;
@@ -24853,6 +24871,7 @@ unsigned int color_read_Blue(void){
 }
 
 void read_colours(struct RGB_val *m){
+    (m->C) = color_read_Clear();
     (m->R) = color_read_Red();
     (m->G) = color_read_Green();
     (m->B) = color_read_Blue();
@@ -24880,6 +24899,8 @@ unsigned int determine_color_new(struct RGB_val *m){
     float RelR, RelG, RelB;
     unsigned int out = 9;
 
+    unsigned int lumin = (0.2126*(m->R)) + (0.7152*(m->G)) + (0.0722*(m->B));
+
 
     RedRatio = ((float)(m->R - m->blackR) / (float)(m->whiteR - m->blackR))*10000;
     GreenRatio = ((float)(m->G - m->blackG) / (float)(m->whiteG - m->blackG))*10000;
@@ -24889,8 +24910,12 @@ unsigned int determine_color_new(struct RGB_val *m){
     RelG = (float)RedRatio / (float)BlueRatio;
     RelB = (float)BlueRatio / (float)GreenRatio;
 
+    if (RelR < 0) {RelR = 0;}
+    if (RelG < 0) {RelG = 0;}
+    if (RelB < 0) {RelB = 0;}
 
-    if (isbtw(RelR,5.1,9.9)==1 && isbtw(RelG,2.2,3.4)==1 && isbtw(RelB,1.8,3.1)==1)
+
+    if (isbtw(RelR,5.1,20.5)==1 && isbtw(RelG,2.2,3.8)==1 && isbtw(RelB,1.8,5.5)==1)
     {out = 0;}
 
 
@@ -24906,23 +24931,30 @@ unsigned int determine_color_new(struct RGB_val *m){
     {out = 3;}
 
 
-    if (isbtw(RelR,1.6,1.83)==1 && isbtw(RelG,1.3,1.50)==1 && isbtw(RelB,1.15,1.3)==1)
+    if (isbtw(RelR,1.56,1.83)==1 && isbtw(RelG,1.23,1.50)==1 && isbtw(RelB,1.15,1.3)==1)
     {out = 4;}
 
 
     if (isbtw(RelR,3.1,4.85)==1 && isbtw(RelG,2.2,2.83)==1 && isbtw(RelB,1.27,1.8)==1)
-    {out = 5;}
+    {
+        out = 5;}
 
 
     if (isbtw(RelR,0.6,0.86)==1 && isbtw(RelG,0.6,0.85)==1 && isbtw(RelB,0.95,1.12)==1)
     {out = 6;}
 
 
-    if (isbtw(RelR,0.9,1.1)==1 && isbtw(RelG,0.8,1.0)==1 && isbtw(RelB,0.95,1.1)==1)
+    if (isbtw(RelR,0.9,1.1)==1 && isbtw(RelG,0.8,1.0)==1 && isbtw(RelB,0.95,1.1)==1 && lumin>980)
     {out = 7;}
 
 
-    if (RedRatio < 50 && GreenRatio < 50 && BlueRatio < 50) {out = 8;}
+    if (RedRatio < 75 && GreenRatio < 75 && BlueRatio < 75) {out = 8;}
 
     return out;
+}
+
+unsigned int lumin(struct RGB_val *m){
+        unsigned int out;
+        out = (0.2126*(m->R)) + (0.7152*(m->G)) + (0.0722*(m->B));
+        return out;
 }

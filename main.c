@@ -47,6 +47,7 @@ void main(void){
     
     //definition of RGB structure
     struct RGB_val test;
+    test.C = 0;
     test.R = 0;
     test.G = 0;
     test.B = 0;
@@ -123,6 +124,7 @@ void main(void){
     
     while(1){          
         unsigned int detected_colour; // 
+        unsigned int brightness; 
         read_colours(&test);
         //output = determine_color_new(&test);
         if (count==0) {check1 = determine_color_new(&test);count+=1;}
@@ -141,6 +143,7 @@ void main(void){
         RedRatio = ((float)(test.R - test.blackR) / (float)(test.whiteR - test.blackR)) * 10000;
         GreenRatio = ((float)(test.G - test.blackG) / (float)(test.whiteG - test.blackG)) * 10000;
         BlueRatio = ((float)(test.B - test.blackB) / (float)(test.whiteB - test.blackB)) * 10000;
+        brightness = lumin(&test);
         
         sprintf(string1," R:%d ",RedRatio);
         TxBufferedString(string1);
@@ -157,7 +160,7 @@ void main(void){
         sendTxBuf();
         __delay_ms(150);
         
-        sprintf(string," Color:%d \r\n",output);
+        sprintf(string," Color:%d B:%d\r\n",detected_colour,brightness);
         TxBufferedString(string);
         sendTxBuf();
         __delay_ms(50);
