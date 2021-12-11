@@ -6,20 +6,20 @@ void initDCmotorsPWM(int PWMperiod){
 	//initialise your TRIS and LAT registers for PWM
     TRISEbits.TRISE2=0; //output on RE2
     TRISCbits.TRISC7=0; //output on RC7
-    TRISGbits.TRISG6=0; //output on RG6
-    TRISEbits.TRISE4=0; //output on RE4
-    LATEbits.LATE2=0; // 0 output on RE2
-    LATCbits.LATC7=0; // 0 output on RC7
-    LATGbits.LATG6=0; // 0 output on RG6
-    LATEbits.LATE4=0; // 0 output on RE4
+    TRISEbits.TRISE4=0;
+    TRISGbits.TRISG6=0;
+    LATEbits.LATE2=0; // 0 output on RB0
+    LATCbits.LATC7=0; // 0 output on RB2
+    LATEbits.LATE4=0;
+    LATGbits.LATG6=0;
 
     // timer 2 config
-    T2CONbits.CKPS=0b100; // 1:16 prescaler
+    T2CONbits.CKPS= 0b100; // 1:16 prescaler
     T2HLTbits.MODE=0b00000; // Free Running Mode, software gate only
     T2CLKCONbits.CS=0b0001; // Fosc/4
 
     // Tpwm*(Fosc/4)/prescaler - 1 = PTPER
-    T2PR=99; //Period reg 10kHz base period
+    T2PR= 99; //Period reg 10kHz base period
     T2CONbits.ON=1;
     
     RE2PPS=0x0A; //PWM6 on RE2
@@ -28,8 +28,8 @@ void initDCmotorsPWM(int PWMperiod){
     PWM6DCH=0; //0% power
     PWM7DCH=0; //0% power
     
-    PWM6CONbits.EN = 1;
-    PWM7CONbits.EN = 1;
+    PWM6CONbits.EN = 1; //enable PWM generation
+    PWM7CONbits.EN = 1; //enable PWM generation
 }
 
 
@@ -51,109 +51,146 @@ void setMotorPWM(struct DC_motor *m)
         
 	if (m->direction){ // if direction is high
 		*(m->dir_LAT) = *(m->dir_LAT) | (1<<(m->dir_pin)); // set dir_pin bit in LAT to high without changing other bits
-	} else {
+	} 
+    else {
 		*(m->dir_LAT) = *(m->dir_LAT) & (~(1<<(m->dir_pin))); // set dir_pin bit in LAT to low without changing other bits
 	}
 }
 
 //function to stop the robot gradually 
 void stop(struct DC_motor *mL, struct DC_motor *mR)
-{   
-    while ((mL->power)>0 && (mR->power)>0){
-        if ((mL->power) > 0){
-            (mL->power) -= 1;
-        }
-        if ((mR->power) > 0){
-            (mR->power) -= 1;
-        }
-        setMotorPWM(mL);
-        setMotorPWM(mR);
-        __delay_us(50);
-    } 
-}
-
-//function to make the robot turn left 
-void turnLeft(struct DC_motor *mL, struct DC_motor *mR)
-{   
-    (mL->direction) = 0;
-    (mR->direction) = 1;
-    setMotorPWM(mL);
-    setMotorPWM(mR);
-    for (unsigned int i = 0; i < 50; ++i){ // Dont want too much power
-        (mL->power) += 1;
-        (mR->power) += 1;
-        setMotorPWM(mL);
-        setMotorPWM(mR);
-        __delay_us(50);
-    }
-}
-
-//function to make the robot turn right 
-void turnRight(struct DC_motor *mL, struct DC_motor *mR)
 {
-    (mL->direction) = 1;
-    (mR->direction) = 0;
+    (*mL).power = 0; //stop the buggy
+    (*mR).power = 0;
     setMotorPWM(mL);
     setMotorPWM(mR);
-    for (unsigned int i = 0; i < 50; ++i){
-        (mL->power) += 1;
-        (mR->power) += 1;
-        setMotorPWM(mL);
-        setMotorPWM(mR);
-        __delay_us(50);
-    }
+}
+
+//function to make the robot turn left (Green)
+void turnLeft90(struct DC_motor *mL, struct DC_motor *mR)
+{
+    (*mL).direction = 0; //0 means reverse direction
+    (*mR).direction = 1;
+    (*mL).power = 90;
+    (*mR).power = 90;
+    setMotorPWM(mL);
+    setMotorPWM(mR);
+    __delay_ms(180);
+    stop(mL, mR);
+}
+
+//function to make the robot turn left 135 (Light Blue)
+void turnLeft135(struct DC_motor *mL, struct DC_motor *mR)
+{
+    (*mL).direction = 0;
+    (*mR).direction = 1;
+    (*mL).power = 90;
+    (*mR).power = 90;
+    setMotorPWM(mL);
+    setMotorPWM(mR);
+    __delay_ms(270);
+    stop(mL, mR);
+}
+
+//function to make the robot turn right (Red)
+void turnRight90(struct DC_motor *mL, struct DC_motor *mR)
+{
+    (*mR).direction = 0;
+    (*mL).direction = 1;
+    (*mR).power = 90;
+    (*mL).power = 90;
+    setMotorPWM(mL);
+    setMotorPWM(mR);
+    __delay_ms(180);
+    stop(mL, mR);
+}
+
+//function to make the robot turn right (Orange)
+void turnRight135(struct DC_motor *mL, struct DC_motor *mR)
+{
+    (*mR).direction = 0;
+    (*mL).direction = 1;
+    (*mR).power = 90;
+    (*mL).power = 90;
+    setMotorPWM(mL);
+    setMotorPWM(mR);
+    __delay_ms(270);
+    stop(mL, mR);
+}
+
+//function to turn robot 180 to the right (Blue)
+void turnRight180(struct DC_motor *mL, struct DC_motor *mR)
+{
+    (*mR).direction = 0;
+    (*mL).direction = 1;
+    (*mR).power = 90;
+    (*mL).power = 90;
+    setMotorPWM(mL);
+    setMotorPWM(mR);
+    __delay_ms(360);
+    stop(mL, mR);
 }
 
 //function to make the robot go straight
 void fullSpeedAhead(struct DC_motor *mL, struct DC_motor *mR)
-{   
-    (mL->direction) = 1;
-    (mR->direction) = 1;
-    for (unsigned int i = 0; i < 90; ++i){
-        (mL->power) += 1;
-        (mR->power) += 1;
-        setMotorPWM(mL);
-        setMotorPWM(mR);
-        __delay_us(50);
-    }
+{
+    (*mL).direction = 1;
+    (*mR).direction = 1;
+    (*mL).power = 100; // 0 means full speed
+    (*mR).power = 100;
+    setMotorPWM(mL);
+    setMotorPWM(mR);
 }
 
-void turn90Left(struct DC_motor *mL, struct DC_motor *mR){
-    turnLeft(mL,mR);
-    __delay_us(60);
-    stop(mL,mR);
+//function to make the robot go forward 
+void forward(struct DC_motor *mL, struct DC_motor *mR)
+{
+    (*mL).direction = 1;
+    (*mR).direction = 1;
+    (*mL).power = 10; // 0 means full speed
+    (*mR).power = 10;
+    setMotorPWM(mL);
+    setMotorPWM(mR);
 }
 
-void turn90Right(struct DC_motor *mL, struct DC_motor *mR){
-    turnRight(mL,mR);
-    __delay_us(60);
-    stop(mL,mR);
+//function to make robot reverse
+void reverse(struct DC_motor *mL, struct DC_motor *mR)
+{
+    (*mL).direction = 0;
+    (*mR).direction = 0;
+    (*mL).power = 100; // 0 means full speed
+    (*mR).power = 100;
+    setMotorPWM(mL);
+    setMotorPWM(mR);
+    __delay_ms(100);
 }
 
-void turn180Right(struct DC_motor *mL, struct DC_motor *mR){
-    turnRight(mL,mR);
-    __delay_ms(5);
-    stop(mL,mR);
+//function to make robot reverse 1 square and turn right 90 degrees
+void reverseTurnRight90(struct DC_motor *mL, struct DC_motor *mR)
+{
+    (*mL).direction = 0;
+    (*mR).direction = 0;
+    (*mL).power = 75;
+    (*mR).power = 75;
+    setMotorPWM(mL);
+    setMotorPWM(mR);
+    __delay_ms(800);
+    stop(mL, mR);
+    __delay_ms(300);
+    turnRight90(mL, mR);
 }
 
-void clockwisesq(struct DC_motor *mL, struct DC_motor *mR){
-    for (unsigned int i=0;i<4;++i){
-        fullSpeedAhead(mL,mR);
-        __delay_ms(10);
-        stop(mL,mR);
-        __delay_ms(15);   
-        if (i<3){turn90Right(mL,mR);}
-        __delay_ms(5);
-    }
-}
-
-void anticlockwisesq(struct DC_motor *mL, struct DC_motor *mR){
-    for (int i=0;i<4;++i){
-        fullSpeedAhead(mL,mR);
-        __delay_ms(10);
-        stop(mL,mR);
-        __delay_ms(15);   
-        if (i<3) {turn90Left(mL,mR);}
-        __delay_ms(5);
-    }
+//function to make robot reverse 1 square and turn left 90 degrees
+void reverseTurnLeft90(struct DC_motor *mL, struct DC_motor *mR)
+{
+    (*mL).direction = 0;
+    (*mR).direction = 0;
+    (*mL).power = 75;
+    (*mR).power = 75;
+    setMotorPWM(mL);
+    setMotorPWM(mR);
+    __delay_ms(800);
+    stop(mL, mR);
+    __delay_ms(300);
+    turnLeft90(mL, mR);
 }

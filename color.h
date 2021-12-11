@@ -5,6 +5,7 @@
 #include <math.h>
 #include "i2c.h"
 #include "serial.h"
+#include "dc_motor.h"
 
 #define _XTAL_FREQ 64000000 //note intrinsic _delay function is 62.5ns at 64,000,000Hz  
 
@@ -47,5 +48,7 @@ void calibrateW(struct RGB_val *m);
 void calibrateB(struct RGB_val *m);
 unsigned int determine_color_new(struct RGB_val *m);
 unsigned int lumin(struct RGB_val *m);
+void Black(struct DC_motor *mL, struct DC_motor *mR);
+unsigned int updateMovementCount(int movementCode);
 
 #endif

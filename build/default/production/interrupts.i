@@ -24224,28 +24224,13 @@ void sendTxBuf(void);
 
 
 
-
 void Interrupts_init(void)
 {
 
 
-    INTCONbits.PEIE=1;
-    PIE4bits.RC4IE=1;
-    PIE4bits.TX4IE=0;
-    INTCONbits.GIE=1;
-}
+    PIE2bits.C1IE = 1;
+    PIE0bits.TMR0IE = 1;
+    INTCONbits.GIEL = 1;
+    INTCONbits.GIE = 1;
 
-
-
-
-
-void __attribute__((picinterrupt(("high_priority")))) HighISR()
-{
-    if (PIR4bits.RC4IF == 1){
-        putCharToRxBuf(RC4REG);
-    }
-    if (PIR4bits.TX4IF == 1 && PIE4bits.TX4IE==1){
-        if (isDataInTxBuf()==1 ) {TX4REG = getCharFromTxBuf();}
-        else {PIE4bits.TX4IE=0;}
-    }
 }

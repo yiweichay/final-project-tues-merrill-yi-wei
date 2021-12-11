@@ -5,6 +5,15 @@
 #include "serial.h"
 #include "dc_motor.h"
 
+extern struct DC_motor motorL, motorR;
+//to test the code
+//int movements = 4;
+//int timerArray[] = {400, 1024, 512, 256};
+//int movementArray[] = {1, 9, 0, 2};
+static volatile int movements = 0;
+int timerArray[] = {};
+int movementArray[] = {};
+
 void color_click_init(void)
 {   
     //setup colour sensor via i2c interface
@@ -129,7 +138,7 @@ unsigned int determine_color_new(struct RGB_val *m){
     if (RelB < 0) {RelB = 0;}
     
     // Red - will output 0 (Good for 1)
-    if (isbtw(RelR,5.1,20.5)==1 && isbtw(RelG,2.2,3.8)==1 && isbtw(RelB,1.8,5.5)==1)
+    if (isbtw(RelR,5.1,20.5)==1 && isbtw(RelG,2.2,3.8)==1 && isbtw(RelB,1.8,5.5)==1 && lumin>800)
     {out = 0;} 
     
     // Green - will output 1 
@@ -141,15 +150,15 @@ unsigned int determine_color_new(struct RGB_val *m){
     {out = 2;}
     
     // Yellow - will output 3 
-    if (isbtw(RelR,1.2,1.4)==1 && isbtw(RelG,1.5,1.69)==1 && isbtw(RelB,0.8,0.9)==1)
+    if (isbtw(RelR,1.2,1.4)==1 && isbtw(RelG,1.5,1.69)==1 && isbtw(RelB,0.8,0.9)==1 && lumin>850)
     {out = 3;}
    
      // Pink - will output 4
-    if (isbtw(RelR,1.56,1.83)==1 && isbtw(RelG,1.23,1.50)==1 && isbtw(RelB,1.15,1.3)==1)
+    if (isbtw(RelR,1.56,1.83)==1 && isbtw(RelG,1.23,1.50)==1 && isbtw(RelB,1.15,1.3)==1 && lumin>830)
     {out = 4;}
    
      // Orange - will output 5
-    if (isbtw(RelR,3.1,4.85)==1 && isbtw(RelG,2.2,2.83)==1 && isbtw(RelB,1.27,1.8)==1)
+    if (isbtw(RelR,3.1,4.85)==1 && isbtw(RelG,2.2,2.83)==1 && isbtw(RelB,1.27,1.8)==1 && lumin>800)
     {   // To determine if red or orange  
         out = 5;}
     
@@ -158,7 +167,7 @@ unsigned int determine_color_new(struct RGB_val *m){
     {out = 6;}
     
      // White - will output 7 might need to change to raw values PROBLEMATIC
-    if (isbtw(RelR,0.9,1.1)==1 && isbtw(RelG,0.8,1.0)==1 && isbtw(RelB,0.95,1.1)==1 && lumin>980)
+    if (isbtw(RelR,0.9,1.1)==1 && isbtw(RelG,0.8,1.0)==1 && isbtw(RelB,0.95,1.1)==1 && lumin>890)
     {out = 7;}
     
      // Black - will output 8 (FOR RIGHT IS WEAK)
@@ -172,4 +181,44 @@ unsigned int lumin(struct RGB_val *m){
         out = (0.2126*(m->R)) + (0.7152*(m->G)) + (0.0722*(m->B));
         return out;
 }         
+
+void Black(struct DC_motor *mL, struct DC_motor *mR)
+{
+    stop(mL, mR);
+    turnRight180(mL, mR);
+    __delay_ms(1000);
+    for (int i=0; i<movements; i++){
+        if (movementArray[movements-i-1] == 0){turnLeft90(mL, mR);}
+        else if (movementArray[movements-i-1] == 1){turnRight90(mL, mR);}
+        else if (movementArray[movements-i-1] == 2){turnRight180(mL, mR);}
+        else if (movementArray[movements-i-1] == 3){reverseTurnLeft90(mL, mR);}
+        else if (movementArray[movements-i-1] == 4){reverseTurnRight90(mL, mR);}
+        else if (movementArray[movements-i-1] == 5){turnLeft135(mL, mR);}
+        else if (movementArray[movements-i-1] == 6){turnRight135(mL, mR);}
+        else if (movementArray[movements-i-1] == 9){forward(mL, mR);}
+        int tempTimerVal = 0;
+        TMR0H = 0;
+        TMR0L = 0;
+        while(tempTimerVal < timerArray[movements-i-1]){
+            tempTimerVal = TMR0L;
+            tempTimerVal += (TMR0H << 8);
+        }
+    }
+    stop(mL, mR);
+}
+
+
+//function to keep track of time taken for each movement 
+unsigned int updateMovementCount(int movementCode)
+{
+    int tempTimerVal = TMR0L;
+    tempTimerVal += (TMR0H << 8);
+    timerArray[movements] = tempTimerVal;
+    movementArray[movements] = movementCode;
+    movements++;
+    TMR0H = 0;
+    TMR0L = 0;
+    //return timerArray[movements];
+    //return movementArray;
+}
 

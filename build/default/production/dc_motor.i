@@ -24186,26 +24186,28 @@ extern __attribute__((nonreentrant)) void _delay3(unsigned char);
 
 
 struct DC_motor {
-    char power;
-    char direction;
+    unsigned char power;
+    unsigned char direction;
     unsigned char *dutyHighByte;
     unsigned char *dir_LAT;
-    char dir_pin;
-    int PWMperiod;
+    unsigned char dir_pin;
+    unsigned int PWMperiod;
 };
 
 
 void initDCmotorsPWM(int PWMperiod);
 void setMotorPWM(struct DC_motor *m);
 void stop(struct DC_motor *mL, struct DC_motor *mR);
-void turnLeft(struct DC_motor *mL, struct DC_motor *mR);
-void turnRight(struct DC_motor *mL, struct DC_motor *mR);
+void turnLeft90(struct DC_motor *mL, struct DC_motor *mR);
+void turnLeft135(struct DC_motor *mL, struct DC_motor *mR);
+void turnRight90(struct DC_motor *mL, struct DC_motor *mR);
+void turnRight135(struct DC_motor *mL, struct DC_motor *mR);
+void turnRight180(struct DC_motor *mL, struct DC_motor *mR);
 void fullSpeedAhead(struct DC_motor *mL, struct DC_motor *mR);
-void turn90Left(struct DC_motor *mL, struct DC_motor *mR);
-void turn90Right(struct DC_motor *mL, struct DC_motor *mR);
-void turn180Right(struct DC_motor *mL, struct DC_motor *mR);
-void clockwisesq(struct DC_motor *mL, struct DC_motor *mR);
-void anticlockwisesq(struct DC_motor *mL, struct DC_motor *mR);
+void forward(struct DC_motor *mL, struct DC_motor *mR);
+void reverse(struct DC_motor *mL, struct DC_motor *mR);
+void reverseTurnRight90(struct DC_motor *mL, struct DC_motor *mR);
+void reverseTurnLeft90(struct DC_motor *mL, struct DC_motor *mR);
 # 2 "dc_motor.c" 2
 
 
@@ -24214,20 +24216,20 @@ void initDCmotorsPWM(int PWMperiod){
 
     TRISEbits.TRISE2=0;
     TRISCbits.TRISC7=0;
-    TRISGbits.TRISG6=0;
     TRISEbits.TRISE4=0;
+    TRISGbits.TRISG6=0;
     LATEbits.LATE2=0;
     LATCbits.LATC7=0;
-    LATGbits.LATG6=0;
     LATEbits.LATE4=0;
+    LATGbits.LATG6=0;
 
 
-    T2CONbits.CKPS=0b100;
+    T2CONbits.CKPS= 0b100;
     T2HLTbits.MODE=0b00000;
     T2CLKCONbits.CS=0b0001;
 
 
-    T2PR=99;
+    T2PR= 99;
     T2CONbits.ON=1;
 
     RE2PPS=0x0A;
@@ -24259,7 +24261,8 @@ void setMotorPWM(struct DC_motor *m)
 
  if (m->direction){
   *(m->dir_LAT) = *(m->dir_LAT) | (1<<(m->dir_pin));
- } else {
+ }
+    else {
   *(m->dir_LAT) = *(m->dir_LAT) & (~(1<<(m->dir_pin)));
  }
 }
@@ -24267,101 +24270,137 @@ void setMotorPWM(struct DC_motor *m)
 
 void stop(struct DC_motor *mL, struct DC_motor *mR)
 {
-    while ((mL->power)>0 && (mR->power)>0){
-        if ((mL->power) > 0){
-            (mL->power) -= 1;
-        }
-        if ((mR->power) > 0){
-            (mR->power) -= 1;
-        }
-        setMotorPWM(mL);
-        setMotorPWM(mR);
-        _delay((unsigned long)((50)*(64000000/4000000.0)));
-    }
+    (*mL).power = 0;
+    (*mR).power = 0;
+    setMotorPWM(mL);
+    setMotorPWM(mR);
 }
 
 
-void turnLeft(struct DC_motor *mL, struct DC_motor *mR)
+void turnLeft90(struct DC_motor *mL, struct DC_motor *mR)
 {
-    (mL->direction) = 0;
-    (mR->direction) = 1;
+    (*mL).direction = 0;
+    (*mR).direction = 1;
+    (*mL).power = 90;
+    (*mR).power = 90;
     setMotorPWM(mL);
     setMotorPWM(mR);
-    for (unsigned int i = 0; i < 50; ++i){
-        (mL->power) += 1;
-        (mR->power) += 1;
-        setMotorPWM(mL);
-        setMotorPWM(mR);
-        _delay((unsigned long)((50)*(64000000/4000000.0)));
-    }
+    _delay((unsigned long)((180)*(64000000/4000.0)));
+    stop(mL, mR);
 }
 
 
-void turnRight(struct DC_motor *mL, struct DC_motor *mR)
+void turnLeft135(struct DC_motor *mL, struct DC_motor *mR)
 {
-    (mL->direction) = 1;
-    (mR->direction) = 0;
+    (*mL).direction = 0;
+    (*mR).direction = 1;
+    (*mL).power = 90;
+    (*mR).power = 90;
     setMotorPWM(mL);
     setMotorPWM(mR);
-    for (unsigned int i = 0; i < 50; ++i){
-        (mL->power) += 1;
-        (mR->power) += 1;
-        setMotorPWM(mL);
-        setMotorPWM(mR);
-        _delay((unsigned long)((50)*(64000000/4000000.0)));
-    }
+    _delay((unsigned long)((270)*(64000000/4000.0)));
+    stop(mL, mR);
+}
+
+
+void turnRight90(struct DC_motor *mL, struct DC_motor *mR)
+{
+    (*mR).direction = 0;
+    (*mL).direction = 1;
+    (*mR).power = 90;
+    (*mL).power = 90;
+    setMotorPWM(mL);
+    setMotorPWM(mR);
+    _delay((unsigned long)((180)*(64000000/4000.0)));
+    stop(mL, mR);
+}
+
+
+void turnRight135(struct DC_motor *mL, struct DC_motor *mR)
+{
+    (*mR).direction = 0;
+    (*mL).direction = 1;
+    (*mR).power = 90;
+    (*mL).power = 90;
+    setMotorPWM(mL);
+    setMotorPWM(mR);
+    _delay((unsigned long)((270)*(64000000/4000.0)));
+    stop(mL, mR);
+}
+
+
+void turnRight180(struct DC_motor *mL, struct DC_motor *mR)
+{
+    (*mR).direction = 0;
+    (*mL).direction = 1;
+    (*mR).power = 90;
+    (*mL).power = 90;
+    setMotorPWM(mL);
+    setMotorPWM(mR);
+    _delay((unsigned long)((360)*(64000000/4000.0)));
+    stop(mL, mR);
 }
 
 
 void fullSpeedAhead(struct DC_motor *mL, struct DC_motor *mR)
 {
-    (mL->direction) = 1;
-    (mR->direction) = 1;
-    for (unsigned int i = 0; i < 90; ++i){
-        (mL->power) += 1;
-        (mR->power) += 1;
-        setMotorPWM(mL);
-        setMotorPWM(mR);
-        _delay((unsigned long)((50)*(64000000/4000000.0)));
-    }
+    (*mL).direction = 1;
+    (*mR).direction = 1;
+    (*mL).power = 100;
+    (*mR).power = 100;
+    setMotorPWM(mL);
+    setMotorPWM(mR);
 }
 
-void turn90Left(struct DC_motor *mL, struct DC_motor *mR){
-    turnLeft(mL,mR);
-    _delay((unsigned long)((60)*(64000000/4000000.0)));
-    stop(mL,mR);
+
+void forward(struct DC_motor *mL, struct DC_motor *mR)
+{
+    (*mL).direction = 1;
+    (*mR).direction = 1;
+    (*mL).power = 10;
+    (*mR).power = 10;
+    setMotorPWM(mL);
+    setMotorPWM(mR);
 }
 
-void turn90Right(struct DC_motor *mL, struct DC_motor *mR){
-    turnRight(mL,mR);
-    _delay((unsigned long)((60)*(64000000/4000000.0)));
-    stop(mL,mR);
+
+void reverse(struct DC_motor *mL, struct DC_motor *mR)
+{
+    (*mL).direction = 0;
+    (*mR).direction = 0;
+    (*mL).power = 100;
+    (*mR).power = 100;
+    setMotorPWM(mL);
+    setMotorPWM(mR);
+    _delay((unsigned long)((100)*(64000000/4000.0)));
 }
 
-void turn180Right(struct DC_motor *mL, struct DC_motor *mR){
-    turnRight(mL,mR);
-    _delay((unsigned long)((5)*(64000000/4000.0)));
-    stop(mL,mR);
+
+void reverseTurnRight90(struct DC_motor *mL, struct DC_motor *mR)
+{
+    (*mL).direction = 0;
+    (*mR).direction = 0;
+    (*mL).power = 75;
+    (*mR).power = 75;
+    setMotorPWM(mL);
+    setMotorPWM(mR);
+    _delay((unsigned long)((800)*(64000000/4000.0)));
+    stop(mL, mR);
+    _delay((unsigned long)((300)*(64000000/4000.0)));
+    turnRight90(mL, mR);
 }
 
-void clockwisesq(struct DC_motor *mL, struct DC_motor *mR){
-    for (unsigned int i=0;i<4;++i){
-        fullSpeedAhead(mL,mR);
-        _delay((unsigned long)((10)*(64000000/4000.0)));
-        stop(mL,mR);
-        _delay((unsigned long)((15)*(64000000/4000.0)));
-        if (i<3){turn90Right(mL,mR);}
-        _delay((unsigned long)((5)*(64000000/4000.0)));
-    }
-}
 
-void anticlockwisesq(struct DC_motor *mL, struct DC_motor *mR){
-    for (int i=0;i<4;++i){
-        fullSpeedAhead(mL,mR);
-        _delay((unsigned long)((10)*(64000000/4000.0)));
-        stop(mL,mR);
-        _delay((unsigned long)((15)*(64000000/4000.0)));
-        if (i<3) {turn90Left(mL,mR);}
-        _delay((unsigned long)((5)*(64000000/4000.0)));
-    }
+void reverseTurnLeft90(struct DC_motor *mL, struct DC_motor *mR)
+{
+    (*mL).direction = 0;
+    (*mR).direction = 0;
+    (*mL).power = 75;
+    (*mR).power = 75;
+    setMotorPWM(mL);
+    setMotorPWM(mR);
+    _delay((unsigned long)((800)*(64000000/4000.0)));
+    stop(mL, mR);
+    _delay((unsigned long)((300)*(64000000/4000.0)));
+    turnLeft90(mL, mR);
 }
