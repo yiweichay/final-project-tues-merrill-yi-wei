@@ -24713,6 +24713,39 @@ void TxBufferedString(char *string);
 void sendTxBuf(void);
 # 7 "./color.h" 2
 
+# 1 "./dc_motor.h" 1
+
+
+
+
+
+
+
+struct DC_motor {
+    unsigned char power;
+    unsigned char direction;
+    unsigned char *dutyHighByte;
+    unsigned char *dir_LAT;
+    unsigned char dir_pin;
+    unsigned int PWMperiod;
+};
+
+
+void initDCmotorsPWM(int PWMperiod);
+void setMotorPWM(struct DC_motor *m);
+void stop(struct DC_motor *mL, struct DC_motor *mR);
+void turnLeft90(struct DC_motor *mL, struct DC_motor *mR);
+void turnLeft135(struct DC_motor *mL, struct DC_motor *mR);
+void turnRight90(struct DC_motor *mL, struct DC_motor *mR);
+void turnRight135(struct DC_motor *mL, struct DC_motor *mR);
+void turnRight180(struct DC_motor *mL, struct DC_motor *mR);
+void fullSpeedAhead(struct DC_motor *mL, struct DC_motor *mR);
+void forward(struct DC_motor *mL, struct DC_motor *mR);
+void reverse(struct DC_motor *mL, struct DC_motor *mR);
+void reverseTurnRight90(struct DC_motor *mL, struct DC_motor *mR);
+void reverseTurnLeft90(struct DC_motor *mL, struct DC_motor *mR);
+# 8 "./color.h" 2
+
 
 
 
@@ -24755,41 +24788,22 @@ void calibrateW(struct RGB_val *m);
 void calibrateB(struct RGB_val *m);
 unsigned int determine_color_new(struct RGB_val *m);
 unsigned int lumin(struct RGB_val *m);
+void Black(struct DC_motor *mL, struct DC_motor *mR);
+unsigned int updateMovementCount(int movementCode);
 # 3 "color.c" 2
 
 
 
-# 1 "./dc_motor.h" 1
+
+
+extern struct DC_motor motorL, motorR;
 
 
 
 
-
-
-
-struct DC_motor {
-    char power;
-    char direction;
-    unsigned char *dutyHighByte;
-    unsigned char *dir_LAT;
-    char dir_pin;
-    int PWMperiod;
-};
-
-
-void initDCmotorsPWM(int PWMperiod);
-void setMotorPWM(struct DC_motor *m);
-void stop(struct DC_motor *mL, struct DC_motor *mR);
-void turnLeft(struct DC_motor *mL, struct DC_motor *mR);
-void turnRight(struct DC_motor *mL, struct DC_motor *mR);
-void fullSpeedAhead(struct DC_motor *mL, struct DC_motor *mR);
-void turn90Left(struct DC_motor *mL, struct DC_motor *mR);
-void turn90Right(struct DC_motor *mL, struct DC_motor *mR);
-void turn180Right(struct DC_motor *mL, struct DC_motor *mR);
-void clockwisesq(struct DC_motor *mL, struct DC_motor *mR);
-void anticlockwisesq(struct DC_motor *mL, struct DC_motor *mR);
-# 6 "color.c" 2
-
+static volatile int movements = 0;
+int timerArray[] = {};
+int movementArray[] = {};
 
 void color_click_init(void)
 {
@@ -24915,7 +24929,7 @@ unsigned int determine_color_new(struct RGB_val *m){
     if (RelB < 0) {RelB = 0;}
 
 
-    if (isbtw(RelR,5.1,20.5)==1 && isbtw(RelG,2.2,3.8)==1 && isbtw(RelB,1.8,5.5)==1)
+    if (isbtw(RelR,5.1,20.5)==1 && isbtw(RelG,2.2,3.8)==1 && isbtw(RelB,1.8,5.5)==1 && lumin>800)
     {out = 0;}
 
 
@@ -24927,15 +24941,15 @@ unsigned int determine_color_new(struct RGB_val *m){
     {out = 2;}
 
 
-    if (isbtw(RelR,1.2,1.4)==1 && isbtw(RelG,1.5,1.69)==1 && isbtw(RelB,0.8,0.9)==1)
+    if (isbtw(RelR,1.2,1.4)==1 && isbtw(RelG,1.5,1.69)==1 && isbtw(RelB,0.8,0.9)==1 && lumin>850)
     {out = 3;}
 
 
-    if (isbtw(RelR,1.56,1.83)==1 && isbtw(RelG,1.23,1.50)==1 && isbtw(RelB,1.15,1.3)==1)
+    if (isbtw(RelR,1.56,1.83)==1 && isbtw(RelG,1.23,1.50)==1 && isbtw(RelB,1.15,1.3)==1 && lumin>830)
     {out = 4;}
 
 
-    if (isbtw(RelR,3.1,4.85)==1 && isbtw(RelG,2.2,2.83)==1 && isbtw(RelB,1.27,1.8)==1)
+    if (isbtw(RelR,3.1,4.85)==1 && isbtw(RelG,2.2,2.83)==1 && isbtw(RelB,1.27,1.8)==1 && lumin>800)
     {
         out = 5;}
 
@@ -24944,7 +24958,7 @@ unsigned int determine_color_new(struct RGB_val *m){
     {out = 6;}
 
 
-    if (isbtw(RelR,0.9,1.1)==1 && isbtw(RelG,0.8,1.0)==1 && isbtw(RelB,0.95,1.1)==1 && lumin>980)
+    if (isbtw(RelR,0.9,1.1)==1 && isbtw(RelG,0.8,1.0)==1 && isbtw(RelB,0.95,1.1)==1 && lumin>890)
     {out = 7;}
 
 
@@ -24957,4 +24971,44 @@ unsigned int lumin(struct RGB_val *m){
         unsigned int out;
         out = (0.2126*(m->R)) + (0.7152*(m->G)) + (0.0722*(m->B));
         return out;
+}
+
+void Black(struct DC_motor *mL, struct DC_motor *mR)
+{
+    stop(mL, mR);
+    turnRight180(mL, mR);
+    _delay((unsigned long)((1000)*(64000000/4000.0)));
+    for (int i=0; i<movements; i++){
+        if (movementArray[movements-i-1] == 0){turnLeft90(mL, mR);}
+        else if (movementArray[movements-i-1] == 1){turnRight90(mL, mR);}
+        else if (movementArray[movements-i-1] == 2){turnRight180(mL, mR);}
+        else if (movementArray[movements-i-1] == 3){reverseTurnLeft90(mL, mR);}
+        else if (movementArray[movements-i-1] == 4){reverseTurnRight90(mL, mR);}
+        else if (movementArray[movements-i-1] == 5){turnLeft135(mL, mR);}
+        else if (movementArray[movements-i-1] == 6){turnRight135(mL, mR);}
+        else if (movementArray[movements-i-1] == 9){forward(mL, mR);}
+        int tempTimerVal = 0;
+        TMR0H = 0;
+        TMR0L = 0;
+        while(tempTimerVal < timerArray[movements-i-1]){
+            tempTimerVal = TMR0L;
+            tempTimerVal += (TMR0H << 8);
+        }
+    }
+    stop(mL, mR);
+}
+
+
+
+unsigned int updateMovementCount(int movementCode)
+{
+    int tempTimerVal = TMR0L;
+    tempTimerVal += (TMR0H << 8);
+    timerArray[movements] = tempTimerVal;
+    movementArray[movements] = movementCode;
+    movements++;
+    TMR0H = 0;
+    TMR0L = 0;
+
+
 }
