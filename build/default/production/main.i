@@ -24347,14 +24347,13 @@ struct DC_motor {
 void initDCmotorsPWM(int PWMperiod);
 void setMotorPWM(struct DC_motor *m);
 void stop(struct DC_motor *mL, struct DC_motor *mR);
+void reverse(struct DC_motor *mL, struct DC_motor *mR);
 void turnLeft90(struct DC_motor *mL, struct DC_motor *mR);
 void turnLeft135(struct DC_motor *mL, struct DC_motor *mR);
 void turnRight90(struct DC_motor *mL, struct DC_motor *mR);
 void turnRight135(struct DC_motor *mL, struct DC_motor *mR);
 void turnRight180(struct DC_motor *mL, struct DC_motor *mR);
-void fullSpeedAhead(struct DC_motor *mL, struct DC_motor *mR);
 void forward(struct DC_motor *mL, struct DC_motor *mR);
-void reverse(struct DC_motor *mL, struct DC_motor *mR);
 void reverseTurnRight90(struct DC_motor *mL, struct DC_motor *mR);
 void reverseTurnLeft90(struct DC_motor *mL, struct DC_motor *mR);
 # 11 "main.c" 2
@@ -24936,7 +24935,6 @@ unsigned int isbtw(float num, float low, float high);
 void calibrateW(struct RGB_val *m);
 void calibrateB(struct RGB_val *m);
 unsigned int determine_color_new(struct RGB_val *m);
-unsigned int lumin(struct RGB_val *m);
 void Black(struct DC_motor *mL, struct DC_motor *mR);
 unsigned int updateMovementCount(int movementCode);
 # 12 "main.c" 2
@@ -24966,7 +24964,15 @@ void __attribute__((picinterrupt(("high_priority")))) HighISR();
 void Timer0_init(void);
 unsigned int get16bitTMR0val(void);
 # 16 "main.c" 2
-# 25 "main.c"
+
+
+
+
+
+static volatile int movements = 0;
+int timerArray[30] = {};
+int movementArray[30] = {};
+
 void main(void){
 
     initDCmotorsPWM(99);
@@ -25076,10 +25082,7 @@ void main(void){
 
         if (check1==check2 && check2==check3 && check3==check4){
             detected_colour = check1;
-            check1=9;
-            check2=9;
-            check3=9;
-            check4=9;
+            check1=9;check2=9;check3=9;check4=9;
         }
 
         if (detected_colour == 0){ turnRight90(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
@@ -25089,9 +25092,8 @@ void main(void){
         if (detected_colour == 4){ reverseTurnLeft90(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
         if (detected_colour == 5){ turnRight135(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
         if (detected_colour == 6){ turnLeft135(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
-        if (detected_colour == 7){ turnRight180(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
+        if (detected_colour == 7){ stop(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
         if (detected_colour == 8){ turnRight90(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
         if (detected_colour == 9){ forward(&motorL,&motorR);}
-# 178 "main.c"
     }
 }

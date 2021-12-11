@@ -223,27 +223,30 @@ Version 4.0 HI-TECH Software Intermediate Code
 "49
 [; ;./color.h: 49: unsigned int determine_color_new(struct RGB_val *m);
 [v _determine_color_new `(ui ~T0 @X0 0 ef1`*S2022 ]
-"23 ./dc_motor.h
-[; ;./dc_motor.h: 23: void turnRight90(struct DC_motor *mL, struct DC_motor *mR);
+"24 ./dc_motor.h
+[; ;./dc_motor.h: 24: void turnRight90(struct DC_motor *mL, struct DC_motor *mR);
 [v _turnRight90 `(v ~T0 @X0 0 ef2`*S2021`*S2021 ]
-"21
-[; ;./dc_motor.h: 21: void turnLeft90(struct DC_motor *mL, struct DC_motor *mR);
-[v _turnLeft90 `(v ~T0 @X0 0 ef2`*S2021`*S2021 ]
-"25
-[; ;./dc_motor.h: 25: void turnRight180(struct DC_motor *mL, struct DC_motor *mR);
-[v _turnRight180 `(v ~T0 @X0 0 ef2`*S2021`*S2021 ]
-"29
-[; ;./dc_motor.h: 29: void reverseTurnRight90(struct DC_motor *mL, struct DC_motor *mR);
-[v _reverseTurnRight90 `(v ~T0 @X0 0 ef2`*S2021`*S2021 ]
-"30
-[; ;./dc_motor.h: 30: void reverseTurnLeft90(struct DC_motor *mL, struct DC_motor *mR);
-[v _reverseTurnLeft90 `(v ~T0 @X0 0 ef2`*S2021`*S2021 ]
-"24
-[; ;./dc_motor.h: 24: void turnRight135(struct DC_motor *mL, struct DC_motor *mR);
-[v _turnRight135 `(v ~T0 @X0 0 ef2`*S2021`*S2021 ]
 "22
-[; ;./dc_motor.h: 22: void turnLeft135(struct DC_motor *mL, struct DC_motor *mR);
+[; ;./dc_motor.h: 22: void turnLeft90(struct DC_motor *mL, struct DC_motor *mR);
+[v _turnLeft90 `(v ~T0 @X0 0 ef2`*S2021`*S2021 ]
+"26
+[; ;./dc_motor.h: 26: void turnRight180(struct DC_motor *mL, struct DC_motor *mR);
+[v _turnRight180 `(v ~T0 @X0 0 ef2`*S2021`*S2021 ]
+"28
+[; ;./dc_motor.h: 28: void reverseTurnRight90(struct DC_motor *mL, struct DC_motor *mR);
+[v _reverseTurnRight90 `(v ~T0 @X0 0 ef2`*S2021`*S2021 ]
+"29
+[; ;./dc_motor.h: 29: void reverseTurnLeft90(struct DC_motor *mL, struct DC_motor *mR);
+[v _reverseTurnLeft90 `(v ~T0 @X0 0 ef2`*S2021`*S2021 ]
+"25
+[; ;./dc_motor.h: 25: void turnRight135(struct DC_motor *mL, struct DC_motor *mR);
+[v _turnRight135 `(v ~T0 @X0 0 ef2`*S2021`*S2021 ]
+"23
+[; ;./dc_motor.h: 23: void turnLeft135(struct DC_motor *mL, struct DC_motor *mR);
 [v _turnLeft135 `(v ~T0 @X0 0 ef2`*S2021`*S2021 ]
+"20
+[; ;./dc_motor.h: 20: void stop(struct DC_motor *mL, struct DC_motor *mR);
+[v _stop `(v ~T0 @X0 0 ef2`*S2021`*S2021 ]
 "27
 [; ;./dc_motor.h: 27: void forward(struct DC_motor *mL, struct DC_motor *mR);
 [v _forward `(v ~T0 @X0 0 ef2`*S2021`*S2021 ]
@@ -2259,8 +2262,28 @@ Version 4.0 HI-TECH Software Intermediate Code
 [i _TxBufReadCnt
 -> -> 0 `i `uc
 ]
+"21 main.c
+[; ;main.c: 21: static volatile int movements = 0;
+[v _movements `Vi ~T0 @X0 1 s ]
+[i _movements
+-> 0 `i
+]
+"22
+[; ;main.c: 22: int timerArray[30] = {};
+[v _timerArray `i ~T0 @X0 -> 30 `i e ]
+[i _timerArray
+:U ..
+..
+]
+"23
+[; ;main.c: 23: int movementArray[30] = {};
+[v _movementArray `i ~T0 @X0 -> 30 `i e ]
+[i _movementArray
+:U ..
+..
+]
 [v $root$_main `(v ~T0 @X0 0 e ]
-"25 main.c
+"25
 [; ;main.c: 25: void main(void){
 [v _main `(v ~T0 @X0 1 ef ]
 {
@@ -2566,107 +2589,101 @@ Version 4.0 HI-TECH Software Intermediate Code
 [; ;main.c: 133:             detected_colour = check1;
 [e = _detected_colour _check1 ]
 "134
-[; ;main.c: 134:             check1=9;
+[; ;main.c: 134:             check1=9;check2=9;check3=9;check4=9;
 [e = _check1 -> -> 9 `i `ui ]
-"135
-[; ;main.c: 135:             check2=9;
 [e = _check2 -> -> 9 `i `ui ]
-"136
-[; ;main.c: 136:             check3=9;
 [e = _check3 -> -> 9 `i `ui ]
-"137
-[; ;main.c: 137:             check4=9;
 [e = _check4 -> -> 9 `i `ui ]
-"138
-[; ;main.c: 138:         }
+"135
+[; ;main.c: 135:         }
 }
 [e :U 2047 ]
-"140
-[; ;main.c: 140:         if (detected_colour == 0){ turnRight90(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
+"137
+[; ;main.c: 137:         if (detected_colour == 0){ turnRight90(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
 [e $ ! == _detected_colour -> -> 0 `i `ui 2048  ]
 {
 [e ( _turnRight90 (2 , &U _motorL &U _motorR ]
 [e ( __delay (1 -> * -> -> 100 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
 }
 [e :U 2048 ]
-"141
-[; ;main.c: 141:         if (detected_colour == 1){ turnLeft90(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
+"138
+[; ;main.c: 138:         if (detected_colour == 1){ turnLeft90(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
 [e $ ! == _detected_colour -> -> 1 `i `ui 2049  ]
 {
 [e ( _turnLeft90 (2 , &U _motorL &U _motorR ]
 [e ( __delay (1 -> * -> -> 100 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
 }
 [e :U 2049 ]
-"142
-[; ;main.c: 142:         if (detected_colour == 2){ turnRight180(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
+"139
+[; ;main.c: 139:         if (detected_colour == 2){ turnRight180(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
 [e $ ! == _detected_colour -> -> 2 `i `ui 2050  ]
 {
 [e ( _turnRight180 (2 , &U _motorL &U _motorR ]
 [e ( __delay (1 -> * -> -> 100 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
 }
 [e :U 2050 ]
-"143
-[; ;main.c: 143:         if (detected_colour == 3){ reverseTurnRight90(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
+"140
+[; ;main.c: 140:         if (detected_colour == 3){ reverseTurnRight90(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
 [e $ ! == _detected_colour -> -> 3 `i `ui 2051  ]
 {
 [e ( _reverseTurnRight90 (2 , &U _motorL &U _motorR ]
 [e ( __delay (1 -> * -> -> 100 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
 }
 [e :U 2051 ]
-"144
-[; ;main.c: 144:         if (detected_colour == 4){ reverseTurnLeft90(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
+"141
+[; ;main.c: 141:         if (detected_colour == 4){ reverseTurnLeft90(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
 [e $ ! == _detected_colour -> -> 4 `i `ui 2052  ]
 {
 [e ( _reverseTurnLeft90 (2 , &U _motorL &U _motorR ]
 [e ( __delay (1 -> * -> -> 100 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
 }
 [e :U 2052 ]
-"145
-[; ;main.c: 145:         if (detected_colour == 5){ turnRight135(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
+"142
+[; ;main.c: 142:         if (detected_colour == 5){ turnRight135(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
 [e $ ! == _detected_colour -> -> 5 `i `ui 2053  ]
 {
 [e ( _turnRight135 (2 , &U _motorL &U _motorR ]
 [e ( __delay (1 -> * -> -> 100 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
 }
 [e :U 2053 ]
-"146
-[; ;main.c: 146:         if (detected_colour == 6){ turnLeft135(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
+"143
+[; ;main.c: 143:         if (detected_colour == 6){ turnLeft135(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
 [e $ ! == _detected_colour -> -> 6 `i `ui 2054  ]
 {
 [e ( _turnLeft135 (2 , &U _motorL &U _motorR ]
 [e ( __delay (1 -> * -> -> 100 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
 }
 [e :U 2054 ]
-"147
-[; ;main.c: 147:         if (detected_colour == 7){ turnRight180(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
+"144
+[; ;main.c: 144:         if (detected_colour == 7){ stop(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
 [e $ ! == _detected_colour -> -> 7 `i `ui 2055  ]
 {
-[e ( _turnRight180 (2 , &U _motorL &U _motorR ]
+[e ( _stop (2 , &U _motorL &U _motorR ]
 [e ( __delay (1 -> * -> -> 100 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
 }
 [e :U 2055 ]
-"148
-[; ;main.c: 148:         if (detected_colour == 8){ turnRight90(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
+"145
+[; ;main.c: 145:         if (detected_colour == 8){ turnRight90(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
 [e $ ! == _detected_colour -> -> 8 `i `ui 2056  ]
 {
 [e ( _turnRight90 (2 , &U _motorL &U _motorR ]
 [e ( __delay (1 -> * -> -> 100 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
 }
 [e :U 2056 ]
-"149
-[; ;main.c: 149:         if (detected_colour == 9){ forward(&motorL,&motorR);}
+"146
+[; ;main.c: 146:         if (detected_colour == 9){ forward(&motorL,&motorR);}
 [e $ ! == _detected_colour -> -> 9 `i `ui 2057  ]
 {
 [e ( _forward (2 , &U _motorL &U _motorR ]
 }
 [e :U 2057 ]
-"178
-[; ;main.c: 178:     }
+"147
+[; ;main.c: 147:     }
 }
 [e :U 2039 ]
 [e $U 2040  ]
 [e :U 2041 ]
-"179
-[; ;main.c: 179: }
+"148
+[; ;main.c: 148: }
 [e :UE 2023 ]
 }

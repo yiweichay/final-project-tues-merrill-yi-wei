@@ -18,9 +18,9 @@
 #define _XTAL_FREQ 64000000 //note intrinsic _delay function is 62.5ns at 64,000,000Hz  
 
 //initialise variables
-//static volatile int movements = 0;
-//int timerArray[30] = {};
-//int movementArray[30] = {}; //define overall empty array
+static volatile int movements = 0;
+int timerArray[30] = {};
+int movementArray[30] = {}; //define overall empty array
 
 void main(void){
     // Initialise Helper Scripts
@@ -86,7 +86,7 @@ void main(void){
     LATAbits.LATA4=1;   
     LATFbits.LATF7=1; 
     
-    // Calibration done against White Card
+    // Calibration Function
     unsigned int cal = 0;
     while(cal==0){
         LATDbits.LATD7 = 1;
@@ -131,10 +131,7 @@ void main(void){
         // 3 checks to detect colour
         if (check1==check2 && check2==check3 && check3==check4){
             detected_colour = check1;
-            check1=9; 
-            check2=9; 
-            check3=9; 
-            check4=9;// makes sure function only occurs once
+            check1=9;check2=9;check3=9;check4=9;// Resets Checks
         }
         
         if (detected_colour == 0){ turnRight90(&motorL,&motorR);__delay_ms(100);} // Red
@@ -144,36 +141,8 @@ void main(void){
         if (detected_colour == 4){ reverseTurnLeft90(&motorL,&motorR);__delay_ms(100);} // Pink
         if (detected_colour == 5){ turnRight135(&motorL,&motorR);__delay_ms(100);} // Orange 
         if (detected_colour == 6){ turnLeft135(&motorL,&motorR);__delay_ms(100);} // Light Blue
-        if (detected_colour == 7){ turnRight180(&motorL,&motorR);__delay_ms(100);} // White - need to alter
+        if (detected_colour == 7){ stop(&motorL,&motorR);__delay_ms(100);} // White - need to alter
         if (detected_colour == 8){ turnRight90(&motorL,&motorR);__delay_ms(100);} // Black - need to alter
         if (detected_colour == 9){ forward(&motorL,&motorR);} // Ambient
-        //__delay_ms(200); 
-        
-        
-        // For debugging/reviewing purposes
-//        RedRatio = ((float)(test.R - test.blackR) / (float)(test.whiteR - test.blackR)) * 10000;
-//        GreenRatio = ((float)(test.G - test.blackG) / (float)(test.whiteG - test.blackG)) * 10000;
-//        BlueRatio = ((float)(test.B - test.blackB) / (float)(test.whiteB - test.blackB)) * 10000;
-        //brightness = lumin(&test);
-//        
-//        sprintf(string1," R:%d ",RedRatio);
-//        TxBufferedString(string1);
-//        sendTxBuf();
-//        __delay_ms(150);
-//        
-//        sprintf(string2," G:%d ",GreenRatio);
-//        TxBufferedString(string2);
-//        sendTxBuf();
-//        __delay_ms(150);
-//
-//        sprintf(string3," B:%d ",BlueRatio);
-//        TxBufferedString(string3);
-//        sendTxBuf();
-//        __delay_ms(150);
-//        
-//        sprintf(string," Color:%d ",detected_colour);
-//        TxBufferedString(string);
-//        sendTxBuf();
-//        __delay_ms(50);
     }
 }
