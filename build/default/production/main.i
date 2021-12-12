@@ -24935,8 +24935,8 @@ unsigned int isbtw(float num, float low, float high);
 void calibrateW(struct RGB_val *m);
 void calibrateB(struct RGB_val *m);
 unsigned int determine_color_new(struct RGB_val *m);
-void Black(struct DC_motor *mL, struct DC_motor *mR);
-unsigned int updateMovementCount(int movementCode);
+void White(struct DC_motor *mL, struct DC_motor *mR, int movementArray[],unsigned int movements, int timerArray[]);
+void updateMovementCount(int movementCode, int movementArray[],unsigned int movements, int timerArray[]);
 # 12 "main.c" 2
 
 
@@ -24966,12 +24966,11 @@ unsigned int get16bitTMR0val(void);
 # 16 "main.c" 2
 
 
-
-
-
 static volatile int movements = 0;
-int timerArray[30] = {};
-int movementArray[30] = {};
+int timerArray[] = {};
+int movementArray[] = {};
+
+
 
 void main(void){
 
@@ -25012,11 +25011,11 @@ void main(void){
     test.B = 0;
 
 
-    LATGbits.LATG1=0;
+    LATGbits.LATG1=1;
     TRISGbits.TRISG1=0;
-    LATAbits.LATA4=0;
+    LATAbits.LATA4=1;
     TRISAbits.TRISA4=0;
-    LATFbits.LATF7=0;
+    LATFbits.LATF7=1;
     TRISFbits.TRISF7=0;
 
 
@@ -25025,17 +25024,7 @@ void main(void){
     TRISHbits.TRISH3 = 0;
     LATHbits.LATH3 = 0;
 
-
-
-
-
-
     unsigned int RedRatio, GreenRatio, BlueRatio;
-
-
-    LATGbits.LATG1=1;
-    LATAbits.LATA4=1;
-    LATFbits.LATF7=1;
 
 
     unsigned int cal = 0;
@@ -25069,6 +25058,7 @@ void main(void){
     unsigned int check3 = 9;
     unsigned int check4 = 9;
     unsigned int count = 0;
+    unsigned int reset_timer = 1;
 
     while(1){
         unsigned int detected_colour;
@@ -25080,9 +25070,22 @@ void main(void){
         else (count += 1);
 
 
+
         if (check1==check2 && check2==check3 && check3==check4){
             detected_colour = check1;
-            check1=9;check2=9;check3=9;check4=9;
+            if (detected_colour >= 0 && detected_colour <= 6){
+                updateMovementCount(detected_colour, movementArray, movements, timerArray);
+                reset_timer = 1;
+            }
+            else if (detected_colour == 9 && reset_timer == 1){
+                TMR0H = 0;
+                TMR0L = 0;
+                reset_timer = 0;
+            }
+            check1=9;
+            check2=9;
+            check3=9;
+            check4=9;
         }
 
         if (detected_colour == 0){ turnRight90(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
@@ -25092,8 +25095,8 @@ void main(void){
         if (detected_colour == 4){ reverseTurnLeft90(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
         if (detected_colour == 5){ turnRight135(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
         if (detected_colour == 6){ turnLeft135(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
-        if (detected_colour == 7){ stop(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
-        if (detected_colour == 8){ turnRight90(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
+        if (detected_colour == 7){ White(&motorL,&motorR,movementArray, movements, timerArray);_delay((unsigned long)((100)*(64000000/4000.0)));}
+        if (detected_colour == 8){ stop(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
         if (detected_colour == 9){ forward(&motorL,&motorR);}
     }
 }

@@ -15,12 +15,11 @@
 #include "interrupts.h"
 #include "timers.h"
 
-#define _XTAL_FREQ 64000000 //note intrinsic _delay function is 62.5ns at 64,000,000Hz  
-
-//initialise variables
 static volatile int movements = 0;
-int timerArray[30] = {};
-int movementArray[30] = {}; //define overall empty array
+int timerArray[] = {};
+int movementArray[] = {};
+
+#define _XTAL_FREQ 64000000 //note intrinsic _delay function is 62.5ns at 64,000,000Hz  
 
 void main(void){
     // Initialise Helper Scripts
@@ -108,6 +107,7 @@ void main(void){
     unsigned int check3 = 9;
     unsigned int check4 = 9;
     unsigned int count = 0;
+    unsigned int reset_timer = 1;
     
     while(1){          
         unsigned int detected_colour;  
@@ -119,9 +119,22 @@ void main(void){
         else (count += 1);
         
         // 3 checks to detect colour
+           // 3 checks to detect colour
         if (check1==check2 && check2==check3 && check3==check4){
             detected_colour = check1;
-            check1=9;check2=9;check3=9;check4=9;// Resets Checks
+            if (detected_colour >= 0 && detected_colour <= 6){
+                updateMovementCount(detected_colour, movementArray, movements, timerArray);
+                reset_timer = 1; //reset the timer when the movement is done
+            }
+            else if (detected_colour == 9 && reset_timer == 1){ //if first detected ambient light after card read, reset timer
+                TMR0H = 0;
+                TMR0L = 0;
+                reset_timer = 0; 
+            }
+            check1=9; 
+            check2=9; 
+            check3=9; 
+            check4=9;// makes sure function only occurs once
         }
         
         if (detected_colour == 0){ turnRight90(&motorL,&motorR);__delay_ms(100);} // Red
@@ -131,8 +144,8 @@ void main(void){
         if (detected_colour == 4){ reverseTurnLeft90(&motorL,&motorR);__delay_ms(100);} // Pink
         if (detected_colour == 5){ turnRight135(&motorL,&motorR);__delay_ms(100);} // Orange 
         if (detected_colour == 6){ turnLeft135(&motorL,&motorR);__delay_ms(100);} // Light Blue
-        if (detected_colour == 7){ stop(&motorL,&motorR);__delay_ms(100);} // White - need to alter
-        if (detected_colour == 8){ turnRight90(&motorL,&motorR);__delay_ms(100);} // Black - need to alter
+        if (detected_colour == 7){ White(&motorL,&motorR,movementArray, movements, timerArray);__delay_ms(100);} // White - need to alter
+        if (detected_colour == 8){ stop(&motorL,&motorR);__delay_ms(100);} // Black - need to alter
         if (detected_colour == 9){ forward(&motorL,&motorR);} // Ambient
     }
 }

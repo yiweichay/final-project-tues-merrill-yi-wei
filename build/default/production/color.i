@@ -24786,8 +24786,8 @@ unsigned int isbtw(float num, float low, float high);
 void calibrateW(struct RGB_val *m);
 void calibrateB(struct RGB_val *m);
 unsigned int determine_color_new(struct RGB_val *m);
-void Black(struct DC_motor *mL, struct DC_motor *mR);
-unsigned int updateMovementCount(int movementCode);
+void White(struct DC_motor *mL, struct DC_motor *mR, int movementArray[],unsigned int movements, int timerArray[]);
+void updateMovementCount(int movementCode, int movementArray[],unsigned int movements, int timerArray[]);
 # 3 "color.c" 2
 
 
@@ -24798,10 +24798,6 @@ extern struct DC_motor motorL, motorR;
 
 
 
-
-static volatile int movements = 0;
-int timerArray[] = {};
-int movementArray[] = {};
 
 void color_click_init(void)
 {
@@ -24964,7 +24960,7 @@ unsigned int determine_color_new(struct RGB_val *m){
     return out;
 }
 
-void Black(struct DC_motor *mL, struct DC_motor *mR)
+void White(struct DC_motor *mL, struct DC_motor *mR, int movementArray[], unsigned int movements, int timerArray[])
 {
     stop(mL, mR);
     turnRight180(mL, mR);
@@ -24979,6 +24975,7 @@ void Black(struct DC_motor *mL, struct DC_motor *mR)
         else if (movementArray[movements-i-1] == 6){turnRight135(mL, mR);}
         else if (movementArray[movements-i-1] == 9){forward(mL, mR);}
         int tempTimerVal = 0;
+        forward(mL, mR);
         TMR0H = 0;
         TMR0L = 0;
         while(tempTimerVal < timerArray[movements-i-1]){
@@ -24990,7 +24987,7 @@ void Black(struct DC_motor *mL, struct DC_motor *mR)
 }
 
 
-unsigned int updateMovementCount(int movementCode)
+void updateMovementCount(int movementCode,int movementArray[], unsigned int movements, int timerArray[])
 {
     int tempTimerVal = TMR0L;
     tempTimerVal += (TMR0H << 8);
@@ -24999,6 +24996,4 @@ unsigned int updateMovementCount(int movementCode)
     movements++;
     TMR0H = 0;
     TMR0L = 0;
-
-
 }
