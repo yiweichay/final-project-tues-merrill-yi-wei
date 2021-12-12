@@ -95,7 +95,7 @@ void turnLeft90(struct DC_motor *mL, struct DC_motor *mR)
     
     (*mL).direction = 0; //0 means reverse direction
     (*mR).direction = 1;
-    for (unsigned int i = 0; i < 75; ++i){ // Dont want too much power
+    for (unsigned int i = 0; i < 80; ++i){ // Dont want too much power
         (mL->power) += 1;
         (mR->power) += 1;
         setMotorPWM(mL);
@@ -143,14 +143,14 @@ void turnRight90(struct DC_motor *mL, struct DC_motor *mR)
     
     (*mL).direction = 1; //0 means reverse direction
     (*mR).direction = 0;
-    for (unsigned int i = 0; i < 75; ++i){ // Dont want too much power
+    for (unsigned int i = 0; i < 80; ++i){ // Dont want too much power
         (mL->power) += 1;
         (mR->power) += 1;
         setMotorPWM(mL);
         setMotorPWM(mR);
         __delay_us(50);
     }
-    __delay_ms(205); //Adjust Timing
+    __delay_ms(215); //Adjust Timing
     stop(mL, mR);
     __delay_ms(50);
 }
@@ -174,7 +174,7 @@ void turnRight135(struct DC_motor *mL, struct DC_motor *mR)
         setMotorPWM(mR);
         __delay_us(50); //Adjust Timing
     }
-    __delay_ms(270);
+    __delay_ms(275);
     stop(mL, mR);
     __delay_ms(50);
 }
@@ -221,13 +221,13 @@ void reverseTurnRight90(struct DC_motor *mL, struct DC_motor *mR)
     __delay_ms(50);
     (*mL).direction = 0;
     (*mR).direction = 0;
-    (*mL).power = 60; 
-    (*mR).power = 60;
+    (*mL).power = 70; 
+    (*mR).power = 70;
     setMotorPWM(mL);
     setMotorPWM(mR);
-    __delay_ms(400); //Adjust Timing 
+    __delay_ms(500); //Adjust Timing 
     stop(mL, mR);
-    __delay_ms(300);
+    __delay_ms(600);
     turnRight90(mL, mR);
     __delay_ms(100);
 }
@@ -239,11 +239,11 @@ void reverseTurnLeft90(struct DC_motor *mL, struct DC_motor *mR)
     __delay_ms(50);
     (*mL).direction = 0;
     (*mR).direction = 0;
-    (*mL).power = 60;
-    (*mR).power = 60;
+    (*mL).power = 70;
+    (*mR).power = 70;
     setMotorPWM(mL);
     setMotorPWM(mR);
-    __delay_ms(400); //Adjust Timing
+    __delay_ms(600); //Adjust Timing
     stop(mL, mR);
     __delay_ms(300);
     turnLeft90(mL, mR);

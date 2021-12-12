@@ -24786,8 +24786,8 @@ unsigned int isbtw(float num, float low, float high);
 void calibrateW(struct RGB_val *m);
 void calibrateB(struct RGB_val *m);
 unsigned int determine_color_new(struct RGB_val *m);
-void White(struct DC_motor *mL, struct DC_motor *mR, int movementArray[],unsigned int movements, int timerArray[]);
-void updateMovementCount(int movementCode, int movementArray[],unsigned int movements, int timerArray[]);
+void White(struct DC_motor *mL, struct DC_motor *mR, unsigned int movementArray[],unsigned int movements, unsigned int timerArray[]);
+void updateMovementCount(unsigned int movementCode,unsigned int movementArray[],unsigned int movements,unsigned int timerArray[]);
 # 3 "color.c" 2
 
 
@@ -24795,9 +24795,6 @@ void updateMovementCount(int movementCode, int movementArray[],unsigned int move
 
 
 extern struct DC_motor motorL, motorR;
-
-
-
 
 void color_click_init(void)
 {
@@ -24906,6 +24903,8 @@ unsigned int determine_color_new(struct RGB_val *m){
     float RelR, RelG, RelB;
     unsigned int out = 9;
 
+
+
     unsigned int lumin = (0.2126*(m->R)) + (0.7152*(m->G)) + (0.0722*(m->B));
 
 
@@ -24913,13 +24912,17 @@ unsigned int determine_color_new(struct RGB_val *m){
     GreenRatio = ((float)(m->G - m->blackG) / (float)(m->whiteG - m->blackG))*10000;
     BlueRatio = ((float)(m->B - m->blackB) / (float)(m->whiteB - m->blackB))*10000;
 
+
     RelR = (float)RedRatio / (float)GreenRatio;
     RelG = (float)RedRatio / (float)BlueRatio;
     RelB = (float)BlueRatio / (float)GreenRatio;
 
+
     if (RelR < 0) {RelR = 0;}
     if (RelG < 0) {RelG = 0;}
     if (RelB < 0) {RelB = 0;}
+
+
 
 
     if (isbtw(RelR,5.1,20.5)==1 && isbtw(RelG,2.2,3.8)==1 && isbtw(RelB,1.8,5.5)==1 && lumin>800)
@@ -24930,7 +24933,7 @@ unsigned int determine_color_new(struct RGB_val *m){
     {out = 1;}
 
 
-    if (isbtw(RelR,0.1,0.55)==1 && isbtw(RelG,0.1,0.39)==1 && isbtw(RelB,1.0,1.2)==1)
+    if (isbtw(RelR,0.1,0.55)==1 && isbtw(RelG,0.1,0.39)==1 && isbtw(RelB,1.0,1.2)==1 && lumin>800)
     {out = 2;}
 
 
@@ -24942,9 +24945,8 @@ unsigned int determine_color_new(struct RGB_val *m){
     {out = 4;}
 
 
-    if (isbtw(RelR,3.1,4.85)==1 && isbtw(RelG,2.2,2.83)==1 && isbtw(RelB,1.27,1.8)==1 && lumin>800)
-    {
-        out = 5;}
+    if (isbtw(RelR,3.1,4.85)==1 && isbtw(RelG,2.2,2.83)==1 && isbtw(RelB,1.27,1.8)==1 && lumin>820)
+    {out = 5;}
 
 
     if (isbtw(RelR,0.6,0.86)==1 && isbtw(RelG,0.6,0.85)==1 && isbtw(RelB,0.95,1.12)==1 && lumin>820)
@@ -24960,7 +24962,7 @@ unsigned int determine_color_new(struct RGB_val *m){
     return out;
 }
 
-void White(struct DC_motor *mL, struct DC_motor *mR, int movementArray[], unsigned int movements, int timerArray[])
+void White(struct DC_motor *mL, struct DC_motor *mR,unsigned int movementArray[], unsigned int movements,unsigned int timerArray[])
 {
     stop(mL, mR);
     turnRight180(mL, mR);
@@ -24973,27 +24975,26 @@ void White(struct DC_motor *mL, struct DC_motor *mR, int movementArray[], unsign
         else if (movementArray[movements-i-1] == 4){reverseTurnRight90(mL, mR);}
         else if (movementArray[movements-i-1] == 5){turnLeft135(mL, mR);}
         else if (movementArray[movements-i-1] == 6){turnRight135(mL, mR);}
-        else if (movementArray[movements-i-1] == 9){forward(mL, mR);}
-        int tempTimerVal = 0;
+        else if (movementArray[movements-i-1] == 9){stop(mL, mR);}
+        unsigned int tempTimerVal = 0;
         forward(mL, mR);
         TMR0H = 0;
         TMR0L = 0;
         while(tempTimerVal < timerArray[movements-i-1]){
             tempTimerVal = TMR0L;
-            tempTimerVal += (TMR0H << 8);
+            tempTimerVal |= (TMR0H << 8);
         }
     }
     stop(mL, mR);
 }
 
 
-void updateMovementCount(int movementCode,int movementArray[], unsigned int movements, int timerArray[])
+void updateMovementCount(unsigned int movementCode,unsigned int movementArray[], unsigned int movements,unsigned int timerArray[])
 {
-    int tempTimerVal = TMR0L;
-    tempTimerVal += (TMR0H << 8);
+    unsigned int tempTimerVal = TMR0L;
+    tempTimerVal |= (TMR0H << 8);
     timerArray[movements] = tempTimerVal;
     movementArray[movements] = movementCode;
-    movements++;
     TMR0H = 0;
     TMR0L = 0;
 }

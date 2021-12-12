@@ -24935,8 +24935,8 @@ unsigned int isbtw(float num, float low, float high);
 void calibrateW(struct RGB_val *m);
 void calibrateB(struct RGB_val *m);
 unsigned int determine_color_new(struct RGB_val *m);
-void White(struct DC_motor *mL, struct DC_motor *mR, int movementArray[],unsigned int movements, int timerArray[]);
-void updateMovementCount(int movementCode, int movementArray[],unsigned int movements, int timerArray[]);
+void White(struct DC_motor *mL, struct DC_motor *mR, unsigned int movementArray[],unsigned int movements, unsigned int timerArray[]);
+void updateMovementCount(unsigned int movementCode,unsigned int movementArray[],unsigned int movements,unsigned int timerArray[]);
 # 12 "main.c" 2
 
 
@@ -24966,9 +24966,9 @@ unsigned int get16bitTMR0val(void);
 # 16 "main.c" 2
 
 
-static volatile int movements = 0;
-int timerArray[] = {};
-int movementArray[] = {};
+unsigned int movements = 0;
+unsigned int timerArray[10] = {};
+unsigned int movementArray[10] = {};
 
 
 
@@ -24978,14 +24978,8 @@ void main(void){
     color_click_init();
     initUSART4();
     Timer0_init();
-    _delay((unsigned long)((300)*(64000000/4000.0)));
     Interrupts_init();
 
-
-    TRISFbits.TRISF2=1;
-    ANSELFbits.ANSELF2=0;
-    TRISFbits.TRISF3=1;
-    ANSELFbits.ANSELF3=0;
 
     struct DC_motor motorL, motorR;
     unsigned int PWMcycle = 99;
@@ -25011,6 +25005,12 @@ void main(void){
     test.B = 0;
 
 
+    TRISFbits.TRISF2=1;
+    ANSELFbits.ANSELF2=0;
+    TRISFbits.TRISF3=1;
+    ANSELFbits.ANSELF3=0;
+
+
     LATGbits.LATG1=1;
     TRISGbits.TRISG1=0;
     LATAbits.LATA4=1;
@@ -25019,12 +25019,8 @@ void main(void){
     TRISFbits.TRISF7=0;
 
 
-    TRISDbits.TRISD7 = 0;
-    LATDbits.LATD7 = 0;
-    TRISHbits.TRISH3 = 0;
-    LATHbits.LATH3 = 0;
-
-    unsigned int RedRatio, GreenRatio, BlueRatio;
+    TRISDbits.TRISD7 = 0; LATDbits.LATD7 = 0;
+    TRISHbits.TRISH3 = 0; LATHbits.LATH3 = 0;
 
 
     unsigned int cal = 0;
@@ -25049,18 +25045,20 @@ void main(void){
         while (PORTFbits.RF3);
         if (!PORTFbits.RF3){
             LATHbits.LATH3 = 0;
+            TMR0H = 0;
+            TMR0L = 0;
             cal = 1;
         }
     }
 
-    unsigned int check1 = 9;
-    unsigned int check2 = 9;
-    unsigned int check3 = 9;
-    unsigned int check4 = 9;
+
+    unsigned int check1 = 9; unsigned int check2 = 9;
+    unsigned int check3 = 9; unsigned int check4 = 9;
     unsigned int count = 0;
     unsigned int reset_timer = 1;
 
     while(1){
+
         unsigned int detected_colour;
         read_colours(&test);
         if (count==0) {check1 = determine_color_new(&test);}
@@ -25070,11 +25068,11 @@ void main(void){
         else (count += 1);
 
 
-
         if (check1==check2 && check2==check3 && check3==check4){
             detected_colour = check1;
             if (detected_colour >= 0 && detected_colour <= 6){
                 updateMovementCount(detected_colour, movementArray, movements, timerArray);
+                movements++;
                 reset_timer = 1;
             }
             else if (detected_colour == 9 && reset_timer == 1){
@@ -25082,10 +25080,7 @@ void main(void){
                 TMR0L = 0;
                 reset_timer = 0;
             }
-            check1=9;
-            check2=9;
-            check3=9;
-            check4=9;
+            check1=9;check2=9;check3=9;check4=9;
         }
 
         if (detected_colour == 0){ turnRight90(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
@@ -25095,7 +25090,10 @@ void main(void){
         if (detected_colour == 4){ reverseTurnLeft90(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
         if (detected_colour == 5){ turnRight135(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
         if (detected_colour == 6){ turnLeft135(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
-        if (detected_colour == 7){ White(&motorL,&motorR,movementArray, movements, timerArray);_delay((unsigned long)((100)*(64000000/4000.0)));}
+        if (detected_colour == 7){
+            White(&motorL,&motorR,movementArray, movements, timerArray);
+            _delay((unsigned long)((100)*(64000000/4000.0)));LATDbits.LATD7 = 1;LATHbits.LATH3 = 1;
+            while (PORTFbits.RF3);}
         if (detected_colour == 8){ stop(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
         if (detected_colour == 9){ forward(&motorL,&motorR);}
     }

@@ -23,14 +23,14 @@ void Interrupts_init(void)
  * High priority interrupt service routine
  * Make sure all enabled interrupts are checked and flags cleared
 ************************************/
-void __interrupt(high_priority) HighISR()
+void __interrupt(high_priority) HighISR() // If overrun by 20s, will then trigger memory 
 {
 	//add your ISR code here i.e. check the flag, do something (i.e. toggle an LED), clear the flag...
     if(PIR0bits.TMR0IF){
         //LATHbits.LATH3 = !LATHbits.LATH3; //change the state of the LED (for testing))
         TMR0H = 0;
         TMR0L = 0;
-        //White(&motorL, &motorR);
+        //White(&motorL, &motorR); 
         PIR0bits.TMR0IF = 0; // clearing the flag
     } 
 }

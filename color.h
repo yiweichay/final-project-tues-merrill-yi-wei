@@ -47,7 +47,7 @@ unsigned int isbtw(float num, float low, float high);
 void calibrateW(struct RGB_val *m);
 void calibrateB(struct RGB_val *m);
 unsigned int determine_color_new(struct RGB_val *m);
-void White(struct DC_motor *mL, struct DC_motor *mR,  int movementArray[],unsigned int movements, int timerArray[]);
-void updateMovementCount(int movementCode, int movementArray[],unsigned int movements, int timerArray[]);
+void White(struct DC_motor *mL, struct DC_motor *mR, unsigned int movementArray[],unsigned int movements, unsigned int timerArray[]);
+void updateMovementCount(unsigned int movementCode,unsigned int movementArray[],unsigned int movements,unsigned int timerArray[]);
 
 #endif

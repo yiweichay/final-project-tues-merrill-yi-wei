@@ -1201,8 +1201,6 @@
         <property key="memories.programmemory.ranges" value="0-1ffff"/>
         <property key="memories.rww" value="true"/>
         <property key="poweroptions.powerenable" value="false"/>
-        <property key="programmerToGoFilePath"
-                  value="C:/Users/merri/MPLABXProjects/final-project-tues-merrill-yi-wei.X/debug/default/final-project-tues-merrill-yi-wei_ptg"/>
         <property key="programmerToGoImageName"
                   value="final-project-tues-merrill-yi-wei_ptg"/>
         <property key="programoptions.donoteraseauxmem" value="false"/>
