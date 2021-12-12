@@ -28,7 +28,6 @@ void main(void){
     color_click_init();
     initUSART4(); 
     Timer0_init();
-    __delay_ms(300);
     Interrupts_init();
 
     // setup buttons for input
@@ -136,9 +135,6 @@ void main(void){
                 updateMovementCount(detected_colour);
                 reset_timer = 1; //reset the timer when the movement is done
             }
-            else if (detected_colour == 8){
-                Black(&motorL, &motorR);
-            }
             else if (detected_colour == 9 && reset_timer == 1){ //if first detected ambient light after card read, reset timer
                 TMR0H = 0;
                 TMR0L = 0;
@@ -157,7 +153,7 @@ void main(void){
         if (detected_colour == 4){ reverseTurnLeft90(&motorL,&motorR);__delay_ms(100);} // Pink
         if (detected_colour == 5){ turnRight135(&motorL,&motorR);__delay_ms(100);} // Orange 
         if (detected_colour == 6){ turnLeft135(&motorL,&motorR);__delay_ms(100);} // Light Blue
-        if (detected_colour == 7){ turnRight180(&motorL,&motorR);__delay_ms(100);} // White - need to alter
+        if (detected_colour == 7){ White(&motorL,&motorR);__delay_ms(100);} // White
         if (detected_colour == 8){ turnRight90(&motorL,&motorR);__delay_ms(100);} // Black - need to alter
         if (detected_colour == 9){ forward(&motorL,&motorR);} // Ambient
         //__delay_ms(200); 

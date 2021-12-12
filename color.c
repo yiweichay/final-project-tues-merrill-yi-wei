@@ -201,15 +201,16 @@ unsigned int lumin(struct RGB_val *m){
 //4 = pink
 //5 = orange
 //6 = light blue
-//7 = white
-//8 = black (not sure what to do with this yet)
+//7 = white (retrace path and move back to starting point)
+//8 = black (nothing happens)
 //9 = ambient (move forward)
 
 //for example, when it reaches black, movementArray[10]
 //what value is in the array if there are more array sizes than movements?
 //need to store the time taken for forward movement 
 
-void Black(struct DC_motor *mL, struct DC_motor *mR)
+//function to retrace path when the buggy reaches the end
+void White(struct DC_motor *mL, struct DC_motor *mR)
 {
     stop(mL, mR);
     turnRight180(mL, mR);

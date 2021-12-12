@@ -46,7 +46,7 @@ void calibrateW(struct RGB_val *m);
 void calibrateB(struct RGB_val *m);
 unsigned int determine_color_new(struct RGB_val *m);
 unsigned int lumin(struct RGB_val *m);
-void Black(struct DC_motor *mL, struct DC_motor *mR);
+void White(struct DC_motor *mL, struct DC_motor *mR);
 unsigned int updateMovementCount(int movementCode);
 
 #endif
