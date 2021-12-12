@@ -150,7 +150,7 @@ void turnRight90(struct DC_motor *mL, struct DC_motor *mR)
         setMotorPWM(mR);
         __delay_us(50);
     }
-    __delay_ms(215); //Adjust Timing
+    __delay_ms(205); //Adjust Timing
     stop(mL, mR);
     __delay_ms(50);
 }
@@ -243,7 +243,7 @@ void reverseTurnLeft90(struct DC_motor *mL, struct DC_motor *mR)
     (*mR).power = 70;
     setMotorPWM(mL);
     setMotorPWM(mR);
-    __delay_ms(600); //Adjust Timing
+    __delay_ms(550); //Adjust Timing
     stop(mL, mR);
     __delay_ms(300);
     turnLeft90(mL, mR);

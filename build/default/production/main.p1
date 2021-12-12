@@ -256,10 +256,7 @@ Version 4.0 HI-TECH Software Intermediate Code
 "50 ./color.h
 [; ;./color.h: 50: void White(struct DC_motor *mL, struct DC_motor *mR, unsigned int movementArray[],unsigned int movements, unsigned int timerArray[]);
 [v _White `(v ~T0 @X0 0 ef5`*S2021`*S2021`*ui`ui`*ui ]
-"20 ./dc_motor.h
-[; ;./dc_motor.h: 20: void stop(struct DC_motor *mL, struct DC_motor *mR);
-[v _stop `(v ~T0 @X0 0 ef2`*S2021`*S2021 ]
-"27
+"27 ./dc_motor.h
 [; ;./dc_motor.h: 27: void forward(struct DC_motor *mL, struct DC_motor *mR);
 [v _forward `(v ~T0 @X0 0 ef2`*S2021`*S2021 ]
 "2 main.c
@@ -2586,8 +2583,8 @@ Version 4.0 HI-TECH Software Intermediate Code
 [; ;main.c: 121:             detected_colour = check1;
 [e = _detected_colour _check1 ]
 "122
-[; ;main.c: 122:             if (detected_colour >= 0 && detected_colour <= 6){
-[e $ ! && >= _detected_colour -> -> 0 `i `ui <= _detected_colour -> -> 6 `i `ui 2048  ]
+[; ;main.c: 122:             if (detected_colour >= 0 && detected_colour <= 7){
+[e $ ! && >= _detected_colour -> -> 0 `i `ui <= _detected_colour -> -> 7 `i `ui 2048  ]
 {
 "123
 [; ;main.c: 123:                 updateMovementCount(detected_colour, movementArray, movements, timerArray);
@@ -2607,100 +2604,98 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e :U 2048 ]
 [e $ ! && == _detected_colour -> -> 9 `i `ui == _reset_timer -> -> 1 `i `ui 2050  ]
 {
-"128
-[; ;main.c: 128:                 TMR0H = 0;
-[e = _TMR0H -> -> 0 `i `uc ]
 "129
-[; ;main.c: 129:                 TMR0L = 0;
-[e = _TMR0L -> -> 0 `i `uc ]
+[; ;main.c: 129:                 TMR0H = 0;
+[e = _TMR0H -> -> 0 `i `uc ]
 "130
-[; ;main.c: 130:                 reset_timer = 0;
-[e = _reset_timer -> -> 0 `i `ui ]
+[; ;main.c: 130:                 TMR0L = 0;
+[e = _TMR0L -> -> 0 `i `uc ]
 "131
-[; ;main.c: 131:             }
+[; ;main.c: 131:                 reset_timer = 0;
+[e = _reset_timer -> -> 0 `i `ui ]
+"132
+[; ;main.c: 132:             }
 }
 [e :U 2050 ]
 [e :U 2049 ]
-"132
-[; ;main.c: 132:             check1=9;check2=9;check3=9;check4=9;
+"133
+[; ;main.c: 133:             check1=9;check2=9;check3=9;check4=9;
 [e = _check1 -> -> 9 `i `ui ]
 [e = _check2 -> -> 9 `i `ui ]
 [e = _check3 -> -> 9 `i `ui ]
 [e = _check4 -> -> 9 `i `ui ]
-"133
-[; ;main.c: 133:         }
+"134
+[; ;main.c: 134:         }
 }
 [e :U 2047 ]
-"135
-[; ;main.c: 135:         if (detected_colour == 0){ turnRight90(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
+"136
+[; ;main.c: 136:         if (detected_colour == 0){ turnRight90(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
 [e $ ! == _detected_colour -> -> 0 `i `ui 2051  ]
 {
 [e ( _turnRight90 (2 , &U _motorL &U _motorR ]
 [e ( __delay (1 -> * -> -> 100 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
 }
 [e :U 2051 ]
-"136
-[; ;main.c: 136:         if (detected_colour == 1){ turnLeft90(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
+"137
+[; ;main.c: 137:         if (detected_colour == 1){ turnLeft90(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
 [e $ ! == _detected_colour -> -> 1 `i `ui 2052  ]
 {
 [e ( _turnLeft90 (2 , &U _motorL &U _motorR ]
 [e ( __delay (1 -> * -> -> 100 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
 }
 [e :U 2052 ]
-"137
-[; ;main.c: 137:         if (detected_colour == 2){ turnRight180(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
+"138
+[; ;main.c: 138:         if (detected_colour == 2){ turnRight180(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
 [e $ ! == _detected_colour -> -> 2 `i `ui 2053  ]
 {
 [e ( _turnRight180 (2 , &U _motorL &U _motorR ]
 [e ( __delay (1 -> * -> -> 100 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
 }
 [e :U 2053 ]
-"138
-[; ;main.c: 138:         if (detected_colour == 3){ reverseTurnRight90(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
+"139
+[; ;main.c: 139:         if (detected_colour == 3){ reverseTurnRight90(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
 [e $ ! == _detected_colour -> -> 3 `i `ui 2054  ]
 {
 [e ( _reverseTurnRight90 (2 , &U _motorL &U _motorR ]
 [e ( __delay (1 -> * -> -> 100 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
 }
 [e :U 2054 ]
-"139
-[; ;main.c: 139:         if (detected_colour == 4){ reverseTurnLeft90(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
+"140
+[; ;main.c: 140:         if (detected_colour == 4){ reverseTurnLeft90(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
 [e $ ! == _detected_colour -> -> 4 `i `ui 2055  ]
 {
 [e ( _reverseTurnLeft90 (2 , &U _motorL &U _motorR ]
 [e ( __delay (1 -> * -> -> 100 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
 }
 [e :U 2055 ]
-"140
-[; ;main.c: 140:         if (detected_colour == 5){ turnRight135(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
+"141
+[; ;main.c: 141:         if (detected_colour == 5){ turnRight135(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
 [e $ ! == _detected_colour -> -> 5 `i `ui 2056  ]
 {
 [e ( _turnRight135 (2 , &U _motorL &U _motorR ]
 [e ( __delay (1 -> * -> -> 100 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
 }
 [e :U 2056 ]
-"141
-[; ;main.c: 141:         if (detected_colour == 6){ turnLeft135(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
+"142
+[; ;main.c: 142:         if (detected_colour == 6){ turnLeft135(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
 [e $ ! == _detected_colour -> -> 6 `i `ui 2057  ]
 {
 [e ( _turnLeft135 (2 , &U _motorL &U _motorR ]
 [e ( __delay (1 -> * -> -> 100 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
 }
 [e :U 2057 ]
-"142
-[; ;main.c: 142:         if (detected_colour == 7){
-[e $ ! == _detected_colour -> -> 7 `i `ui 2058  ]
+"145
+[; ;main.c: 145:         if (detected_colour == 7 || detected_colour == 8){ White(&motorL,&motorR,movementArray, movements, timerArray);
+[e $ ! || == _detected_colour -> -> 7 `i `ui == _detected_colour -> -> 8 `i `ui 2058  ]
 {
-"143
-[; ;main.c: 143:             White(&motorL,&motorR,movementArray, movements, timerArray);
 [e ( _White (4 , , , , &U _motorL &U _motorR &U _movementArray _movements &U _timerArray ]
-"144
-[; ;main.c: 144:             _delay((unsigned long)((100)*(64000000/4000.0)));LATDbits.LATD7 = 1;LATHbits.LATH3 = 1;
+"146
+[; ;main.c: 146:             _delay((unsigned long)((100)*(64000000/4000.0)));LATDbits.LATD7 = 1;LATHbits.LATH3 = 1;
 [e ( __delay (1 -> * -> -> 100 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
 [e = . . _LATDbits 0 7 -> -> 1 `i `uc ]
 [e = . . _LATHbits 0 3 -> -> 1 `i `uc ]
-"145
-[; ;main.c: 145:             while (PORTFbits.RF3);}
+"147
+[; ;main.c: 147:             while (PORTFbits.RF3);}
 [e $U 2059  ]
 [e :U 2060 ]
 [e :U 2059 ]
@@ -2708,28 +2703,20 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e :U 2061 ]
 }
 [e :U 2058 ]
-"146
-[; ;main.c: 146:         if (detected_colour == 8){ stop(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
-[e $ ! == _detected_colour -> -> 8 `i `ui 2062  ]
-{
-[e ( _stop (2 , &U _motorL &U _motorR ]
-[e ( __delay (1 -> * -> -> 100 `i `d / -> -> 64000000 `l `d .4000.0 `ul ]
-}
-[e :U 2062 ]
-"147
-[; ;main.c: 147:         if (detected_colour == 9){ forward(&motorL,&motorR);}
-[e $ ! == _detected_colour -> -> 9 `i `ui 2063  ]
+"148
+[; ;main.c: 148:         if (detected_colour == 9){ forward(&motorL,&motorR);}
+[e $ ! == _detected_colour -> -> 9 `i `ui 2062  ]
 {
 [e ( _forward (2 , &U _motorL &U _motorR ]
 }
-[e :U 2063 ]
-"148
-[; ;main.c: 148:     }
+[e :U 2062 ]
+"149
+[; ;main.c: 149:     }
 }
 [e :U 2039 ]
 [e $U 2040  ]
 [e :U 2041 ]
-"149
-[; ;main.c: 149: }
+"150
+[; ;main.c: 150: }
 [e :UE 2023 ]
 }

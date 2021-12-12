@@ -24359,7 +24359,7 @@ void turnRight90(struct DC_motor *mL, struct DC_motor *mR)
         setMotorPWM(mR);
         _delay((unsigned long)((50)*(64000000/4000000.0)));
     }
-    _delay((unsigned long)((215)*(64000000/4000.0)));
+    _delay((unsigned long)((205)*(64000000/4000.0)));
     stop(mL, mR);
     _delay((unsigned long)((50)*(64000000/4000.0)));
 }
@@ -24452,7 +24452,7 @@ void reverseTurnLeft90(struct DC_motor *mL, struct DC_motor *mR)
     (*mR).power = 70;
     setMotorPWM(mL);
     setMotorPWM(mR);
-    _delay((unsigned long)((600)*(64000000/4000.0)));
+    _delay((unsigned long)((550)*(64000000/4000.0)));
     stop(mL, mR);
     _delay((unsigned long)((300)*(64000000/4000.0)));
     turnLeft90(mL, mR);
