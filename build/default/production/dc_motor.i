@@ -24304,7 +24304,7 @@ void turnLeft90(struct DC_motor *mL, struct DC_motor *mR)
 
     (*mL).direction = 0;
     (*mR).direction = 1;
-    for (unsigned int i = 0; i < 75; ++i){
+    for (unsigned int i = 0; i < 80; ++i){
         (mL->power) += 1;
         (mR->power) += 1;
         setMotorPWM(mL);
@@ -24352,14 +24352,14 @@ void turnRight90(struct DC_motor *mL, struct DC_motor *mR)
 
     (*mL).direction = 1;
     (*mR).direction = 0;
-    for (unsigned int i = 0; i < 75; ++i){
+    for (unsigned int i = 0; i < 80; ++i){
         (mL->power) += 1;
         (mR->power) += 1;
         setMotorPWM(mL);
         setMotorPWM(mR);
         _delay((unsigned long)((50)*(64000000/4000000.0)));
     }
-    _delay((unsigned long)((205)*(64000000/4000.0)));
+    _delay((unsigned long)((215)*(64000000/4000.0)));
     stop(mL, mR);
     _delay((unsigned long)((50)*(64000000/4000.0)));
 }
@@ -24383,7 +24383,7 @@ void turnRight135(struct DC_motor *mL, struct DC_motor *mR)
         setMotorPWM(mR);
         _delay((unsigned long)((50)*(64000000/4000000.0)));
     }
-    _delay((unsigned long)((270)*(64000000/4000.0)));
+    _delay((unsigned long)((275)*(64000000/4000.0)));
     stop(mL, mR);
     _delay((unsigned long)((50)*(64000000/4000.0)));
 }
@@ -24430,13 +24430,13 @@ void reverseTurnRight90(struct DC_motor *mL, struct DC_motor *mR)
     _delay((unsigned long)((50)*(64000000/4000.0)));
     (*mL).direction = 0;
     (*mR).direction = 0;
-    (*mL).power = 60;
-    (*mR).power = 60;
+    (*mL).power = 70;
+    (*mR).power = 70;
     setMotorPWM(mL);
     setMotorPWM(mR);
-    _delay((unsigned long)((400)*(64000000/4000.0)));
+    _delay((unsigned long)((500)*(64000000/4000.0)));
     stop(mL, mR);
-    _delay((unsigned long)((300)*(64000000/4000.0)));
+    _delay((unsigned long)((600)*(64000000/4000.0)));
     turnRight90(mL, mR);
     _delay((unsigned long)((100)*(64000000/4000.0)));
 }
@@ -24448,11 +24448,11 @@ void reverseTurnLeft90(struct DC_motor *mL, struct DC_motor *mR)
     _delay((unsigned long)((50)*(64000000/4000.0)));
     (*mL).direction = 0;
     (*mR).direction = 0;
-    (*mL).power = 60;
-    (*mR).power = 60;
+    (*mL).power = 70;
+    (*mR).power = 70;
     setMotorPWM(mL);
     setMotorPWM(mR);
-    _delay((unsigned long)((400)*(64000000/4000.0)));
+    _delay((unsigned long)((600)*(64000000/4000.0)));
     stop(mL, mR);
     _delay((unsigned long)((300)*(64000000/4000.0)));
     turnLeft90(mL, mR);
