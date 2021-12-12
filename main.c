@@ -15,77 +15,178 @@
 #include "interrupts.h"
 #include "timers.h"
 
-#define _XTAL_FREQ 64000000 //note intrinsic _delay function is 62.5ns at 64,000,000Hz 
+#define _XTAL_FREQ 64000000 //note intrinsic _delay function is 62.5ns at 64,000,000Hz  
 
 //initialise variables
 //static volatile int movements = 0;
 //int timerArray[30] = {};
 //int movementArray[30] = {}; //define overall empty array
 
-
-void main(void){    
-    //initialise functions
-    int PWMcycle = 99;
-    initDCmotorsPWM(PWMcycle);
-    initUSART4();
-    Interrupts_init();
-    Timer0_init(); //when button is pressed, then call TimerInit
-    //RGB_init();
-    __delay_ms(500);
+void main(void){
+    // Initialise Helper Scripts
+    initDCmotorsPWM(99);
     color_click_init();
+    initUSART4(); 
+    Timer0_init();
+    __delay_ms(300);
+    Interrupts_init();
+
+    // setup buttons for input
+    TRISFbits.TRISF2=1; //set TRIS value for pin (input)
+    ANSELFbits.ANSELF2=0; //turn off analogue input on pin
+    TRISFbits.TRISF3=1; //set TRIS value for pin (input)
+    ANSELFbits.ANSELF3=0; //turn off analogue input on pin
     
-    char string[20];
-    
-    struct RGB_val colorInput;
     struct DC_motor motorL, motorR; 		//declare two DC_motor structures 
-    
+    unsigned int PWMcycle = 99;
     motorL.power=0; 						//zero power to start
     motorL.direction=1; 					//set default motor direction
     motorL.dutyHighByte=(unsigned char *)(&PWM6DCH);	//store address of PWM duty high byte
     motorL.dir_LAT=(unsigned char *)(&LATE); 		//store address of LAT
     motorL.dir_pin=4; 						//pin RE4 controls direction
     motorL.PWMperiod=PWMcycle; 			//store PWMperiod for motor
-
-    //same for motorR but different PWM register, LAT and direction pin
+    
     motorR.power=0; 						//zero power to start
     motorR.direction=1; 					//set default motor direction
     motorR.dutyHighByte=(unsigned char *)(&PWM7DCH);	//store address of PWM duty high byte
     motorR.dir_LAT=(unsigned char *)(&LATG); 		//store address of LAT
     motorR.dir_pin=6; 						//pin RG6 controls direction
-    motorR.PWMperiod=PWMcycle;
+    motorR.PWMperiod=PWMcycle; 			//store PWMperiod for motor
     
-    // setup pin for input (connected to left button)
-    TRISFbits.TRISF2=1; //set TRIS value for pin (input)
-    ANSELFbits.ANSELF2=0; //turn off analogue input on pin 
+    //definition of RGB structure
+    struct RGB_val test;
+    test.C = 0;
+    test.R = 0;
+    test.G = 0;
+    test.B = 0;
     
+    // Initialise Front LEDs 
+    LATGbits.LATG1=0;   //set initial output state
+    TRISGbits.TRISG1=0; //set TRIS value for pin (output)
+    LATAbits.LATA4=0;   //set initial output state
+    TRISAbits.TRISA4=0; //set TRIS value for pin (output)
+    LATFbits.LATF7=0;   //set initial output state
+    TRISFbits.TRISF7=0; //set TRIS value for pin (output)
+    
+    // LEDs on board
+    TRISDbits.TRISD7 = 0;
     LATDbits.LATD7 = 0;
-    TRISDbits.TRISD7 =0;
+    TRISHbits.TRISH3 = 0;
+    LATHbits.LATH3 = 0;
+//    
+//    char string[30];
+//    char string0[30];
+//    char string1[30];
+//    char string2[30];
+//    char string3[30];
+    unsigned int RedRatio, GreenRatio, BlueRatio;
+   
+    // Turn on Front White LED Lights
+    LATGbits.LATG1=1;   
+    LATAbits.LATA4=1;   
+    LATFbits.LATF7=1; 
     
-    //code to test
-    //Black(&motorL, &motorR);
-    turnLeft90(&motorL, &motorR);
-         
-    while(1){
-        /*
-        // If button pressed
-        if (!PORTFbits.RF2) {
-            colorInput.R = color_read_Red();
-            colorInput.G = color_read_Green();
-            colorInput.B = color_read_Blue();
-            colorInput.C = color_read_Clear();
-            float temp = determine_color_new(&colorInput);
-            
-//            unsigned int int_part;
-//            unsigned int frac_part;
-//            int_part = temp/1;
-//            frac_part =(temp*1000)/1 - int_part*1000;
-
-            //sprintf(string,"%d.%02d",timerArray);
-            TxBufferedString(string);
-            sendTxBuf();
-            //LATDbits.LATD7 = !LATDbits.LATD7 ;
-            __delay_ms(200);
+    // Calibration done against White Card
+    unsigned int cal = 0;
+    while(cal==0){
+        LATDbits.LATD7 = 1;
+        while (PORTFbits.RF2); //empty while loop (wait for button press)
+        if (!PORTFbits.RF2){
+            LATDbits.LATD7 = 0;
+            calibrateW(&test);
+            __delay_ms(300);
+            }   
+        
+        LATDbits.LATD7 = 1;
+        while (PORTFbits.RF2); //empty while loop (wait for button press)
+        if (!PORTFbits.RF2){
+            LATDbits.LATD7 = 0;
+            calibrateB(&test);
+            __delay_ms(300);
+            }   
+        
+        LATHbits.LATH3 = 1;
+        while (PORTFbits.RF3);
+        if (!PORTFbits.RF3){
+            LATHbits.LATH3 = 0;
+            cal = 1;
         }
-*/
+    }
+    
+    unsigned int check1 = 9;
+    unsigned int check2 = 9;
+    unsigned int check3 = 9;
+    unsigned int check4 = 9;
+    unsigned int count = 0;
+    unsigned int reset_timer = 1;
+    
+    while(1){          
+        unsigned int detected_colour;  
+        read_colours(&test);
+        if (count==0) {check1 = determine_color_new(&test);}
+        if (count==1) {check2 = determine_color_new(&test);}
+        if (count==2) {check3 = determine_color_new(&test);}
+        if (count==3) {check4 = determine_color_new(&test);count=0;}
+        else (count += 1);
+        
+        // 3 checks to detect colour
+        if (check1==check2 && check2==check3 && check3==check4){
+            detected_colour = check1;
+            if (detected_colour >= 0 && detected_colour <= 6){
+                updateMovementCount(detected_colour);
+                reset_timer = 1; //reset the timer when the movement is done
+            }
+            else if (detected_colour == 8){
+                Black(&motorL, &motorR);
+            }
+            else if (detected_colour == 9 && reset_timer == 1){ //if first detected ambient light after card read, reset timer
+                TMR0H = 0;
+                TMR0L = 0;
+                reset_timer = 0; 
+            }
+            check1=9; 
+            check2=9; 
+            check3=9; 
+            check4=9;// makes sure function only occurs once
+        }
+        
+        if (detected_colour == 0){ turnRight90(&motorL,&motorR);__delay_ms(100);} // Red
+        if (detected_colour == 1){ turnLeft90(&motorL,&motorR);__delay_ms(100);} // Blue
+        if (detected_colour == 2){ turnRight180(&motorL,&motorR);__delay_ms(100);} // Green 
+        if (detected_colour == 3){ reverseTurnRight90(&motorL,&motorR);__delay_ms(100);} // Yellow
+        if (detected_colour == 4){ reverseTurnLeft90(&motorL,&motorR);__delay_ms(100);} // Pink
+        if (detected_colour == 5){ turnRight135(&motorL,&motorR);__delay_ms(100);} // Orange 
+        if (detected_colour == 6){ turnLeft135(&motorL,&motorR);__delay_ms(100);} // Light Blue
+        if (detected_colour == 7){ turnRight180(&motorL,&motorR);__delay_ms(100);} // White - need to alter
+        if (detected_colour == 8){ turnRight90(&motorL,&motorR);__delay_ms(100);} // Black - need to alter
+        if (detected_colour == 9){ forward(&motorL,&motorR);} // Ambient
+        //__delay_ms(200); 
+        
+        
+        // For debugging/reviewing purposes
+//        RedRatio = ((float)(test.R - test.blackR) / (float)(test.whiteR - test.blackR)) * 10000;
+//        GreenRatio = ((float)(test.G - test.blackG) / (float)(test.whiteG - test.blackG)) * 10000;
+//        BlueRatio = ((float)(test.B - test.blackB) / (float)(test.whiteB - test.blackB)) * 10000;
+        //brightness = lumin(&test);
+//        
+//        sprintf(string1," R:%d ",RedRatio);
+//        TxBufferedString(string1);
+//        sendTxBuf();
+//        __delay_ms(150);
+//        
+//        sprintf(string2," G:%d ",GreenRatio);
+//        TxBufferedString(string2);
+//        sendTxBuf();
+//        __delay_ms(150);
+//
+//        sprintf(string3," B:%d ",BlueRatio);
+//        TxBufferedString(string3);
+//        sendTxBuf();
+//        __delay_ms(150);
+//        
+//        sprintf(string," Color:%d ",detected_colour);
+//        TxBufferedString(string);
+//        sendTxBuf();
+//        __delay_ms(50);
     }
 }

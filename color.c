@@ -104,43 +104,94 @@ void RGB_init (void)
     TRISFbits.TRISF7=0;
 }
 
-float determine_color_new(struct RGB_val *m){         
-    unsigned int temp = 1000;
-    unsigned int out;
-    float RedRatio, GreenRatio, BlueRatio, Hue;
-    float volatile RatioMax, RatioMin, Saturation;
-    
-    RedRatio = ((float)(m->R) / (float)(m->C));
-    GreenRatio = ((float)(m->G) / (float)(m->C));
-    BlueRatio = ((float)(m->B) / (float)(m->C));
-    
-    RatioMax = MAX_FLOAT(MAX_FLOAT(RedRatio, GreenRatio), BlueRatio);
-    RatioMin = MIN_FLOAT(MIN_FLOAT(RedRatio, GreenRatio), BlueRatio);
-    
-    if (RatioMax > 0)
-        Saturation = (RatioMax - RatioMin) / RatioMax;
-    else
-        Saturation = 0;
-
-    if (Saturation == 0)
-        Hue = 0;
-    else 
-    {
-        if (RatioMax == RedRatio)
-            Hue = (GreenRatio - BlueRatio) / (RatioMax - RatioMin);
-        else if (RatioMax == GreenRatio)
-            Hue = 2 + (BlueRatio - RedRatio) / (RatioMax - RatioMin);
-        else
-            Hue = 4 + (RedRatio - GreenRatio) / (RatioMax - RatioMin);
-
-        Hue = Hue / 6;
-
-        if (Hue < 0)
-            Hue += 1;
-    }
-    
-    return Hue; 
+void read_colours(struct RGB_val *m){
+    (m->C) = color_read_Clear();
+    (m->R) = color_read_Red();
+    (m->G) = color_read_Green();
+    (m->B) = color_read_Blue();
 }
+
+unsigned int isbtw(float num, float low, float high){
+    if (num>=low && num<=high){return 1;}
+    else {return 0;}
+}
+
+void calibrateW(struct RGB_val *m){
+    (m->whiteR) = color_read_Red();
+    (m->whiteG) = color_read_Green();
+    (m->whiteB) = color_read_Blue();
+}
+
+void calibrateB(struct RGB_val *m){
+    (m->blackR) = color_read_Red();
+    (m->blackG) = color_read_Green();
+    (m->blackB) = color_read_Blue();
+}
+
+unsigned int determine_color_new(struct RGB_val *m){         
+    unsigned int RedRatio, GreenRatio, BlueRatio;
+    float RelR, RelG, RelB;
+    unsigned int out = 9;
+    
+    unsigned int lumin = (0.2126*(m->R)) + (0.7152*(m->G)) + (0.0722*(m->B));
+    
+    // White ratio would be 1 for everything 
+    RedRatio = ((float)(m->R - m->blackR) / (float)(m->whiteR - m->blackR))*10000; 
+    GreenRatio = ((float)(m->G - m->blackG) / (float)(m->whiteG - m->blackG))*10000;
+    BlueRatio = ((float)(m->B - m->blackB) / (float)(m->whiteB - m->blackB))*10000;
+    
+    RelR = (float)RedRatio / (float)GreenRatio;
+    RelG = (float)RedRatio / (float)BlueRatio;
+    RelB = (float)BlueRatio / (float)GreenRatio;
+    
+    if (RelR < 0) {RelR = 0;}
+    if (RelG < 0) {RelG = 0;}
+    if (RelB < 0) {RelB = 0;}
+    
+    // Red - will output 0 (Good for 1)
+    if (isbtw(RelR,5.1,20.5)==1 && isbtw(RelG,2.2,3.8)==1 && isbtw(RelB,1.8,5.5)==1 && lumin>800)
+    {out = 0;} 
+    
+    // Green - will output 1 
+    if (isbtw(RelR,0.2,0.49)==1 && isbtw(RelG,0.28,0.59)==1 && isbtw(RelB,0.7,0.9)==1)
+    {out = 1;} 
+    
+    // Blue - will output 2 (Good for 1)
+    if (isbtw(RelR,0.1,0.55)==1 && isbtw(RelG,0.1,0.39)==1 && isbtw(RelB,1.0,1.2)==1)
+    {out = 2;}
+    
+    // Yellow - will output 3 
+    if (isbtw(RelR,1.2,1.4)==1 && isbtw(RelG,1.5,1.69)==1 && isbtw(RelB,0.8,0.9)==1 && lumin>850)
+    {out = 3;}
+   
+     // Pink - will output 4
+    if (isbtw(RelR,1.56,1.83)==1 && isbtw(RelG,1.23,1.50)==1 && isbtw(RelB,1.15,1.3)==1 && lumin>830)
+    {out = 4;}
+   
+     // Orange - will output 5
+    if (isbtw(RelR,3.1,4.85)==1 && isbtw(RelG,2.2,2.83)==1 && isbtw(RelB,1.27,1.8)==1 && lumin>800)
+    {   // To determine if red or orange  
+        out = 5;}
+    
+     // Light Blue - will output 6 
+    if (isbtw(RelR,0.6,0.86)==1 && isbtw(RelG,0.6,0.85)==1 && isbtw(RelB,0.95,1.12)==1)
+    {out = 6;}
+    
+     // White - will output 7 might need to change to raw values PROBLEMATIC
+    if (isbtw(RelR,0.9,1.1)==1 && isbtw(RelG,0.8,1.0)==1 && isbtw(RelB,0.95,1.1)==1 && lumin>890)
+    {out = 7;}
+    
+     // Black - will output 8 (FOR RIGHT IS WEAK)
+    if (RedRatio < 75 && GreenRatio < 75 && BlueRatio < 75) {out = 8;}
+    
+    return out;    
+}
+
+unsigned int lumin(struct RGB_val *m){
+        unsigned int out; 
+        out = (0.2126*(m->R)) + (0.7152*(m->G)) + (0.0722*(m->B));
+        return out;
+}         
 
 //these are the movementCodes
 //0 = red
@@ -173,6 +224,7 @@ void Black(struct DC_motor *mL, struct DC_motor *mR)
         else if (movementArray[movements-i-1] == 6){turnRight135(mL, mR);}
         else if (movementArray[movements-i-1] == 9){forward(mL, mR);}
         int tempTimerVal = 0;
+        forward(mL, mR);
         TMR0H = 0;
         TMR0L = 0;
         while(tempTimerVal < timerArray[movements-i-1]){

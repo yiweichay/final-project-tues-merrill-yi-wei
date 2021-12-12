@@ -7,11 +7,7 @@
 
 #define _XTAL_FREQ 64000000 //note intrinsic _delay function is 62.5ns at 64,000,000Hz 
 
-// Find maximal floating point value
-#define MAX_FLOAT(a, b) (((a) > (b)) ? (a) : (b))
 
-// Find minimal floating point value
-#define MIN_FLOAT(a, b) (((a) < (b)) ? (a) : (b))
 
 
 
@@ -45,7 +41,11 @@ struct RGB_val {
 };
 
 void RGB_init (void);
-float determine_color_new(struct RGB_val *m);
+unsigned int isbtw(float num, float low, float high);
+void calibrateW(struct RGB_val *m);
+void calibrateB(struct RGB_val *m);
+unsigned int determine_color_new(struct RGB_val *m);
+unsigned int lumin(struct RGB_val *m);
 void Black(struct DC_motor *mL, struct DC_motor *mR);
 unsigned int updateMovementCount(int movementCode);
 
