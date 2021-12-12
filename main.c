@@ -119,12 +119,13 @@ void main(void){
         // 4 checks must be identical to detect colour (ROBUST)
         if (check1==check2 && check2==check3 && check3==check4){
             detected_colour = check1;
-            if (detected_colour >= 0 && detected_colour <= 6){
+            if (detected_colour >= 0 && detected_colour <= 7){
                 updateMovementCount(detected_colour, movementArray, movements, timerArray);
                 movements++;
                 reset_timer = 1; //reset the timer when the movement is done
             }
             else if (detected_colour == 9 && reset_timer == 1){ //if first detected ambient light after card read, reset timer
+                
                 TMR0H = 0;
                 TMR0L = 0;
                 reset_timer = 0; 
@@ -139,11 +140,11 @@ void main(void){
         if (detected_colour == 4){ reverseTurnLeft90(&motorL,&motorR);__delay_ms(100);}     // Pink - reverse + left 90
         if (detected_colour == 5){ turnRight135(&motorL,&motorR);__delay_ms(100);}          // Orange - right 135
         if (detected_colour == 6){ turnLeft135(&motorL,&motorR);__delay_ms(100);}           // Light Blue - left 135
-        if (detected_colour == 7){ 
-            White(&motorL,&motorR,movementArray, movements, timerArray);
+        
+        // If black or white, head back to starting point 
+        if (detected_colour == 7 || detected_colour == 8){ White(&motorL,&motorR,movementArray, movements, timerArray);
             __delay_ms(100);LATDbits.LATD7 = 1;LATHbits.LATH3 = 1; // Display to show done with course
-            while (PORTFbits.RF3);} // 
-        if (detected_colour == 8){ stop(&motorL,&motorR);__delay_ms(100);}                  // Black - Wall 
+            while (PORTFbits.RF3);}
         if (detected_colour == 9){ forward(&motorL,&motorR);}                               // Ambient - continue forward
     }
 }

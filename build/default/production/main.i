@@ -25070,12 +25070,13 @@ void main(void){
 
         if (check1==check2 && check2==check3 && check3==check4){
             detected_colour = check1;
-            if (detected_colour >= 0 && detected_colour <= 6){
+            if (detected_colour >= 0 && detected_colour <= 7){
                 updateMovementCount(detected_colour, movementArray, movements, timerArray);
                 movements++;
                 reset_timer = 1;
             }
             else if (detected_colour == 9 && reset_timer == 1){
+
                 TMR0H = 0;
                 TMR0L = 0;
                 reset_timer = 0;
@@ -25090,11 +25091,11 @@ void main(void){
         if (detected_colour == 4){ reverseTurnLeft90(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
         if (detected_colour == 5){ turnRight135(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
         if (detected_colour == 6){ turnLeft135(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
-        if (detected_colour == 7){
-            White(&motorL,&motorR,movementArray, movements, timerArray);
+
+
+        if (detected_colour == 7 || detected_colour == 8){ White(&motorL,&motorR,movementArray, movements, timerArray);
             _delay((unsigned long)((100)*(64000000/4000.0)));LATDbits.LATD7 = 1;LATHbits.LATH3 = 1;
             while (PORTFbits.RF3);}
-        if (detected_colour == 8){ stop(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
         if (detected_colour == 9){ forward(&motorL,&motorR);}
     }
 }
