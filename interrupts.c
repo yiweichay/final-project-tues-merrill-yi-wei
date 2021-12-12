@@ -1,6 +1,8 @@
 #include <xc.h>
 #include "interrupts.h"
 #include "serial.h"
+#include "dc_motor.h"
+#include "color.h"
 
 /************************************
  * Function to turn on interrupts and set if priority is used
@@ -21,19 +23,14 @@ void Interrupts_init(void)
  * High priority interrupt service routine
  * Make sure all enabled interrupts are checked and flags cleared
 ************************************/
-//void __interrupt(high_priority) HighISR()
-//{
-//	//add your ISR code here i.e. check the flag, do something (i.e. toggle an LED), clear the flag...
-//    if(PIR4bits.RC4IF == 1){
-//        putCharToRxBuf(RC4REG);
-//        //PIR4bits.RC4IF = 0; // clearing the flag, but don't need this because the above line will clear the flag automatically
-//    }
-//    if(PIR4bits.TX4IF == 1){ //TX4RED is empty
-//        if (PIR4bits.TX4IF == 1 && PIE4bits.TX4IE== 1){
-//            TX4REG = getCharFromTxBuf();
-//        }
-//        else{
-//        PIE4bits.TX4IE=0;
-//        }
-//    }   
-//}
+void __interrupt(high_priority) HighISR()
+{
+	//add your ISR code here i.e. check the flag, do something (i.e. toggle an LED), clear the flag...
+    if(PIR0bits.TMR0IF){
+        //LATHbits.LATH3 = !LATHbits.LATH3; //change the state of the LED (for testing))
+        TMR0H = 0;
+        TMR0L = 0;
+        //White(&motorL, &motorR);
+        PIR0bits.TMR0IF = 0; // clearing the flag
+    } 
+}

@@ -6,13 +6,9 @@
 #include "dc_motor.h"
 
 extern struct DC_motor motorL, motorR;
-//to test the code
-//int movements = 4;
-//int timerArray[] = {400, 1024, 512, 256};
-//int movementArray[] = {1, 9, 0, 2};
-static volatile int movements = 0;
-int timerArray[] = {};
-int movementArray[] = {};
+//static volatile int movements = 0;
+//int timerArray[] = {};
+//int movementArray[] = {};
 
 void color_click_init(void)
 {   
@@ -37,7 +33,6 @@ void color_writetoaddr(char address, char value){
     I2C_2_Master_Write(value);    
     I2C_2_Master_Stop();          //Stop condition
 }
-
 
 unsigned int color_read_Clear(void)
 {
@@ -142,7 +137,7 @@ unsigned int determine_color_new(struct RGB_val *m){
     {out = 0;} 
     
     // Green - will output 1 
-    if (isbtw(RelR,0.2,0.49)==1 && isbtw(RelG,0.28,0.59)==1 && isbtw(RelB,0.7,0.9)==1)
+    if (isbtw(RelR,0.2,0.49)==1 && isbtw(RelG,0.28,0.59)==1 && isbtw(RelB,0.7,0.9)==1 && lumin>835)
     {out = 1;} 
     
     // Blue - will output 2 (Good for 1)
@@ -163,7 +158,7 @@ unsigned int determine_color_new(struct RGB_val *m){
         out = 5;}
     
      // Light Blue - will output 6 
-    if (isbtw(RelR,0.6,0.86)==1 && isbtw(RelG,0.6,0.85)==1 && isbtw(RelB,0.95,1.12)==1)
+    if (isbtw(RelR,0.6,0.86)==1 && isbtw(RelG,0.6,0.85)==1 && isbtw(RelB,0.95,1.12)==1 && lumin>820) 
     {out = 6;}
     
      // White - will output 7 might need to change to raw values PROBLEMATIC
@@ -171,18 +166,12 @@ unsigned int determine_color_new(struct RGB_val *m){
     {out = 7;}
     
      // Black - will output 8 (FOR RIGHT IS WEAK)
-    if (RedRatio < 75 && GreenRatio < 75 && BlueRatio < 75) {out = 8;}
+    if (RedRatio < 50 && GreenRatio < 50 && BlueRatio < 50) {out = 8;}
     
     return out;    
 }
 
-unsigned int lumin(struct RGB_val *m){
-        unsigned int out; 
-        out = (0.2126*(m->R)) + (0.7152*(m->G)) + (0.0722*(m->B));
-        return out;
-}         
-
-void Black(struct DC_motor *mL, struct DC_motor *mR)
+void White(struct DC_motor *mL, struct DC_motor *mR, int movementArray[], unsigned int movements, int timerArray[])
 {
     stop(mL, mR);
     turnRight180(mL, mR);
@@ -197,6 +186,7 @@ void Black(struct DC_motor *mL, struct DC_motor *mR)
         else if (movementArray[movements-i-1] == 6){turnRight135(mL, mR);}
         else if (movementArray[movements-i-1] == 9){forward(mL, mR);}
         int tempTimerVal = 0;
+        forward(mL, mR);
         TMR0H = 0;
         TMR0L = 0;
         while(tempTimerVal < timerArray[movements-i-1]){
@@ -207,9 +197,8 @@ void Black(struct DC_motor *mL, struct DC_motor *mR)
     stop(mL, mR);
 }
 
-
 //function to keep track of time taken for each movement 
-unsigned int updateMovementCount(int movementCode)
+void updateMovementCount(int movementCode,int movementArray[], unsigned int movements, int timerArray[])
 {
     int tempTimerVal = TMR0L;
     tempTimerVal += (TMR0H << 8);
@@ -218,7 +207,5 @@ unsigned int updateMovementCount(int movementCode)
     movements++;
     TMR0H = 0;
     TMR0L = 0;
-    //return timerArray[movements];
-    //return movementArray;
 }
 

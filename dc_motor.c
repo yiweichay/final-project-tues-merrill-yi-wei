@@ -59,9 +59,26 @@ void setMotorPWM(struct DC_motor *m)
 
 //function to stop the robot gradually 
 void stop(struct DC_motor *mL, struct DC_motor *mR)
+{   
+    while ((mL->power)>0 && (mR->power)>0){
+        if ((mL->power) > 0){
+            (mL->power) -= 1;
+        }
+        if ((mR->power) > 0){
+            (mR->power) -= 1;
+        }
+        setMotorPWM(mL);
+        setMotorPWM(mR);
+        __delay_us(10);
+    } 
+}
+
+void reverse(struct DC_motor *mL, struct DC_motor *mR)
 {
-    (*mL).power = 0; //stop the buggy
-    (*mR).power = 0;
+    (*mL).direction = 0;
+    (*mR).direction = 0;
+    (*mL).power = 50; // 0 means full speed
+    (*mR).power = 50;
     setMotorPWM(mL);
     setMotorPWM(mR);
 }
@@ -69,77 +86,121 @@ void stop(struct DC_motor *mL, struct DC_motor *mR)
 //function to make the robot turn left (Green)
 void turnLeft90(struct DC_motor *mL, struct DC_motor *mR)
 {
+    stop(mL, mR);
+    __delay_ms(50);
+    reverse(mL, mR);
+    __delay_ms(400);
+    stop(mL, mR);
+    __delay_ms(150);
+    
     (*mL).direction = 0; //0 means reverse direction
     (*mR).direction = 1;
-    (*mL).power = 90;
-    (*mR).power = 90;
-    setMotorPWM(mL);
-    setMotorPWM(mR);
-    __delay_ms(180);
+    for (unsigned int i = 0; i < 75; ++i){ // Dont want too much power
+        (mL->power) += 1;
+        (mR->power) += 1;
+        setMotorPWM(mL);
+        setMotorPWM(mR);
+        __delay_us(50);
+    }
+    __delay_ms(190); //Adjust Timing
     stop(mL, mR);
+    __delay_ms(50);
 }
 
 //function to make the robot turn left 135 (Light Blue)
 void turnLeft135(struct DC_motor *mL, struct DC_motor *mR)
 {
-    (*mL).direction = 0;
-    (*mR).direction = 1;
-    (*mL).power = 90;
-    (*mR).power = 90;
-    setMotorPWM(mL);
-    setMotorPWM(mR);
-    __delay_ms(270);
     stop(mL, mR);
+    __delay_ms(50);
+    reverse(mL, mR);
+    __delay_ms(400);
+    stop(mL, mR);
+    __delay_ms(150);
+    
+    (*mL).direction = 0; //0 means reverse direction
+    (*mR).direction = 1;
+    for (unsigned int i = 0; i < 75; ++i){ // Dont want too much power
+        (mL->power) += 1;
+        (mR->power) += 1;
+        setMotorPWM(mL);
+        setMotorPWM(mR);
+        __delay_us(50);
+    }
+    __delay_ms(255); //Adjust Timing
+    stop(mL, mR);
+    __delay_ms(50);
 }
 
 //function to make the robot turn right (Red)
 void turnRight90(struct DC_motor *mL, struct DC_motor *mR)
 {
-    (*mR).direction = 0;
-    (*mL).direction = 1;
-    (*mR).power = 90;
-    (*mL).power = 90;
-    setMotorPWM(mL);
-    setMotorPWM(mR);
-    __delay_ms(180);
     stop(mL, mR);
+    __delay_ms(50);
+    reverse(mL, mR);
+    __delay_ms(400);
+    stop(mL, mR);
+    __delay_ms(150);
+    
+    (*mL).direction = 1; //0 means reverse direction
+    (*mR).direction = 0;
+    for (unsigned int i = 0; i < 75; ++i){ // Dont want too much power
+        (mL->power) += 1;
+        (mR->power) += 1;
+        setMotorPWM(mL);
+        setMotorPWM(mR);
+        __delay_us(50);
+    }
+    __delay_ms(205); //Adjust Timing
+    stop(mL, mR);
+    __delay_ms(50);
 }
 
 //function to make the robot turn right (Orange)
 void turnRight135(struct DC_motor *mL, struct DC_motor *mR)
 {
+    stop(mL, mR);
+    __delay_ms(50);
+    reverse(mL, mR);
+    __delay_ms(400);
+    stop(mL, mR);
+    __delay_ms(150);
+    
+    (*mL).direction = 1; //0 means reverse direction
     (*mR).direction = 0;
-    (*mL).direction = 1;
-    (*mR).power = 90;
-    (*mL).power = 90;
-    setMotorPWM(mL);
-    setMotorPWM(mR);
+    for (unsigned int i = 0; i < 75; ++i){ // Dont want too much power
+        (mL->power) += 1;
+        (mR->power) += 1;
+        setMotorPWM(mL);
+        setMotorPWM(mR);
+        __delay_us(50); //Adjust Timing
+    }
     __delay_ms(270);
     stop(mL, mR);
+    __delay_ms(50);
 }
 
 //function to turn robot 180 to the right (Blue)
 void turnRight180(struct DC_motor *mL, struct DC_motor *mR)
 {
-    (*mR).direction = 0;
-    (*mL).direction = 1;
-    (*mR).power = 90;
-    (*mL).power = 90;
-    setMotorPWM(mL);
-    setMotorPWM(mR);
-    __delay_ms(360);
     stop(mL, mR);
-}
-
-//function to make the robot go straight
-void fullSpeedAhead(struct DC_motor *mL, struct DC_motor *mR)
-{
-    (*mL).direction = 1;
-    (*mR).direction = 1;
-    (*mL).power = 100; // 0 means full speed
-    (*mR).power = 100;
-    setMotorPWM(mL);
-    setMotorPWM(mR);
+    __delay_ms(50);
+    reverse(mL, mR);
+    __delay_ms(400);
+    stop(mL, mR);
+    __delay_ms(150);
+    
+    (*mL).direction = 1; //0 means reverse direction
+    (*mR).direction = 0;
+    for (unsigned int i = 0; i < 75; ++i){ // Dont want too much power
+        (mL->power) += 1;
+        (mR->power) += 1;
+        setMotorPWM(mL);
+        setMotorPWM(mR);
+        __delay_us(50);
+    }
+    __delay_ms(400); //Adjust Timing 
+    stop(mL, mR);
+    __delay_ms(50);
 }
 
 //function to make the robot go forward 
@@ -147,50 +208,44 @@ void forward(struct DC_motor *mL, struct DC_motor *mR)
 {
     (*mL).direction = 1;
     (*mR).direction = 1;
-    (*mL).power = 10; // 0 means full speed
-    (*mR).power = 10;
+    (*mL).power = 13; // 0 means full speed
+    (*mR).power = 13;
     setMotorPWM(mL);
     setMotorPWM(mR);
-}
-
-//function to make robot reverse
-void reverse(struct DC_motor *mL, struct DC_motor *mR)
-{
-    (*mL).direction = 0;
-    (*mR).direction = 0;
-    (*mL).power = 100; // 0 means full speed
-    (*mR).power = 100;
-    setMotorPWM(mL);
-    setMotorPWM(mR);
-    __delay_ms(100);
 }
 
 //function to make robot reverse 1 square and turn right 90 degrees
 void reverseTurnRight90(struct DC_motor *mL, struct DC_motor *mR)
 {
+    stop(mL, mR);
+    __delay_ms(50);
     (*mL).direction = 0;
     (*mR).direction = 0;
-    (*mL).power = 75;
-    (*mR).power = 75;
+    (*mL).power = 60; 
+    (*mR).power = 60;
     setMotorPWM(mL);
     setMotorPWM(mR);
-    __delay_ms(800);
+    __delay_ms(400); //Adjust Timing 
     stop(mL, mR);
     __delay_ms(300);
     turnRight90(mL, mR);
+    __delay_ms(100);
 }
 
 //function to make robot reverse 1 square and turn left 90 degrees
 void reverseTurnLeft90(struct DC_motor *mL, struct DC_motor *mR)
 {
+    stop(mL, mR);
+    __delay_ms(50);
     (*mL).direction = 0;
     (*mR).direction = 0;
-    (*mL).power = 75;
-    (*mR).power = 75;
+    (*mL).power = 60;
+    (*mR).power = 60;
     setMotorPWM(mL);
     setMotorPWM(mR);
-    __delay_ms(800);
+    __delay_ms(400); //Adjust Timing
     stop(mL, mR);
     __delay_ms(300);
     turnLeft90(mL, mR);
+    __delay_ms(100);
 }

@@ -15,12 +15,11 @@
 #include "interrupts.h"
 #include "timers.h"
 
-#define _XTAL_FREQ 64000000 //note intrinsic _delay function is 62.5ns at 64,000,000Hz  
+static volatile int movements = 0;
+int timerArray[] = {};
+int movementArray[] = {};
 
-//initialise variables
-//static volatile int movements = 0;
-//int timerArray[30] = {};
-//int movementArray[30] = {}; //define overall empty array
+#define _XTAL_FREQ 64000000 //note intrinsic _delay function is 62.5ns at 64,000,000Hz  
 
 void main(void){
     // Initialise Helper Scripts
@@ -61,11 +60,11 @@ void main(void){
     test.B = 0;
     
     // Initialise Front LEDs 
-    LATGbits.LATG1=0;   //set initial output state
+    LATGbits.LATG1=1;   //set initial output state
     TRISGbits.TRISG1=0; //set TRIS value for pin (output)
-    LATAbits.LATA4=0;   //set initial output state
+    LATAbits.LATA4=1;   //set initial output state
     TRISAbits.TRISA4=0; //set TRIS value for pin (output)
-    LATFbits.LATF7=0;   //set initial output state
+    LATFbits.LATF7=1;   //set initial output state
     TRISFbits.TRISF7=0; //set TRIS value for pin (output)
     
     // LEDs on board
@@ -73,20 +72,10 @@ void main(void){
     LATDbits.LATD7 = 0;
     TRISHbits.TRISH3 = 0;
     LATHbits.LATH3 = 0;
-//    
-//    char string[30];
-//    char string0[30];
-//    char string1[30];
-//    char string2[30];
-//    char string3[30];
-    unsigned int RedRatio, GreenRatio, BlueRatio;
-   
-    // Turn on Front White LED Lights
-    LATGbits.LATG1=1;   
-    LATAbits.LATA4=1;   
-    LATFbits.LATF7=1; 
     
-    // Calibration done against White Card
+    unsigned int RedRatio, GreenRatio, BlueRatio;
+    
+    // Calibration Function
     unsigned int cal = 0;
     while(cal==0){
         LATDbits.LATD7 = 1;
@@ -118,6 +107,7 @@ void main(void){
     unsigned int check3 = 9;
     unsigned int check4 = 9;
     unsigned int count = 0;
+    unsigned int reset_timer = 1;
     
     while(1){          
         unsigned int detected_colour;  
@@ -129,8 +119,18 @@ void main(void){
         else (count += 1);
         
         // 3 checks to detect colour
+           // 3 checks to detect colour
         if (check1==check2 && check2==check3 && check3==check4){
             detected_colour = check1;
+            if (detected_colour >= 0 && detected_colour <= 6){
+                updateMovementCount(detected_colour, movementArray, movements, timerArray);
+                reset_timer = 1; //reset the timer when the movement is done
+            }
+            else if (detected_colour == 9 && reset_timer == 1){ //if first detected ambient light after card read, reset timer
+                TMR0H = 0;
+                TMR0L = 0;
+                reset_timer = 0; 
+            }
             check1=9; 
             check2=9; 
             check3=9; 
@@ -144,36 +144,8 @@ void main(void){
         if (detected_colour == 4){ reverseTurnLeft90(&motorL,&motorR);__delay_ms(100);} // Pink
         if (detected_colour == 5){ turnRight135(&motorL,&motorR);__delay_ms(100);} // Orange 
         if (detected_colour == 6){ turnLeft135(&motorL,&motorR);__delay_ms(100);} // Light Blue
-        if (detected_colour == 7){ turnRight180(&motorL,&motorR);__delay_ms(100);} // White - need to alter
-        if (detected_colour == 8){ turnRight90(&motorL,&motorR);__delay_ms(100);} // Black - need to alter
+        if (detected_colour == 7){ White(&motorL,&motorR,movementArray, movements, timerArray);__delay_ms(100);} // White - need to alter
+        if (detected_colour == 8){ stop(&motorL,&motorR);__delay_ms(100);} // Black - need to alter
         if (detected_colour == 9){ forward(&motorL,&motorR);} // Ambient
-        //__delay_ms(200); 
-        
-        
-        // For debugging/reviewing purposes
-//        RedRatio = ((float)(test.R - test.blackR) / (float)(test.whiteR - test.blackR)) * 10000;
-//        GreenRatio = ((float)(test.G - test.blackG) / (float)(test.whiteG - test.blackG)) * 10000;
-//        BlueRatio = ((float)(test.B - test.blackB) / (float)(test.whiteB - test.blackB)) * 10000;
-        //brightness = lumin(&test);
-//        
-//        sprintf(string1," R:%d ",RedRatio);
-//        TxBufferedString(string1);
-//        sendTxBuf();
-//        __delay_ms(150);
-//        
-//        sprintf(string2," G:%d ",GreenRatio);
-//        TxBufferedString(string2);
-//        sendTxBuf();
-//        __delay_ms(150);
-//
-//        sprintf(string3," B:%d ",BlueRatio);
-//        TxBufferedString(string3);
-//        sendTxBuf();
-//        __delay_ms(150);
-//        
-//        sprintf(string," Color:%d ",detected_colour);
-//        TxBufferedString(string);
-//        sendTxBuf();
-//        __delay_ms(50);
     }
 }
