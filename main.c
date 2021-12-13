@@ -47,11 +47,11 @@ void main(void){
     motorR.PWMperiod=PWMcycle; 			//store PWMperiod for motor
      
     // Initialisation of RGB structure
-    struct RGB_val test;
-    test.C = 0;
-    test.R = 0;
-    test.G = 0;
-    test.B = 0;
+    struct RGB_val RGBstruct;
+    RGBstruct.C = 0;
+    RGBstruct.R = 0;
+    RGBstruct.G = 0;
+    RGBstruct.B = 0;
     
      // setup buttons for input
     TRISFbits.TRISF2=1; //set TRIS value for pin (input)
@@ -78,7 +78,7 @@ void main(void){
         while (PORTFbits.RF2); // Press to Calibrate White
         if (!PORTFbits.RF2){
             LATDbits.LATD7 = 0; // LED flicker to show process done
-            calibrateW(&test);
+            calibrateW(&RGBstruct);
             __delay_ms(300);
             }   
         
@@ -86,7 +86,7 @@ void main(void){
         while (PORTFbits.RF2); // Press to Calibrate Black
         if (!PORTFbits.RF2){
             LATDbits.LATD7 = 0; 
-            calibrateB(&test);
+            calibrateB(&RGBstruct);
             __delay_ms(300);
             }   
         
@@ -109,17 +109,17 @@ void main(void){
     while(1){          
         // Scans once and updates a checkX accordingly
         unsigned int detected_colour;  
-        read_colours(&test);        // Updates RGB Struct
-        if (count==0) {check1 = determine_color_new(&test);}
-        if (count==1) {check2 = determine_color_new(&test);}
-        if (count==2) {check3 = determine_color_new(&test);}
-        if (count==3) {check4 = determine_color_new(&test);count=0;}
+        read_colours(&RGBstruct);        // Updates RGB Struct
+        if (count==0) {check1 = determine_color_new(&RGBstruct);}
+        if (count==1) {check2 = determine_color_new(&RGBstruct);}
+        if (count==2) {check3 = determine_color_new(&RGBstruct);}
+        if (count==3) {check4 = determine_color_new(&RGBstruct);count=0;}
         else (count += 1);
         
         // 4 checks must be identical to detect colour (ROBUST)
         if (check1==check2 && check2==check3 && check3==check4){
             detected_colour = check1;
-            if (detected_colour >= 0 && detected_colour <= 7){
+            if (detected_colour >= 0 && detected_colour <= 8){ 
                 updateMovementCount(detected_colour, movementArray, movements, timerArray);
                 movements++;
                 reset_timer = 1; //reset the timer when the movement is done
