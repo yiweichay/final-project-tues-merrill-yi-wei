@@ -27,7 +27,6 @@ void __interrupt(high_priority) HighISR() // If overrun by 20s, will then trigge
 {
 	//add your ISR code here i.e. check the flag, do something (i.e. toggle an LED), clear the flag...
     if(PIR0bits.TMR0IF){
-        //LATHbits.LATH3 = !LATHbits.LATH3; //change the state of the LED (for testing))
         TMR0H = 0;
         TMR0L = 0;
         //White(&motorL, &motorR); 

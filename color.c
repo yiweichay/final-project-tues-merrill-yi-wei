@@ -5,6 +5,7 @@
 #include "serial.h"
 #include "dc_motor.h"
 
+//call DC_motor struct to be used in the White function
 extern struct DC_motor motorL, motorR;
 
 void color_click_init(void)
@@ -173,11 +174,14 @@ unsigned int determine_color_new(struct RGB_val *m){
     return out;    
 }
 
+//function to execute "White" - retraces path and returns back to home
 void White(struct DC_motor *mL, struct DC_motor *mR,unsigned int movementArray[], unsigned int movements,unsigned int timerArray[])
 {
+    //stop the buggy and turn 180 degrees
     stop(mL, mR);
     turnRight180(mL, mR);
     __delay_ms(1000);
+    //a for loop is used to carry out the movements in reverse
     for (int i=0; i<movements; i++){
         if (movementArray[movements-i-1] == 0){turnLeft90(mL, mR);}
         else if (movementArray[movements-i-1] == 1){turnRight90(mL, mR);}
@@ -187,6 +191,8 @@ void White(struct DC_motor *mL, struct DC_motor *mR,unsigned int movementArray[]
         else if (movementArray[movements-i-1] == 5){turnLeft135(mL, mR);}
         else if (movementArray[movements-i-1] == 6){turnRight135(mL, mR);}
         else if (movementArray[movements-i-1] == 9){stop(mL, mR);}
+        //after each movement, function reads the stored timer count
+        //forward function is carried out for the specified timer element
         unsigned int tempTimerVal = 0;
         forward(mL, mR);
         TMR0H = 0;
@@ -196,16 +202,21 @@ void White(struct DC_motor *mL, struct DC_motor *mR,unsigned int movementArray[]
             tempTimerVal |= (TMR0H << 8);
         }
     }
+    //stop the buggy after the retracing path is done
     stop(mL, mR);
 }
 
 //function to keep track of time taken for each movement 
 void updateMovementCount(unsigned int movementCode,unsigned int movementArray[], unsigned int movements,unsigned int timerArray[])
 {
+    //to return the full 16-bit value
     unsigned int tempTimerVal = TMR0L;
     tempTimerVal |= (TMR0H << 8);
+    //the time recorded between each card is stored in timerArray
     timerArray[movements] = tempTimerVal;
+    //the movement code (0-8) is stored in movementArray
     movementArray[movements] = movementCode;
+    //timer resets
     TMR0H = 0;
     TMR0L = 0;
 }

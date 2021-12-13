@@ -15,7 +15,9 @@
 #include "interrupts.h"
 #include "timers.h"
 
+//initialise int and arrays to store each route
 unsigned int movements = 0;
+//a fixed array of 10 is initialised - this can be changed accordingly 
 unsigned int timerArray[10] = {};
 unsigned int movementArray[10] = {};
 
@@ -119,13 +121,14 @@ void main(void){
         // 4 checks must be identical to detect colour (ROBUST)
         if (check1==check2 && check2==check3 && check3==check4){
             detected_colour = check1;
+            //code to update movement count and reset timer count when movement count is incremented
             if (detected_colour >= 0 && detected_colour <= 8){ 
                 updateMovementCount(detected_colour, movementArray, movements, timerArray);
                 movements++;
                 reset_timer = 1; //reset the timer when the movement is done
             }
-            else if (detected_colour == 9 && reset_timer == 1){ //if first detected ambient light after card read, reset timer
-                
+            //if ambient light is detected, reset timer back to 0 and timer restarts
+            else if (detected_colour == 9 && reset_timer == 1){ 
                 TMR0H = 0;
                 TMR0L = 0;
                 reset_timer = 0; 
