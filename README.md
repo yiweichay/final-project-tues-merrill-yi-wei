@@ -62,7 +62,9 @@ void White(struct DC_motor *mL, struct DC_motor *mR,unsigned int movementArray[]
 }
 ```
 
-The updateMovementCount() function below fills the timerArray and movementArray after each colour card is sensed during its drive through the "mine". To ensure that the elements filling up the arrays are correct, the MPLAB X debugger was used. A break point was created in the main file right after where the function was called and the variables in the respective arrays could be seen throught the variable terminal as shown below. 
+The updateMovementCount() function below fills the timerArray and movementArray after each colour card is read during its drive through the "mine". To ensure that the elements filling up the arrays are correct, the MPLAB X debugger was used. A break point was created in the main file right after where the function was called and the variables in the respective arrays could be seen throught the variable terminal as shown below. 
+
+![MPLAB X Debugger](
 
 ```
 void updateMovementCount(unsigned int movementCode,unsigned int movementArray[], unsigned int movements,unsigned int timerArray[])
