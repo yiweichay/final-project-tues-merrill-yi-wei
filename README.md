@@ -82,4 +82,4 @@ void updateMovementCount(unsigned int movementCode,unsigned int movementArray[],
 }
 ```
 
-## How to improve
+## What could be improved
