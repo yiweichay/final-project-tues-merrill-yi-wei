@@ -125,7 +125,6 @@ void main(void){
                 reset_timer = 1; //reset the timer when the movement is done
             }
             else if (detected_colour == 9 && reset_timer == 1){ //if first detected ambient light after card read, reset timer
-                
                 TMR0H = 0;
                 TMR0L = 0;
                 reset_timer = 0; 
