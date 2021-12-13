@@ -13,12 +13,27 @@ Your task is to develop an autonomous robot that can navigate a "mine" using a s
 ## Project Description
 
 
+## Initial Project Planning and Working with GitHub
+
+At the start of the project, we created an excel sheet and logged in all the critical elements of this project. This is so that both of us are aware of the parts we are working on and hence will not have overlapping work done. An example of this activity log is shown below.
+
+![Excel Activity Log](https://imperiallondon-my.sharepoint.com/:i:/g/personal/ywc19_ic_ac_uk/EQjBp32wccJIr3uhQzzKrT0BHwT-8mpjsF646pPo4JwVFg?e=wRsRXd)
+
+During the project, we made use of branches to test out different codes before merging them into the main file. This is also shown below:
+
+![Git Branches](https://imperiallondon-my.sharepoint.com/:i:/g/personal/ywc19_ic_ac_uk/ETAXERItOWlCv57JQSZY9v4B8_M_cyGcKeGT2LZk5ECDmA?e=OP95lZ)
+
+
+
+
 ## Guide to set up the buggy
 
 1. Place buggy at the starting point in the respective "mine". When the buggy is ready for calibration, LED D7 turns on. A white card and black card is needed for the initial calibration. 
 2. Place the white card directly infront of the light sensor and toggle button RF2. LED D7 will flash once to indicate that the white card has been calibrated.
 3. Place the black card approximately 4cm away from the light sensor for calibration. This is to account for ambient lighting and reflectivity of the black card. Toggle button RF2 again to calibrate the black card. LED D7 will flash once again. Once the calibration process is complete, LED D7 turns off while LED H3 turns on. This means that the buggy is ready to start the colour sensing process.
 4. To start the buggy, toggle button RF3.
+
+A video which demonstrates the setting up and initial calibration process of the buggy is included in the video created under Project Description.
 
 ## How we tested the code
 ### Colour Sensing
