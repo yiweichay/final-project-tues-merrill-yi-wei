@@ -13,18 +13,17 @@ Your task is to develop an autonomous robot that can navigate a "mine" using a s
 ## Project Description
 
 
+
 ## Initial Project Planning and Working with GitHub
 
 At the start of the project, we created an excel sheet and logged in all the critical elements of this project. This is so that both of us are aware of the parts we are working on and hence will not have overlapping work done. An example of this activity log is shown below.
 
-![Excel Activity Log](https://imperiallondon-my.sharepoint.com/:i:/g/personal/ywc19_ic_ac_uk/EQjBp32wccJIr3uhQzzKrT0BHwT-8mpjsF646pPo4JwVFg?e=wRsRXd)
+![Excel log](https://user-images.githubusercontent.com/92339387/145869671-09498700-2b12-47b2-816b-d9fdbcad3e76.jpg)
+
 
 During the project, we made use of branches to test out different codes before merging them into the main file. This is also shown below:
 
-![Git Branches](https://imperiallondon-my.sharepoint.com/:i:/g/personal/ywc19_ic_ac_uk/ETAXERItOWlCv57JQSZY9v4B8_M_cyGcKeGT2LZk5ECDmA?e=OP95lZ)
-
-
-
+![Branches](https://user-images.githubusercontent.com/92339387/145869680-b3c656d9-d803-45c0-901b-5a8a498d3408.jpg)
 
 ## Guide to set up the buggy
 
