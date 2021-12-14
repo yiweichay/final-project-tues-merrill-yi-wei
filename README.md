@@ -10,6 +10,11 @@ Your task is to develop an autonomous robot that can navigate a "mine" using a s
 1. When the final card is reached, navigate back to the starting position
 1. Handle exceptions and return back to the starting position if final card cannot be found
 
+From these objectives and the "Search and Rescue" context of the project, we formulated certain conditions that had the buggy had to adhere to which includes:
+- Buggy must not impact the colour card when identifying 
+- Buggy should continue to use its tires for traction in the 'mine' 
+- To ensure proper distancing from the colour card after sensing, the buggy will reverse momentarily before executing appropriate action
+
 ## Initial Project Planning and Working with GitHub
 
 At the start of the project, we created an excel sheet and logged in all the critical elements of this project. This is so that both of us are aware of the parts we are working on and hence will not have overlapping work done. An example of this activity log is shown below.
@@ -30,10 +35,26 @@ During the project, we made use of branches to test out different codes before m
 
 A video which demonstrates the setting up and initial calibration process of the buggy is included in the video created under Project Description.
 
-## How we tested the code
-### Colour Sensing
+## Code Management 
 
-The principle used in our colour sensing process is the relative proportions of Red, Green and Blue (RGB) to one another, more specifically, the ratios R:G, R:B and B:G. These create 3 conditions that the current RGB sensor is reading, which stay relatively consistent for each colour card. In order to get these values to be consistent, the calibration function at the beginning accounts for the ambient surrounding light by registering the maximum and minimum RGB values with the wihte card di. 
+It was decided that for clarity sake, processes and functions that were essential to the functioning of the buggy would be written in main.c, while peripheral helper functions such as the associated motor movements and colour identification process would be written outside of main.c. We believe this would aid in the readability and compartmentalisation of our code, as well as reduce the number of arguments needed for a particular function.
+
+Script  | Description
+------------- | -------------
+main.c  | Any functions, actions and programming that is essential to the running of the buggy through the maze
+color.c  | Colour Identification Function and Memory Playback Execution Function 
+dc_motor.c  | Associated actions required for each colour
+interrupts.c  | For exception handling
+timer.c  | Timer initialisation for timing of each movement and exception handling
+i2c.c  | For communication with RGB Sensor (ColorClick)
+serial.c  | For development, data acquistion and debugging purposes
+
+## Code Development 
+### Environment Calibration and Colour Sensing
+
+After trialing and testing through 3 different methods of colour identification (M1:Raw Values, M2:Hue Saturation Value, M3:RGB Proportion of Clear), we settled on the principle used in our colour sensing process is the relative proportions of Red, Green and Blue (RGB) to one another, more specifically, the ratios R:G, R:B and B:G which stay relatively consistent for each colour card. A common false positive situation identified was the false identification of Orange from a distant Red card, likewise for Light Blue and White. To combat this, a fourth condition is implemented where the "Perceived Brightness" or relative luminance from the LED reflecting on the card must meet a certain threshold. This luminance threshold also differs for each card colour. Hence, these ratios create 4 conditions that the current RGB sensor must meet before identifying a colour, thereby making the process robust. 
+
+In order to get these values to be consistent, the calibration function at the beginning accounts for the ambient surrounding light by registering the maximum and minimum RGB values with the white card and slightly distanced black card accordingly.  
 
 ```
 unsigned int determine_color_new(struct RGB_val *m){         
@@ -45,7 +66,7 @@ unsigned int determine_color_new(struct RGB_val *m){
     // Must be a certain threshold to ensure object is in front and not falsely identifying colour from a distance 
     unsigned int lumin = (0.2126*(m->R)) + (0.7152*(m->G)) + (0.0722*(m->B));
     
-    // White ratio would be 1 for everything 
+    // White ratio would be 1 for everything, Multiplied by 10,000 to increase dynamic range 
     RedRatio = ((float)(m->R - m->blackR) / (float)(m->whiteR - m->blackR))*10000; 
     GreenRatio = ((float)(m->G - m->blackG) / (float)(m->whiteG - m->blackG))*10000;
     BlueRatio = ((float)(m->B - m->blackB) / (float)(m->whiteB - m->blackB))*10000;
@@ -63,10 +84,46 @@ unsigned int determine_color_new(struct RGB_val *m){
     // Red - will output 0 (Good for 1)
     if (isbtw(RelR,5.1,20.5)==1 && isbtw(RelG,2.2,3.8)==1 && isbtw(RelB,1.8,5.5)==1 && lumin>800)
     {out = 0;} 
+    .
+    . // See color.c file for rest of conditions for other card colours  
+    .
+    return out;  
+}
 ```
 
+The thresholds for each card colour were determined by adjusting the card at varying distances from the RGB sensors and using serial.c to read the values.  
 
-### Memory storing and playback
+### Motor Movements 
+
+The associated movements for each of the colours were programmed in dc_motor.c. It was decided that a momentary reverse action was appropriate to get the buggy centred in the middle of the maze. As an example, the action associate with Blue is shown below. 
+
+```
+//function to turn robot 180 to the right (Blue)
+void turnRight180(struct DC_motor *mL, struct DC_motor *mR)
+{
+    stop(mL, mR);
+    __delay_ms(50);
+    reverse(mL, mR);
+    __delay_ms(400);
+    stop(mL, mR);
+    __delay_ms(150);
+    
+    (*mL).direction = 1; //0 means reverse direction
+    (*mR).direction = 0;
+    for (unsigned int i = 0; i < 75; ++i){ // Dont want too much power
+        (mL->power) += 1;
+        (mR->power) += 1;
+        setMotorPWM(mL);
+        setMotorPWM(mR);
+        __delay_us(50);
+    }
+    __delay_ms(400); //Adjust Timing 
+    stop(mL, mR);
+    __delay_ms(50);
+}
+```
+
+### Memory Storage and Playback
 
 One of the requirements of this project was to ensure that the buggy returns back to "home" when it reaches the last card. The last card in this case, is a White card. 2 functions were created for this sole purpose - one to update the fixed intialised arrays and one to execute the retracing of the path. 
 
@@ -125,4 +182,13 @@ void updateMovementCount(unsigned int movementCode,unsigned int movementArray[],
 }
 ```
 
+
+### Exception Handling 
+
+
 ## What could be improved
+
+While we strived to achieve and refine the main objectives of the project which largely include the colour identification and memory playback functionalities, this resulted in less attention being paid to certain aspects of the project. If time permits, we would have strived to further improve: 
+
+1. The calibration and preciseness of the motor actions for the associated colours 
+2. The correction of the slight deviation from a straight line path when moving forward
