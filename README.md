@@ -2,19 +2,19 @@
 
 ## Challenge brief
 
-Your task is to develop an autonomous robot that can navigate a "mine" using a series of instructions coded in coloured cards and return to its starting position.  Your robot must be able to perform the following: 
+Our task was to develop an autonomous robot that can navigate a "mine" using a series of instructions coded in coloured cards and return to its starting position. The buggy was to be able to perform the following: 
 
-1. Navigate towards a coloured card and stop before impacting the card
-1. Read the card colour
-1. Interpret the card colour using a predefined code and perform the navigation instruction
-1. When the final card is reached, navigate back to the starting position
-1. Handle exceptions and return back to the starting position if final card cannot be found
+- [x] Navigate towards a coloured card and stop before impacting the card
+- [x] Read the card colour
+- [x] Interpret the card colour using a predefined code and perform the navigation instruction
+- [x] When the final card is reached, navigate back to the starting position
+- [x] Handle exceptions and return back to the starting position if final card cannot be found
 
 From these objectives and the "Search and Rescue" context of the project, we formulated certain conditions that the buggy had to adhere to which includes:
-- Buggy must not impact the colour card when identifying 
-- Buggy should continue to use its tires for traction in the 'mine' 
-- To ensure proper distancing from the colour card after sensing, the buggy will reverse momentarily before executing appropriate action
-- To store and execute the retracing of the path through using its memory
+* Buggy must not impact the colour card when identifying 
+* Buggy should continue to use its tires for traction in the 'mine' 
+* To ensure proper distancing from the colour card after sensing, the buggy will reverse momentarily before executing appropriate action
+* To store and execute the retracing of the path through using its memory
 
 ## Initial Project Planning and Working with GitHub
 
@@ -36,7 +36,7 @@ Script  | Description
 main.c  | Any functions, actions and programming that is essential to the running of the buggy through the maze
 color.c  | Colour Identification Function and Memory Playback Execution Function 
 dc_motor.c  | Associated actions required for each colour
-interrupts.c  | For exception handling
+interrupts.c  | For exception handling, initialising interrupts 
 timer.c  | Timer initialisation for timing of each movement and exception handling
 i2c.c  | For communication with RGB Sensor (ColorClick)
 serial.c  | For development, data acquistion and debugging purposes
@@ -204,10 +204,65 @@ void __interrupt(high_priority) HighISR() // If overrun by 16s, will then trigge
 }
 ```
 
+### Main.c
+
+Upon starting up, the structs for the RGB colours and motors are set up, along with the timing and movements array for memory storage. The calibration is then executed with LEDs indicating the capture of data and its readiness to begin. To further enhance the robustness of the colour identification process, 4 consecutive scans must unanimously agree on the colour identified before finally deciding the colour. Thereafter, the checks are reset to ensure that the actions are executed once only. The code below illustrates this process: 
+
+```
+while(1){          
+        // Scans once and updates a checkX accordingly
+        unsigned int detected_colour;  
+        read_colours(&RGBstruct);        // Updates RGB Struct
+        if (count==0) {check1 = determine_color_new(&RGBstruct);}
+        if (count==1) {check2 = determine_color_new(&RGBstruct);}
+        if (count==2) {check3 = determine_color_new(&RGBstruct);}
+        if (count==3) {check4 = determine_color_new(&RGBstruct);count=0;}
+        else (count += 1);
+        
+        // 4 checks must be identical to detect colour (ROBUST)
+        if (check1==check2 && check2==check3 && check3==check4){
+            detected_colour = check1;
+            //code to update movement count and reset timer count when movement count is incremented
+            if (detected_colour >= 0 && detected_colour <= 8){ 
+                updateMovementCount(detected_colour, movementArray, movements, timerArray);
+                movements++;
+                reset_timer = 1; //reset the timer when the movement is done
+            }
+            //if ambient light is detected, reset timer back to 0 and timer restarts
+            else if (detected_colour == 9 && reset_timer == 1){ 
+                TMR0H = 0;
+                TMR0L = 0;
+                reset_timer = 0; 
+            }
+            check1=9;check2=9;check3=9;check4=9; // Resets checks to ensure action done once 
+        }
+```
+
+Finally, once the colour of the card has been identified, the respective actions are called. 
+
+```
+if (detected_colour == 0){ turnRight90(&motorL,&motorR);__delay_ms(100);}           // Red - right 90
+        if (detected_colour == 1){ turnLeft90(&motorL,&motorR);__delay_ms(100);}            // Blue - left 90
+        if (detected_colour == 2){ turnRight180(&motorL,&motorR);__delay_ms(100);}          // Green - 180
+        if (detected_colour == 3){ reverseTurnRight90(&motorL,&motorR);__delay_ms(100);}    // Yellow - reverse + right 90
+        if (detected_colour == 4){ reverseTurnLeft90(&motorL,&motorR);__delay_ms(100);}     // Pink - reverse + left 90
+        if (detected_colour == 5){ turnRight135(&motorL,&motorR);__delay_ms(100);}          // Orange - right 135
+        if (detected_colour == 6){ turnLeft135(&motorL,&motorR);__delay_ms(100);}           // Light Blue - left 135
+        
+        // If black or white, head back to starting point 
+        if (detected_colour == 7){ White(&motorL,&motorR,movementArray, movements, timerArray);
+            __delay_ms(100);LATDbits.LATD7 = 1;LATHbits.LATH3 = 1; // Display to show done with course and person found
+            while (PORTFbits.RF3);}
+        if (detected_colour == 8){ White(&motorL,&motorR,movementArray, movements, timerArray);
+            __delay_ms(100); // No display to show nothing found
+            while (PORTFbits.RF3);}
+        if (detected_colour == 9){ forward(&motorL,&motorR);}                               // Ambient - continue forward
+        
+```
 
 ## What could be improved
 
 While we strived to achieve and refine the main objectives of the project which largely include the colour identification and memory playback functionalities, this resulted in less attention being paid to certain aspects of the project. If time permits, we would have strived to further improve: 
 
-1. The calibration and preciseness of the motor actions for the associated colours 
-2. The correction of the slight deviation from a straight line path when moving forward
+* The calibration and preciseness of the motor actions for the associated colours (However, in a mine the surface will unlikely be consistent) 
+* The ability to self-correct any deviation from a straight line path when moving forward
