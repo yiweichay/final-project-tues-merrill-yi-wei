@@ -10,10 +10,11 @@ Your task is to develop an autonomous robot that can navigate a "mine" using a s
 1. When the final card is reached, navigate back to the starting position
 1. Handle exceptions and return back to the starting position if final card cannot be found
 
-From these objectives and the "Search and Rescue" context of the project, we formulated certain conditions that had the buggy had to adhere to which includes:
+From these objectives and the "Search and Rescue" context of the project, we formulated certain conditions that the buggy had to adhere to which includes:
 - Buggy must not impact the colour card when identifying 
 - Buggy should continue to use its tires for traction in the 'mine' 
 - To ensure proper distancing from the colour card after sensing, the buggy will reverse momentarily before executing appropriate action
+- To store and execute the retracing of the path through using its memory
 
 ## Initial Project Planning and Working with GitHub
 
@@ -25,15 +26,6 @@ At the start of the project, we created an excel sheet and logged in all the cri
 During the project, we made use of branches to test out different codes before merging them into the main file. This is also shown below:
 
 ![Branches](https://user-images.githubusercontent.com/92339387/145869680-b3c656d9-d803-45c0-901b-5a8a498d3408.jpg)
-
-## Guide to set up the buggy
-
-1. Place buggy at the starting point in the respective "mine". When the buggy is ready for calibration, LED D7 turns on. A white card and black card is needed for the initial calibration. 
-2. Place the white card directly infront of the light sensor and toggle button RF2. LED D7 will flash once to indicate that the white card has been calibrated.
-3. Place the black card approximately 4cm away from the light sensor for calibration. This is to account for ambient lighting and reflectivity of the black card. Toggle button RF2 again to calibrate the black card. LED D7 will flash once again. Once the calibration process is complete, LED D7 turns off while LED H3 turns on. This means that the buggy is ready to start the colour sensing process.
-4. To start the buggy, toggle button RF3.
-
-A video which demonstrates the setting up and initial calibration process of the buggy is included in the video created under Project Description.
 
 ## Code Management 
 
@@ -48,6 +40,15 @@ interrupts.c  | For exception handling
 timer.c  | Timer initialisation for timing of each movement and exception handling
 i2c.c  | For communication with RGB Sensor (ColorClick)
 serial.c  | For development, data acquistion and debugging purposes
+
+## Guide to set up the buggy
+
+1. Place buggy at the starting point in the respective "mine". When the buggy is ready for calibration, LED D7 turns on. A white card and black card is needed for the initial calibration. 
+2. Place the white card directly infront of the light sensor and toggle button RF2. LED D7 will flash once to indicate that the white card has been calibrated.
+3. Place the black card approximately 4cm away from the light sensor for calibration. This is to account for ambient lighting and reflectivity of the black card. Toggle button RF2 again to calibrate the black card. LED D7 will flash once again. Once the calibration process is complete, LED D7 turns off while LED H3 turns on. This means that the buggy is ready to start the colour sensing process.
+4. To start the buggy, toggle button RF3.
+
+A video which demonstrates the setting up and initial calibration process of the buggy is included [here](https://imperiallondon-my.sharepoint.com/:v:/g/personal/ywc19_ic_ac_uk/EVad5Vj5tUxGnKjwEe3ywaEBDxlz3bQ9RxnZfVTA16CrmQ?e=TUmPaU).
 
 ## Code Development 
 ### Environment Calibration and Colour Sensing
@@ -182,8 +183,26 @@ void updateMovementCount(unsigned int movementCode,unsigned int movementArray[],
 }
 ```
 
-
 ### Exception Handling 
+
+An interrupt was used to handle the exception of bringing the buggy back "home" when it loses its way. A timer prescaler of 1:256 was initialised. This meant that the timer will overflow every approximately 16 seconds. Hence, if the buggy has not detect a colour card within 16 seconds, it will execute the White() function which will retrace its path and bring the buggy back to home. The interrupt function is shown as follows:
+
+```
+//initialise int for interrupt 
+static volatile unsigned int maxTimeElapsed = 0;
+
+//Interrupt to handle exception of retracing path if no card is detected within approx 16 secs
+void __interrupt(high_priority) HighISR() // If overrun by 16s, will then trigger memory 
+{
+	//add your ISR code here i.e. check the flag, do something (i.e. toggle an LED), clear the flag...
+    if(PIR0bits.TMR0IF){
+        maxTimeElapsed = 1;
+        TMR0H = 0;
+        TMR0L = 0;
+        PIR0bits.TMR0IF = 0; // clearing the flag
+    } 
+}
+```
 
 
 ## What could be improved
