@@ -208,7 +208,7 @@ void forward(struct DC_motor *mL, struct DC_motor *mR)
 {
     (*mL).direction = 1;
     (*mR).direction = 1;
-    (*mL).power = 13; // 0 means full speed
+    (*mL).power = 13; 
     (*mR).power = 13;
     setMotorPWM(mL);
     setMotorPWM(mR);
