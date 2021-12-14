@@ -18,10 +18,25 @@
 //initialise int and arrays to store each route
 unsigned int movements = 0;
 //a fixed array of 10 is initialised - this can be changed accordingly 
-unsigned int timerArray[10] = {};
-unsigned int movementArray[10] = {};
+unsigned int timerArray[15] = {};
+unsigned int movementArray[15] = {};
 
 #define _XTAL_FREQ 64000000 //note intrinsic _delay function is 62.5ns at 64,000,000Hz  
+
+//initialise int for interrupt 
+static volatile unsigned int maxTimeElapsed = 0;
+
+//Interrupt to handle exception of retracing path if no card is detected within approx 16 secs
+void __interrupt(high_priority) HighISR() // If overrun by 16s, will then trigger memory 
+{
+	//add your ISR code here i.e. check the flag, do something (i.e. toggle an LED), clear the flag...
+    if(PIR0bits.TMR0IF){
+        maxTimeElapsed = 1;
+        TMR0H = 0;
+        TMR0L = 0;
+        PIR0bits.TMR0IF = 0; // clearing the flag
+    } 
+}
 
 void main(void){
     // Initialise Helper Scripts
@@ -145,9 +160,21 @@ void main(void){
         if (detected_colour == 6){ turnLeft135(&motorL,&motorR);__delay_ms(100);}           // Light Blue - left 135
         
         // If black or white, head back to starting point 
-        if (detected_colour == 7 || detected_colour == 8){ White(&motorL,&motorR,movementArray, movements, timerArray);
-            __delay_ms(100);LATDbits.LATD7 = 1;LATHbits.LATH3 = 1; // Display to show done with course
+        if (detected_colour == 7){ White(&motorL,&motorR,movementArray, movements, timerArray);
+            __delay_ms(100);LATDbits.LATD7 = 1;LATHbits.LATH3 = 1; // Display to show done with course and person found
+            while (PORTFbits.RF3);}
+        if (detected_colour == 8){ White(&motorL,&motorR,movementArray, movements, timerArray);
+            __delay_ms(100); // No display to show nothing found
             while (PORTFbits.RF3);}
         if (detected_colour == 9){ forward(&motorL,&motorR);}                               // Ambient - continue forward
+        
+        //Exception of returning to Start if buggy doesn't detect a colour card in approx 16 seconds
+        if (maxTimeElapsed == 1){
+            updateMovementCount(detected_colour, movementArray, movements, timerArray);
+            movements++;
+            White(&motorL, &motorR, movementArray, movements, timerArray); //Calling function to retrace path
+            maxTimeElapsed = 0;
+            __delay_ms(100);LATDbits.LATD7 = 1;LATHbits.LATH3 = 1; // Display to show done with course
+        }
     }
 }

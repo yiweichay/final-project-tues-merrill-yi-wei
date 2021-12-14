@@ -24827,7 +24827,6 @@ void __attribute__((picinterrupt(("high_priority")))) HighISR()
 {
 
     if(PIR0bits.TMR0IF){
-
         TMR0H = 0;
         TMR0L = 0;
 

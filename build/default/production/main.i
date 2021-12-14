@@ -24966,9 +24966,11 @@ unsigned int get16bitTMR0val(void);
 # 16 "main.c" 2
 
 
+
 unsigned int movements = 0;
-unsigned int timerArray[10] = {};
-unsigned int movementArray[10] = {};
+
+unsigned int timerArray[15] = {};
+unsigned int movementArray[15] = {};
 
 
 
@@ -24998,11 +25000,11 @@ void main(void){
     motorR.PWMperiod=PWMcycle;
 
 
-    struct RGB_val test;
-    test.C = 0;
-    test.R = 0;
-    test.G = 0;
-    test.B = 0;
+    struct RGB_val RGBstruct;
+    RGBstruct.C = 0;
+    RGBstruct.R = 0;
+    RGBstruct.G = 0;
+    RGBstruct.B = 0;
 
 
     TRISFbits.TRISF2=1;
@@ -25029,7 +25031,7 @@ void main(void){
         while (PORTFbits.RF2);
         if (!PORTFbits.RF2){
             LATDbits.LATD7 = 0;
-            calibrateW(&test);
+            calibrateW(&RGBstruct);
             _delay((unsigned long)((300)*(64000000/4000.0)));
             }
 
@@ -25037,7 +25039,7 @@ void main(void){
         while (PORTFbits.RF2);
         if (!PORTFbits.RF2){
             LATDbits.LATD7 = 0;
-            calibrateB(&test);
+            calibrateB(&RGBstruct);
             _delay((unsigned long)((300)*(64000000/4000.0)));
             }
 
@@ -25060,23 +25062,24 @@ void main(void){
     while(1){
 
         unsigned int detected_colour;
-        read_colours(&test);
-        if (count==0) {check1 = determine_color_new(&test);}
-        if (count==1) {check2 = determine_color_new(&test);}
-        if (count==2) {check3 = determine_color_new(&test);}
-        if (count==3) {check4 = determine_color_new(&test);count=0;}
+        read_colours(&RGBstruct);
+        if (count==0) {check1 = determine_color_new(&RGBstruct);}
+        if (count==1) {check2 = determine_color_new(&RGBstruct);}
+        if (count==2) {check3 = determine_color_new(&RGBstruct);}
+        if (count==3) {check4 = determine_color_new(&RGBstruct);count=0;}
         else (count += 1);
 
 
         if (check1==check2 && check2==check3 && check3==check4){
             detected_colour = check1;
-            if (detected_colour >= 0 && detected_colour <= 7){
+
+            if (detected_colour >= 0 && detected_colour <= 8){
                 updateMovementCount(detected_colour, movementArray, movements, timerArray);
                 movements++;
                 reset_timer = 1;
             }
-            else if (detected_colour == 9 && reset_timer == 1){
 
+            else if (detected_colour == 9 && reset_timer == 1){
                 TMR0H = 0;
                 TMR0L = 0;
                 reset_timer = 0;
@@ -25093,8 +25096,11 @@ void main(void){
         if (detected_colour == 6){ turnLeft135(&motorL,&motorR);_delay((unsigned long)((100)*(64000000/4000.0)));}
 
 
-        if (detected_colour == 7 || detected_colour == 8){ White(&motorL,&motorR,movementArray, movements, timerArray);
+        if (detected_colour == 7){ White(&motorL,&motorR,movementArray, movements, timerArray);
             _delay((unsigned long)((100)*(64000000/4000.0)));LATDbits.LATD7 = 1;LATHbits.LATH3 = 1;
+            while (PORTFbits.RF3);}
+        if (detected_colour == 8){ White(&motorL,&motorR,movementArray, movements, timerArray);
+            _delay((unsigned long)((100)*(64000000/4000.0)));
             while (PORTFbits.RF3);}
         if (detected_colour == 9){ forward(&motorL,&motorR);}
     }

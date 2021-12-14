@@ -98,11 +98,11 @@ unsigned int isbtw(float num, float low, float high){
     else {return 0;}
 }
 
-void calibrateW(struct RGB_val *m){
-    (m->whiteR) = color_read_Red();
-    (m->whiteG) = color_read_Green();
-    (m->whiteB) = color_read_Blue();
-}
+    void calibrateW(struct RGB_val *m){
+        (m->whiteR) = color_read_Red();
+        (m->whiteG) = color_read_Green();
+        (m->whiteB) = color_read_Blue();
+    }
 
 void calibrateB(struct RGB_val *m){
     (m->blackR) = color_read_Red();
@@ -133,8 +133,6 @@ unsigned int determine_color_new(struct RGB_val *m){
     if (RelR < 0) {RelR = 0;}
     if (RelG < 0) {RelG = 0;}
     if (RelB < 0) {RelB = 0;}
-    
-    // Values from 
     
     // Red - will output 0 (Good for 1)
     if (isbtw(RelR,5.1,20.5)==1 && isbtw(RelG,2.2,3.8)==1 && isbtw(RelB,1.8,5.5)==1 && lumin>800)
@@ -186,8 +184,8 @@ void White(struct DC_motor *mL, struct DC_motor *mR,unsigned int movementArray[]
         if (movementArray[movements-i-1] == 0){turnLeft90(mL, mR);}
         else if (movementArray[movements-i-1] == 1){turnRight90(mL, mR);}
         else if (movementArray[movements-i-1] == 2){turnRight180(mL, mR);}
-        else if (movementArray[movements-i-1] == 3){reverseTurnLeft90(mL, mR);}
-        else if (movementArray[movements-i-1] == 4){reverseTurnRight90(mL, mR);}
+        else if (movementArray[movements-i-1] == 3){turnLeft90(mL, mR);reverse(mL, mR);__delay_ms(600);stop(mL, mR);__delay_ms(50);}
+        else if (movementArray[movements-i-1] == 4){turnRight90(mL, mR);reverse(mL, mR);__delay_ms(600);stop(mL, mR);__delay_ms(50);}
         else if (movementArray[movements-i-1] == 5){turnLeft135(mL, mR);}
         else if (movementArray[movements-i-1] == 6){turnRight135(mL, mR);}
         else if (movementArray[movements-i-1] == 9){stop(mL, mR);}
