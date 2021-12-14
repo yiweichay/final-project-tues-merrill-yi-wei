@@ -185,7 +185,7 @@ void updateMovementCount(unsigned int movementCode,unsigned int movementArray[],
 
 ### Exception Handling 
 
-An interrupt was used to handle the exception of bringing the buggy back "home" when it loses its way. A timer prescaler of 1:256 was initialised. This meant that the timer will overflow every approximately 16 seconds. Hence, if the buggy has not detect a colour card within 16 seconds, it will execute the White() function which will retrace its path and bring the buggy back to home. The interrupt function is shown as follows:
+An interrupt was used to handle the exception of bringing the buggy back "home" when it loses its way. A timer prescaler of 1:256 was initialised. This meant that the timer will overflow every approximately 16 seconds. Hence, if the buggy does not detect a colour card within 16 seconds, it will execute the White() function which will retrace its path and bring the buggy back to home. The interrupt function is shown as follows:
 
 ```
 //initialise int for interrupt 
