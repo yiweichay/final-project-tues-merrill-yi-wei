@@ -1,6 +1,19 @@
 # Course project - Mine navigation search and rescue
 
-## Challenge brief
+## Contents
+- [Challenge Brief](#challenge-brief)
+- [Project Planning and Working with GitHub](#project-planning-and-working-with-github)
+- [Code Managment](#code-management)
+- [Guide to set up the buggy](#guide-to-set-up-the-buggy)
+- [Code Development](#code-development)
+	- [Environment Calibration and Colour Sensing](#environment-calibration-and-colour-sensing)
+	- [Motor Movements](#motor-movements)
+	- [Memory Storage and Playback](#memory-storage-and-playback)
+	- [Exception Handling](#exception-handling)
+	- [Main Script](#main-script)
+- [Possible Improvements](#possible-improvements)
+
+## Challenge Brief
 
 Our task was to develop an autonomous robot that can navigate a "mine" using a series of instructions coded in coloured cards and return to its starting position. The buggy was to be able to perform the following: 
 
@@ -16,7 +29,7 @@ From these objectives and the "Search and Rescue" context of the project, we for
 * To ensure proper distancing from the colour card after sensing, the buggy will reverse momentarily before executing appropriate action
 * To store and execute the retracing of the path through using its memory
 
-## Initial Project Planning and Working with GitHub
+## Project Planning and Working with GitHub
 
 At the start of the project, we created an excel sheet and logged in all the critical elements of this project. This is so that both of us are aware of the parts we are working on and hence will not have overlapping work done. An example of this activity log is shown below.
 
@@ -205,7 +218,7 @@ void __interrupt(high_priority) HighISR() // If overrun by 16s, will then trigge
 }
 ```
 
-### Main.c
+### Main Script
 
 Upon starting up, the structs for the RGB colours and motors are set up, along with the timing and movements array for memory storage. The calibration is then executed with LEDs indicating the capture of data and its readiness to begin. To further enhance the robustness of the colour identification process, 4 consecutive scans must unanimously agree on the colour identified before finally deciding the colour. Thereafter, the checks are reset to ensure that the actions are executed once only. The code below illustrates this process: 
 
@@ -261,9 +274,9 @@ if (detected_colour == 0){ turnRight90(&motorL,&motorR);__delay_ms(100);}       
         
 ```
 
-## What could be improved
+## Possible Improvements
 
-While we strived to achieve and refine the main objectives of the project which largely include the colour identification and memory playback functionalities, this resulted in less attention being paid to certain aspects of the project. If time permits, we would have strived to further improve: 
+While we strived to achieve and refine the main objectives of the project which largely included the colour identification and memory playback functionalities, this resulted in less attention being paid to certain aspects of the project. If time permits, we would have strived to further improve: 
 
 * The calibration and preciseness of the motor actions for the associated colours (However, in a mine the surface will unlikely be consistent) 
 * The ability to self-correct any deviation from a straight line path when moving forward
