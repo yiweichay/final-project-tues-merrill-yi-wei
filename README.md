@@ -10,10 +10,6 @@ Your task is to develop an autonomous robot that can navigate a "mine" using a s
 1. When the final card is reached, navigate back to the starting position
 1. Handle exceptions and return back to the starting position if final card cannot be found
 
-## Project Description
-
-
-
 ## Initial Project Planning and Working with GitHub
 
 At the start of the project, we created an excel sheet and logged in all the critical elements of this project. This is so that both of us are aware of the parts we are working on and hence will not have overlapping work done. An example of this activity log is shown below.
@@ -36,6 +32,39 @@ A video which demonstrates the setting up and initial calibration process of the
 
 ## How we tested the code
 ### Colour Sensing
+
+The principle used in our colour sensing process is the relative proportions of Red, Green and Blue (RGB) to one another, more specifically, the ratios R:G, R:B and B:G. These create 3 conditions that the current RGB sensor is reading, which stay relatively consistent for each colour card. In order to get these values to be consistent, the calibration function at the beginning accounts for the ambient surrounding light by registering the maximum and minimum RGB values with the wihte card di. 
+
+```
+unsigned int determine_color_new(struct RGB_val *m){         
+    unsigned int RedRatio, GreenRatio, BlueRatio;
+    float RelR, RelG, RelB;
+    unsigned int out = 9;
+    
+    // Perceived Brightness
+    // Must be a certain threshold to ensure object is in front and not falsely identifying colour from a distance 
+    unsigned int lumin = (0.2126*(m->R)) + (0.7152*(m->G)) + (0.0722*(m->B));
+    
+    // White ratio would be 1 for everything 
+    RedRatio = ((float)(m->R - m->blackR) / (float)(m->whiteR - m->blackR))*10000; 
+    GreenRatio = ((float)(m->G - m->blackG) / (float)(m->whiteG - m->blackG))*10000;
+    BlueRatio = ((float)(m->B - m->blackB) / (float)(m->whiteB - m->blackB))*10000;
+    
+    // Relative ratio of RGB colours against each other 
+    RelR = (float)RedRatio / (float)GreenRatio;
+    RelG = (float)RedRatio / (float)BlueRatio;
+    RelB = (float)BlueRatio / (float)GreenRatio;
+    
+    // Captures Exception of negative values: too dark
+    if (RelR < 0) {RelR = 0;}
+    if (RelG < 0) {RelG = 0;}
+    if (RelB < 0) {RelB = 0;}
+    
+    // Red - will output 0 (Good for 1)
+    if (isbtw(RelR,5.1,20.5)==1 && isbtw(RelG,2.2,3.8)==1 && isbtw(RelB,1.8,5.5)==1 && lumin>800)
+    {out = 0;} 
+```
+
 
 ### Memory storing and playback
 
