@@ -1,167 +1,282 @@
 # Course project - Mine navigation search and rescue
 
-## Challenge brief
+## Contents
+- [Challenge Brief](#challenge-brief)
+- [Project Planning and Working with GitHub](#project-planning-and-working-with-github)
+- [Code Managment](#code-management)
+- [Guide to set up the buggy](#guide-to-set-up-the-buggy)
+- [Code Development](#code-development)
+	- [Environment Calibration and Colour Sensing](#environment-calibration-and-colour-sensing)
+	- [Motor Movements](#motor-movements)
+	- [Memory Storage and Playback](#memory-storage-and-playback)
+	- [Exception Handling](#exception-handling)
+	- [Main Script](#main-script)
+- [Possible Improvements](#possible-improvements)
 
-Your task is to develop an autonomous robot that can navigate a "mine" using a series of instructions coded in coloured cards and return to its starting position.  Your robot must be able to perform the following: 
+## Challenge Brief
 
-1. Navigate towards a coloured card and stop before impacting the card
-1. Read the card colour
-1. Interpret the card colour using a predefined code and perform the navigation instruction
-1. When the final card is reached, navigate back to the starting position
-1. Handle exceptions and return back to the starting position if final card cannot be found
+Our task was to develop an autonomous robot that can navigate a "mine" using a series of instructions coded in coloured cards and return to its starting position. The buggy was to be able to perform the following: 
 
-## "Mine" environment specification
+- [x] Navigate towards a coloured card and stop before impacting the card
+- [x] Read the card colour
+- [x] Interpret the card colour using a predefined code and perform the navigation instruction
+- [x] When the final card is reached, navigate back to the starting position
+- [x] Handle exceptions and return back to the starting position if final card cannot be found
 
-A "mine" is contstructed from black plywood walls 100mm high with some walls having coloured cards located on the sides of the maze to assist with navigation. The following colour code is to be used for navigation:
+From these objectives and the "Search and Rescue" context of the project, we formulated certain conditions that the buggy had to adhere to which includes:
+* Buggy must not impact the colour card when identifying 
+* Buggy should continue to use its tires for traction in the 'mine' 
+* To ensure proper distancing from the colour card after sensing, the buggy will reverse momentarily before executing appropriate action
+* To store and execute the retracing of the path through using its memory
 
-Colour | Instruction
----------|---------
-Red | Turn Right 90
-Green | Turn Left 90
-Blue | Turn 180
-Yellow | Reverse 1 square and turn right 90
-Pink | Reverse 1 square and turn left 90
-Orange | Turn Right 135
-Light blue | Turn Left 135 
-White | Finish (return home)
-Black | Maze wall colour
+## Project Planning and Working with GitHub
 
-Mine courses will vary in difficulty, with the simplest requiring 4 basic moves to navigate. More advanced courses may require 10 or moves to navigate. The mines may have features such as dead ends but colour cards will always direct you to the end of the maze. Once the end of the maze has been reached, you must return to the starting position. An example course to navigate is shown below. You do not know in advance which colours will be in the course or how many.
+At the start of the project, we created an excel sheet and logged in all the critical elements of this project. This is so that both of us are aware of the parts we are working on and hence will not have overlapping work done. An example of this activity log is shown below.
 
-![Navi Diagram](gifs/maze.gif)
+![Excel log](https://user-images.githubusercontent.com/92339387/145869671-09498700-2b12-47b2-816b-d9fdbcad3e76.jpg)
 
-## Resources and project submission
 
-To develop your solution you have your Clicker 2 board, buggy and colour click add on board. You must not use any hardware that is not provided as part of this course and you must use the XC8 compiler to compile your C code. 
+During the project, we made use of branches to test out different codes before merging them into the main file. This is also shown below:
 
-Please use this GitHub repo to manage your software development and submit your project code. 
+![Branches](https://user-images.githubusercontent.com/92339387/145869680-b3c656d9-d803-45c0-901b-5a8a498d3408.jpg)
 
-Final testing will take place in the CAGB foyer and testing areas will be provided around the mechatronics lab. You will not know the exact layout of the maze(s) in advance. You will also be asked to give a short presentation on the testing day.
+## Code Management 
 
-## Supplementary technical information
+It was decided that for clarity sake, processes and functions that were essential to the functioning of the buggy would be written in main.c, while peripheral helper functions such as the associated motor movements and colour identification process would be written outside of main.c. We believe this would aid in the readability and compartmentalisation of our code, as well as reduce the number of arguments needed for a particular function.
 
-### Additional buggy features
+Script  | Description
+------------- | -------------
+main.c  | Any functions, actions and programming that is essential to the running of the buggy through the maze
+color.c  | Colour Identification Function and Memory Playback Execution Function 
+dc_motor.c  | Associated actions required for each colour
+interrupts.c  | For exception handling, initialising interrupts 
+timer.c  | Timer initialisation for timing of each movement and exception handling
+i2c.c  | For communication with RGB Sensor (ColorClick)
+serial.c  | For development, data acquistion and debugging purposes
 
-In addition to the motor drives we explored in lab 6, the buggy contains some additional features that may be of use during the project. The first feature is additional LEDs, controlled through the pins labelled **H.LAMPS**, **M.BEAM**, **BRAKE**, **TURN-L** and **TURN-R**. H.LAMPS turns on the front white LEDs and rear red LEDs, at a reduced brightness. M.BEAM and BRAKE enable you to turn these LEDs on at full brightness. The turn signals have not hardware based brightness control. These LEDs give you a method to provide feedback for debugging, in addition of the LEDs on the clicker board.
+## Guide to set up the buggy
 
-![Buggy pinout](gifs/buggy_pins.png)
+1. Place buggy at the starting point in the respective "mine". When the buggy is ready for calibration, LED D7 turns on. A white card and black card is needed for the initial calibration. 
+2. Place the white card directly infront of the light sensor and toggle button RF2. LED D7 will flash once to indicate that the white card has been calibrated.
+3. Place the black card approximately 4cm away from the light sensor for calibration. This is to account for ambient lighting and reflectivity of the black card. Toggle button RF2 again to calibrate the black card. LED D7 will flash once again. Once the calibration process is complete, LED D7 turns off while LED H3 turns on. This means that the buggy is ready to start the colour sensing process.
+4. To start the buggy, toggle button RF3.
 
-A further feature of the buggy is **BAT-VSENSE** pin which allows you to monitor the batter voltage via an analogue input pin. The battery is connected across a voltage divider, as shown in the diagram below:
+A video which demonstrates the setting up and initial calibration process of the buggy is included [here](https://imperiallondon-my.sharepoint.com/:v:/g/personal/ywc19_ic_ac_uk/EVad5Vj5tUxGnKjwEe3ywaEBDxlz3bQ9RxnZfVTA16CrmQ?e=TUmPaU).
 
-![Bat sense](gifs/bat_vsense.png)
+## Code Development 
 
-The voltage at BAT-VSENSE will always be one third of that at the battery. Measuring this value can be useful for determining if your battery needs charging. You could also use it to calibrate your robot to perform well at different charge levels. 
+### Environment Calibration and Colour Sensing
 
-### Colour click
+After trialing and testing through 3 different methods of colour identification (M1:Raw Values, M2:Hue Saturation Value, M3:RGB Proportion of Clear, can be recovered in Feedback pull request), we settled on the principle used in our colour sensing process is the relative proportions of Red, Green and Blue (RGB) to one another, more specifically, the ratios R:G, R:B and B:G which stay relatively consistent for each colour card. A common false positive situation identified was the false identification of Orange from a distant Red card, likewise for Light Blue and White. To combat this, a fourth condition is implemented where the "Perceived Brightness" or relative luminance from the LED reflecting on the card must meet a certain threshold. This luminance threshold also differs for each card colour. Hence, these ratios create 4 conditions that the current RGB sensor must meet before identifying a colour, thereby making the process robust. 
 
-The Colour click board contains 2 devices to help with navigation, a tri-colour LED for illumination and a 4 channel RGBC photodiode sensor. This combination of two devices (an illumination source and a sensor) allow you a make measurements of the reflected colour of objects near the sensor. The circuit diagram for the Colour click is shown below:
+In order to get these values to be consistent, the calibration function at the beginning accounts for the ambient surrounding light by registering the maximum and minimum RGB values with the white card and slightly distanced black card accordingly.  
 
-![Color Cick](gifs/color_click.png)
+```
+unsigned int determine_color_new(struct RGB_val *m){         
+    unsigned int RedRatio, GreenRatio, BlueRatio;
+    float RelR, RelG, RelB;
+    unsigned int out = 9;
+    
+    // Perceived Brightness
+    // Must be a certain threshold to ensure object is in front and not falsely identifying colour from a distance 
+    unsigned int lumin = (0.2126*(m->R)) + (0.7152*(m->G)) + (0.0722*(m->B));
+    
+    // White ratio would be 1 for everything, Multiplied by 10,000 to increase dynamic range 
+    RedRatio = ((float)(m->R - m->blackR) / (float)(m->whiteR - m->blackR))*10000; 
+    GreenRatio = ((float)(m->G - m->blackG) / (float)(m->whiteG - m->blackG))*10000;
+    BlueRatio = ((float)(m->B - m->blackB) / (float)(m->whiteB - m->blackB))*10000;
+    
+    // Relative ratio of RGB colours against each other 
+    RelR = (float)RedRatio / (float)GreenRatio;
+    RelG = (float)RedRatio / (float)BlueRatio;
+    RelB = (float)BlueRatio / (float)GreenRatio;
+    
+    // Captures Exception of negative values: too dark
+    if (RelR < 0) {RelR = 0;}
+    if (RelG < 0) {RelG = 0;}
+    if (RelB < 0) {RelB = 0;}
+    
+    // Red - will output 0 (Good for 1)
+    if (isbtw(RelR,5.1,20.5)==1 && isbtw(RelG,2.2,3.8)==1 && isbtw(RelB,1.8,5.5)==1 && lumin>800)
+    {out = 0;} 
+    .
+    . // See color.c file for rest of conditions for other card colours  
+    .
+    return out;  
+}
+```
 
-The tri-colour LED is the simpler of the two devices to control. Three separate pins control the red, green and blue LEDs individually, despite them being in a single package. Control via these pins is simple digital on/off control and if any brightness control was required, the user would need program the microcontroller to generate a PWM signal to achieve this.  
+The thresholds for each card colour were determined by adjusting the card at varying distances from the RGB sensors and using serial.c to read the values.  
 
-The second device on the Colour click is the TCS3471 colour light-to-digital converter. The sensor contains a grid of 4x4 photodiodes, 4 are sensitive to red light, 4 green light, 4 blue light and 4 "clear" light (that is, a range of wavelengths, see datasheet for exact spectral response). When light falls on the photodiode the photons are absorbed and current is generated. This signal is then integrated over time using integrators and sampled by 16 bit on board ADCs. Communication with the device is achieved using an I2C interface. This enables configuration of the device to customise sampling of the data (i.e. integration time, gain, etc.) and to read the 16 bit digital values for each of the RGBC channels. The relative magnitude of these values gives you information about the colour of light that is falling on the sensor. The device can also be configured to send an interrupt signal to the PIC when signal reaches a preset value.
+### Motor Movements 
 
-### I2C
+The associated movements for each of the colours were programmed in dc_motor.c. It was decided that a momentary reverse action was appropriate to get the buggy centred in the middle of the maze. As an example, the action associate with Blue is shown below. 
 
-The I2C interface widely used in industry for communication between microcontrollers and peripheral integrated circuits (other chips) over short distances. I2C is serial communication bus that enables communication between many devices over a simple 2 wire interface. One wire is the data line (SDA) and is used for both transmission and receiving. The second wire (SCL) is used for a clock signal to ensure all devices are synchronous. To ensure communication of data occurs without problem a message protocol must be followed and understood by all devices on the bus. Devices are termed master and slave devices, with master devices initiation communication to a slave device via unique address for that device. The general sequence of communication between a master/slave over the I2C interface is a follows:
+```
+//function to turn robot 180 to the right (Blue)
+void turnRight180(struct DC_motor *mL, struct DC_motor *mR)
+{
+    stop(mL, mR);
+    __delay_ms(50);
+    reverse(mL, mR);
+    __delay_ms(400);
+    stop(mL, mR);
+    __delay_ms(150);
+    
+    (*mL).direction = 1; //0 means reverse direction
+    (*mR).direction = 0;
+    for (unsigned int i = 0; i < 75; ++i){ // Dont want too much power
+        (mL->power) += 1;
+        (mR->power) += 1;
+        setMotorPWM(mL);
+        setMotorPWM(mR);
+        __delay_us(50);
+    }
+    __delay_ms(400); //Adjust Timing 
+    stop(mL, mR);
+    __delay_ms(50);
+}
+```
 
-1. Send a Start bit
-1. Send the slave address, usually 7 bits
-1. Send a Read (1) or Write (0) bit to define what type of transaction it is
-1. Wait for an Acknowledge bit
-1. Send a data or command byte (8 bits)
-1. Wait for Acknowledge bit
-1. Send the Stop bit
+### Memory Storage and Playback
 
-This is shown pictorial in the figure below:
+One of the requirements of this project was to ensure that the buggy returns back to "home" when it reaches the last card. The last card in this case, is a White card. 2 functions were created for this sole purpose - one to update the fixed intialised arrays and one to execute the retracing of the path. 
 
-![I2C](gifs/i2c.png)
+We first tested the White function below to ensure that the it works. This is done by initialising a fixed array with specified elements. The code is uploaded onto the buggy and we checked to see if the buggy executes the movements stored in the movementArray accurately.
 
-Although it is possible to program an entirely software based I2C interface, luckily for us our PIC chip has a module dedicated to generating and receiving I2C signals: the Master Synchronous Serial Port Module, or MSSP (see chapter 28 of the PIC datasheet). This module provides methods for sending start/stop/acknowledge bits and allows us to focus on sending/receiving data.
+```
+void White(struct DC_motor *mL, struct DC_motor *mR,unsigned int movementArray[], unsigned int movements,unsigned int timerArray[])
+{
+    //stop the buggy and turn 180 degrees
+    stop(mL, mR);
+    turnRight180(mL, mR);
+    __delay_ms(1000);
+    //a for loop is used to carry out the movements in reverse
+    for (int i=0; i<movements; i++){
+        if (movementArray[movements-i-1] == 0){turnLeft90(mL, mR);}
+        else if (movementArray[movements-i-1] == 1){turnRight90(mL, mR);}
+        else if (movementArray[movements-i-1] == 2){turnRight180(mL, mR);}
+        else if (movementArray[movements-i-1] == 3){reverseTurnLeft90(mL, mR);}
+        else if (movementArray[movements-i-1] == 4){reverseTurnRight90(mL, mR);}
+        else if (movementArray[movements-i-1] == 5){turnLeft135(mL, mR);}
+        else if (movementArray[movements-i-1] == 6){turnRight135(mL, mR);}
+        else if (movementArray[movements-i-1] == 9){stop(mL, mR);}
+        //after each movement, function reads the stored timer count
+        //forward function is carried out for the specified timer element
+        unsigned int tempTimerVal = 0;
+        forward(mL, mR);
+        TMR0H = 0;
+        TMR0L = 0;
+        while(tempTimerVal < timerArray[movements-i-1]){
+            tempTimerVal = TMR0L;
+            tempTimerVal |= (TMR0H << 8);
+        }
+    }
+    //stop the buggy after the retracing path is done
+    stop(mL, mR);
+}
+```
 
-The included i2c.c/h files contain functions to help you get started with I2C communication. The first function below sets up the MSSP module as an I2C master device and configures the necessary pins.
+The updateMovementCount() function below fills the timerArray and movementArray after each colour card is read during its drive through the "mine". To ensure that the elements filling up the arrays are correct, the MPLAB X debugger was used. A break point was created in the main file right after where the function was called and the variables in the respective arrays could be seen throught the variable terminal as shown below. 
 
-	void I2C_2_Master_Init(void)
-	{
-		//i2c config  
-		SSP2CON1bits.SSPM= 0b1000;    // i2c master mode
-		SSP2CON1bits.SSPEN = 1;       //enable i2c
-		SSP2ADD = (_XTAL_FREQ/(4*_I2C_CLOCK))-1; //Baud rate divider bits (in master mode)
-  
-		//pin configuration for i2c  
-		TRISDbits.TRISD5 = 1;                   //Disable output driver
-		TRISDbits.TRISD6 = 1;                   //Disable output driver
-		ANSELDbits.ANSELD5=0;					// disable analogue on pins
-		ANSELDbits.ANSELD6=0;					// disable analogue on pins
-		SSP2DATPPS=0x1D;      //pin RD5
-		SSP2CLKPPS=0x1E;      //pin RD6
-		RD5PPS=0x1C;      // data output
-		RD6PPS=0x1B;      //clock output
-	}
-	
-Bits with the SSP2CON2 register are set to send the individual start/stop/acknowledge bits used in the protocol. These must only be set when the bus is idle (nothing being sent/received). The I2C_2_Master_Start(), I2C_2_Master_Stop() and I2C_2_Master_RepStart() functions allow you add the necessary bits as defined in the protocol above. Data is sent on the bus using the SSP2BUF register:
+![MPLAB X Debugger](https://user-images.githubusercontent.com/92339387/145985135-283a7f94-2161-44ae-9669-d3a9676fc14d.jpg)
 
-	void I2C_2_Master_Write(unsigned char data_byte)
-	{
-		I2C_2_Master_Idle();
-		SSP2BUF = data_byte;         //Write data to SSPBUF
-	}
+```
+void updateMovementCount(unsigned int movementCode,unsigned int movementArray[], unsigned int movements,unsigned int timerArray[])
+{
+    //to return the full 16-bit value
+    unsigned int tempTimerVal = TMR0L;
+    tempTimerVal |= (TMR0H << 8);
+    //the time recorded between each card is stored in timerArray
+    timerArray[movements] = tempTimerVal;
+    //the movement code (0-8) is stored in movementArray
+    movementArray[movements] = movementCode;
+    //timer resets
+    TMR0H = 0;
+    TMR0L = 0;
+}
+```
 
-Data is also read using the same SSP2BUF registers. However, to receive data we first need to switch the module into receiver mode. We also need to start the acknowledge sequence to let the slave device know what we have received the data OK. The following function achieves this:
+### Exception Handling 
 
-	unsigned char I2C_2_Master_Read(unsigned char ack)
-	{
-		unsigned char tmp;
-		I2C_2_Master_Idle();
-		SSP2CON2bits.RCEN = 1;        // put the module into receive mode
-		I2C_2_Master_Idle();
-		tmp = SSP2BUF;                //Read data from SS2PBUF
-		I2C_2_Master_Idle();
-		SSP2CON2bits.ACKDT = !ack;     // 0 turns on acknowledge data bit
-		SSP2CON2bits.ACKEN = 1;        //start acknowledge sequence
-		return tmp;
-	}
+An interrupt was used to handle the exception of bringing the buggy back "home" when it loses its way. A timer prescaler of 1:256 was initialised. This meant that the timer will overflow every approximately 16 seconds. Hence, if the buggy does not detect a colour card within 16 seconds, it will execute the White() function which will retrace its path and bring the buggy back to home. The interrupt function is shown as follows:
 
-The functions described so form the basics required for I2C communication with the PIC. To communicate with the TCS3471 onboard the Colour click we first need to know its address. This is listed in the data sheet as 0x29. To send our first byte over the I2C we need to send this address combined with the transaction type (read or write) as defined in the protocol diagram above. This lets the TCS3471 know the message is intended for it and not some other device on the interface. Next we send a byte which is a combination of command type and the register address in the TCS3471 that we want to write to. Finally we the value that we want to write to that register. This sequence is shown in the function below:
+```
+//initialise int for interrupt 
+static volatile unsigned int maxTimeElapsed = 0;
 
-	void color_writetoaddr(char address, char value){
-		I2C_2_Master_Start();         		//Start condition
-		I2C_2_Master_Write(0x52 | 0x00);     //7 bit device address + Write (0) mode (note 0x52=0x29<<1)
-		I2C_2_Master_Write(0x80 | address);    //command + register address
-		I2C_2_Master_Write(value);    			//value to store in the register
-		I2C_2_Master_Stop();          //Stop condition
-	}
+//Interrupt to handle exception of retracing path if no card is detected within approx 16 secs
+void __interrupt(high_priority) HighISR() // If overrun by 16s, will then trigger memory 
+{
+	//add your ISR code here i.e. check the flag, do something (i.e. toggle an LED), clear the flag...
+    if(PIR0bits.TMR0IF){
+        maxTimeElapsed = 1;
+        TMR0H = 0;
+        TMR0L = 0;
+        PIR0bits.TMR0IF = 0; // clearing the flag
+    } 
+}
+```
 
-We then call the function to, for example, turn the device on:
+### Main Script
 
-	color_writetoaddr(0x00, 0x01); // write 1 to the PON bit in the device enable register
-	
-There are additional commands that must be set to initialise the device and many registers that be configured to obtain optimal performance for the sensor in your conditions. It is up to you to carefully read the TCS3471 datasheet and experiment with this.
+Upon starting up, the structs for the RGB colours and motors are set up, along with the timing and movements array for memory storage. The calibration is then executed with LEDs indicating the capture of data and its readiness to begin. To further enhance the robustness of the colour identification process, 4 consecutive scans must unanimously agree on the colour identified before finally deciding the colour. Thereafter, the checks are reset to ensure that the actions are executed once only. The code below illustrates this process: 
 
-To read values from the TCS3471 you need to a similar sequence to above but you first need to tell the device which register you want to deal with, before telling the device you want read from it. The example below uses the combined read format to read multiple bytes in sequence. The auto-increment is set so that instead of reading the same register over and over again, it automatically advances to the next one. The example starts at the Red channel low byte address and then automatically advances and reads the associated high byte.
+```
+while(1){          
+        // Scans once and updates a checkX accordingly
+        unsigned int detected_colour;  
+        read_colours(&RGBstruct);        // Updates RGB Struct
+        if (count==0) {check1 = determine_color_new(&RGBstruct);}
+        if (count==1) {check2 = determine_color_new(&RGBstruct);}
+        if (count==2) {check3 = determine_color_new(&RGBstruct);}
+        if (count==3) {check4 = determine_color_new(&RGBstruct);count=0;}
+        else (count += 1);
+        
+        // 4 checks must be identical to detect colour (ROBUST)
+        if (check1==check2 && check2==check3 && check3==check4){
+            detected_colour = check1;
+            //code to update movement count and reset timer count when movement count is incremented
+            if (detected_colour >= 0 && detected_colour <= 8){ 
+                updateMovementCount(detected_colour, movementArray, movements, timerArray);
+                movements++;
+                reset_timer = 1; //reset the timer when the movement is done
+            }
+            //if ambient light is detected, reset timer back to 0 and timer restarts
+            else if (detected_colour == 9 && reset_timer == 1){ 
+                TMR0H = 0;
+                TMR0L = 0;
+                reset_timer = 0; 
+            }
+            check1=9;check2=9;check3=9;check4=9; // Resets checks to ensure action done once 
+        }
+```
 
-	unsigned int color_read_Red(void)
-	{
-		unsigned int tmp;
-		I2C_2_Master_Start();         //Start condition
-		I2C_2_Master_Write(0x52 | 0x00);     //7 bit address + Write mode
-		I2C_2_Master_Write(0xA0 | 0x16);    //command (auto-increment protocol transaction) + start at RED low register
-		I2C_2_Master_RepStart();
-		I2C_2_Master_Write(0x52 | 0x01);     //7 bit address + Read (1) mode
-		tmp=I2C_2_Master_Read(1);			// read the Red LSB
-		tmp=tmp | (I2C_2_Master_Read(0)<<8); //read the Red MSB (don't acknowledge as this is the last read)
-		I2C_2_Master_Stop();          //Stop condition
-		return tmp;
-	}
+Finally, once the colour of the card has been identified, the respective actions are called. 
 
-Instead of separate functions for each channel you may want to create a structure to store all the values together, and pass a pointer to the function so that all values in the structure can be updated in one operation. An example structure might look like this:
+```
+if (detected_colour == 0){ turnRight90(&motorL,&motorR);__delay_ms(100);}           // Red - right 90
+        if (detected_colour == 1){ turnLeft90(&motorL,&motorR);__delay_ms(100);}            // Blue - left 90
+        if (detected_colour == 2){ turnRight180(&motorL,&motorR);__delay_ms(100);}          // Green - 180
+        if (detected_colour == 3){ reverseTurnRight90(&motorL,&motorR);__delay_ms(100);}    // Yellow - reverse + right 90
+        if (detected_colour == 4){ reverseTurnLeft90(&motorL,&motorR);__delay_ms(100);}     // Pink - reverse + left 90
+        if (detected_colour == 5){ turnRight135(&motorL,&motorR);__delay_ms(100);}          // Orange - right 135
+        if (detected_colour == 6){ turnLeft135(&motorL,&motorR);__delay_ms(100);}           // Light Blue - left 135
+        
+        // If black or white, head back to starting point 
+        if (detected_colour == 7){ White(&motorL,&motorR,movementArray, movements, timerArray);
+            __delay_ms(100);LATDbits.LATD7 = 1;LATHbits.LATH3 = 1; // Display to show done with course and person found
+            while (PORTFbits.RF3);}
+        if (detected_colour == 8){ White(&motorL,&motorR,movementArray, movements, timerArray);
+            __delay_ms(100); // No display to show nothing found
+            while (PORTFbits.RF3);}
+        if (detected_colour == 9){ forward(&motorL,&motorR);}                               // Ambient - continue forward
+        
+```
 
-	//definition of RGB structure
-	struct RGB_val { 
-		unsigned int R;
-		unsigned int G;
-		unsigned int B;
-	};
+## Possible Improvements
 
-This concludes the basics of I2C and communication with the colour sensor. Best of luck! 
+While we strived to achieve and refine the main objectives of the project which largely included the colour identification and memory playback functionalities, this resulted in less attention being paid to certain aspects of the project. If time permits, we would have strived to further improve: 
+
+* The calibration and preciseness of the motor actions for the associated colours (However, in a mine the surface will unlikely be consistent) 
+* The ability to self-correct any deviation from a straight line path when moving forward
